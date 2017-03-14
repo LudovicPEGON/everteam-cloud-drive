@@ -1,16 +1,17 @@
 package com.everteam.storage.common.model;
 
-import java.util.Objects;
-import com.everteam.storage.common.model.ESParent;
-import com.everteam.storage.common.model.ESPermission;
-import com.everteam.storage.common.model.ESUser;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.everteam.storage.common.serializers.IdDeserializer;
+import com.everteam.storage.common.serializers.IdSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESFile
@@ -19,6 +20,8 @@ import java.util.List;
 
 public class ESFile   {
   @JsonProperty("id")
+  @JsonSerialize(using = IdSerializer.class)
+  @JsonDeserialize(using = IdDeserializer.class)
   private String id = null;
 
   @JsonProperty("parents")
