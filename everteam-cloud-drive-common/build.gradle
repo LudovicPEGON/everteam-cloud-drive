@@ -2,6 +2,9 @@ buildscript {
     repositories {
         mavenCentral()
     }
+	dependencies {
+		classpath "io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE"
+	}
 }
 
 
@@ -22,6 +25,7 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("com.everteam.cloud:everteam-cloud-starter-client:1.0.0")
+	
 }
 
 task wrapper(type: Wrapper) {
