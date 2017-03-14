@@ -1,0 +1,32 @@
+server:
+    port: 7070
+
+spring:
+    application:
+        name: storage-v1-0
+  
+
+logging:
+    file: storage-service/logs/skeleton.log
+    
+
+storage:
+    repositories:
+        - name: g1
+          type: GOOGLE
+          rootDirectory: 
+          clientSecrets: /client_secret.json
+        - name: l1
+          type: LOCAL
+          rootDirectory: d:/tmp
+        - name: l2
+          type: LOCAL
+          rootDirectory: d:/temp
+
+
+
+#remove this block in cloud environment    
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false

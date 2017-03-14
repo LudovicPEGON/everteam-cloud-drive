@@ -1,0 +1,18 @@
+subprojects {
+
+  apply plugin : "java"
+  group = 'com.everteam.cloud'
+  version = '1.0.0-SNAPSHOT'
+  
+  repositories {
+     mavenCentral()
+     mavenLocal()
+  }
+}
+
+
+project(':everteam-cloud-drive-server') {
+    dependencies {
+        compile project(':everteam-cloud-drive-common')
+    }
+}
