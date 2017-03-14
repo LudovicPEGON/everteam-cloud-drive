@@ -1,7 +1,6 @@
 package com.everteam.storage.managers;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +60,7 @@ public class ConnectorsManager {
                     break;
             }
             if (storage != null) {
-                repository.setId(repository.getName() + ":/");
+                repository.setId(repository.getName());
                 storage.init(repository);
                 
                 connectors.put(repository.getId(), storage);

@@ -5,10 +5,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESRepository;
+import com.everteam.storage.managers.FileId;
 
 public interface IConnector {
 
@@ -18,28 +21,18 @@ public interface IConnector {
     
     void downloadTo(String fileId,  OutputStream outputstream) throws IOException ;
     
-    void insert( ESFile file, InputStream in);
+    FileId insert( ESFile file, InputStream in) throws IOException;
 
-    // String storeContent(ESFile file, InputStream inputStream);
-    //
-    // void delete(String uri);
-    //
-    // String rename(String uri, String newFileName);
-    //
-    // String copy(String uri, ESFile destinationFileInfo);
-    //
-    // void update(String fileName, String uri, InputStream inputStream);
-    //
-    // // FileStream getContent(String uri);
-    //
     void init(ESRepository repository);
 
     ESRepository getRepository();
 
     List<ESPermission> getPermissions(String repositoryFileId);
 
-    void delete(String repositoryFileId);
+    void delete(String repositoryFileId) throws IOException;
 
     ESFile getFile(String repositoryFileId);
+
+    void update(FileId fileId, MultipartFile content, String name, String description);
 
 }

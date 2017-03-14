@@ -1,8 +1,11 @@
 package com.everteam.storage.managers;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URI;
 import java.util.Objects;
+
+import javax.ws.rs.core.UriBuilder;
+
+import com.everteam.storage.connector.IConnector;
 
 public class FileId {
     private String repositoryId;
@@ -10,14 +13,19 @@ public class FileId {
     private String repositoryFileId;
 
     public static FileId get(String id) {
-        Path p = Paths.get(id);
-
-        String repositoryId = p.getRoot().toString();
-
-        FileId fileId = new FileId().repositoryId(repositoryId).repositoryFileId(id.substring(repositoryId.length()));
-
+        URI uri = UriBuilder.fromUri(id).build();
+        String repositoryId = uri.getScheme();
+        FileId fileId = new FileId()
+                .repositoryId(repositoryId)
+                .repositoryFileId(uri.getPath().substring(1));
         return fileId;
     }
+    public static URI toURI(IConnector connector, String fileId) {
+        return UriBuilder.fromPath(fileId)
+                .scheme(connector.getRepository().getId())
+                .build();
+    }
+
 
     public FileId repositoryId(String repositoryId) {
         this.repositoryId = repositoryId;

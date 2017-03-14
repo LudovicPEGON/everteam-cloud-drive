@@ -1,23 +1,26 @@
 package com.everteam.storage.api;
 
-import com.everteam.storage.common.model.ESFile;
-import com.everteam.storage.common.model.ESFileList;
-import com.everteam.storage.common.model.ESPermission;
-import java.io.File;
+import java.util.List;
 
-import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import com.everteam.storage.common.model.ESFile;
+import com.everteam.storage.common.model.ESFileList;
+import com.everteam.storage.common.model.ESPermission;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-14T08:27:34.208Z")
 
@@ -44,7 +47,7 @@ public interface FilesApi {
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
     default ResponseEntity<ESFile> createFile(@ApiParam(value = "File Id",required=true ) @PathVariable("id") String id,
-        @ApiParam(value = "file detail") @RequestPart("file") MultipartFile content,
+        @ApiParam(value = "file detail") @RequestPart("content") MultipartFile content,
         @ApiParam(value = "", required=true ) @RequestPart(value="name", required=true)  String name,
         @ApiParam(value = "" ) @RequestPart(value="description", required=false)  String description) {
         // do some magic!

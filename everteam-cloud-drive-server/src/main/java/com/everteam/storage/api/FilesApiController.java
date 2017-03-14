@@ -19,11 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
+import com.everteam.storage.common.model.ESParent;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.serializers.Encryptor;
+import com.everteam.storage.managers.FileId;
 import com.everteam.storage.managers.FilesManager;
-
-import io.swagger.annotations.ApiParam;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-10T14:12:04.281Z")
 
@@ -38,32 +38,40 @@ public class FilesApiController implements FilesApi {
         ESFile fsource = buildFile(id);
         try {
             filesManager.copy(fsource, file);
+            return new ResponseEntity<ESFile>(file, HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<ESFile>(file, HttpStatus.OK);
+        
     }
 
     @Override
     public ResponseEntity<ESFile> createFile(@PathVariable("id") String id,
-            @RequestPart("file") MultipartFile content,
+            @RequestPart("content") MultipartFile content,
             @RequestPart(value="name", required=true)  String name,
             @RequestPart(value="description", required=false)  String description) {
         try {
-            ESFile file = null;
-            filesManager.create(file, content.getInputStream());
+            ESFile file = new ESFile()
+                    .name(name)
+                    .addParentsItem(new ESParent().id(getDecyptId(id)))
+                    .description(description)
+                    .mimeType(content.getContentType());
+            FileId newFile = filesManager.create(file, content.getInputStream());
+            return new ResponseEntity<ESFile>(filesManager.getFile(newFile), HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
-        return FilesApi.super.createFile(id, content, name, description);
     }
 
     @Override
-    public ResponseEntity<Void> deleteFile(String id) {
-        filesManager.delete(getDecyptId(id));
-
-        return FilesApi.super.deleteFile(id);
+    public ResponseEntity<Void> deleteFile(@PathVariable("id") String id) {
+        try {
+            filesManager.delete(getDecyptId(id));
+            return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        } catch (WebApplicationException | IOException e) {
+            throw new WebApplicationException(e, Status.BAD_REQUEST);
+        }
     }
 
     @Override
@@ -71,11 +79,11 @@ public class FilesApiController implements FilesApi {
             @RequestParam(value = "getPermissions", required = false, defaultValue = "false") Boolean getPermissions,
             @RequestParam(value = "maxResult", required = false, defaultValue="100") Integer maxResult) {
         try {
-            filesManager.getChildren(id);
+            ESFileList efl = filesManager.getChildren(getDecyptId(id));
+            return new ResponseEntity<ESFileList>(efl, HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
-        return FilesApi.super.getFileChildren(id, getPermissions, maxResult);
     }
 
     @Override
@@ -87,7 +95,7 @@ public class FilesApiController implements FilesApi {
         responseHeaders.add("Content-Type",file.getMimeType());
 
         try {
-            return new ResponseEntity(filesManager.getFileContent(id), responseHeaders,HttpStatus.OK);
+            return new ResponseEntity<byte[]>(filesManager.getFileContent(getDecyptId(id)), responseHeaders, HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
@@ -97,8 +105,7 @@ public class FilesApiController implements FilesApi {
     public ResponseEntity<ESFile> getFile(@PathVariable("id") String id,
             @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions) {
         ESFile file = buildFile(id);
-
-        return FilesApi.super.getFile(id, getPermissions);
+        return new ResponseEntity<ESFile>(file,HttpStatus.OK);
     }
 
     @Override
@@ -106,7 +113,7 @@ public class FilesApiController implements FilesApi {
         id = getDecyptId(id);
         List<ESPermission> permissions = filesManager.getPermissions(id);
 
-        return FilesApi.super.getFilePermissions(id);
+        return new ResponseEntity<List<ESPermission>>(permissions,HttpStatus.OK);
     }
 
     @Override
@@ -114,16 +121,19 @@ public class FilesApiController implements FilesApi {
             @RequestPart("file") MultipartFile content,
             @RequestPart(value="name", required=false)  String name,
             @RequestPart(value="description", required=false)  String description) {
-    
-        id = getDecyptId(id);
-
-        filesManager.update(id, content, name, description);
-
-        return FilesApi.super.updateFile(id, content, name, description);
+        try {
+            String decryptedId = getDecyptId(id);
+            filesManager.update(decryptedId, content, name, description);
+            ESFile updatedFile = filesManager.getFile(FileId.get(decryptedId));
+            return new ResponseEntity<ESFile>(updatedFile, HttpStatus.OK);
+        } catch (WebApplicationException | IOException e) {
+            throw new WebApplicationException(e, Status.BAD_REQUEST);
+        }
     }
 
     private ESFile buildFile(String id) {
-        return filesManager.getFile(getDecyptId(id));
+        FileId fileId = FileId.get(getDecyptId(id));
+        return filesManager.getFile(fileId);
     }
 
     private String getDecyptId(String id) throws WebApplicationException {

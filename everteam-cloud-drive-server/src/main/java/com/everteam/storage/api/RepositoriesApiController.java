@@ -1,7 +1,6 @@
 package com.everteam.storage.api;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
@@ -18,8 +17,6 @@ import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.common.serializers.Encryptor;
 import com.everteam.storage.managers.ConnectorsManager;
-
-import io.swagger.annotations.ApiParam;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-09T15:45:07.545Z")
 

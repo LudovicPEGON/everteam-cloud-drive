@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.everteam.storage.common.model.ESFile;
+import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.connector.IConnector;
 
@@ -21,10 +22,8 @@ public class FilesManager {
     @Autowired
     ConnectorsManager connectorManager;
 
-    public ESFile getFile(String id) {
-        FileId fileId = FileId.get(id);
+    public ESFile getFile(FileId fileId) {
         IConnector connector = connectorManager.getConnector(fileId.getRepositoryId());
-
         return connector.getFile(fileId.getRepositoryFileId());
     }
 
@@ -41,13 +40,13 @@ public class FilesManager {
 
     }
 
-    public void getChildren(String id) throws IOException {
+    public ESFileList getChildren(String id) throws IOException {
         FileId fileId = FileId.get(id);
         IConnector connector = connectorManager.getConnector(fileId.getRepositoryId());
-        connector.children(fileId.getRepositoryFileId());
+        return connector.children(fileId.getRepositoryFileId());
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws IOException {
         FileId fileId = FileId.get(id);
         IConnector connector = connectorManager.getConnector(fileId.getRepositoryId());
 
@@ -79,14 +78,17 @@ public class FilesManager {
 
     }
 
-    public void update(String id, MultipartFile content, String name, String description) {
-        // TODO Auto-generated method stub
-
+    public void update(String id, MultipartFile content, String name, String description) throws IOException {
+        FileId fileId = FileId.get(id);
+        IConnector connector = connectorManager.getConnector(fileId.getRepositoryId());
+        connector.update(fileId, content, name, description);
     }
 
-    public void create(ESFile file, InputStream InputStream) {
-        // TODO Auto-generated method stub
-
+    public FileId create(ESFile file, InputStream inputStream) throws IOException {
+        FileId parentId = FileId.get(file.getParents().get(0).getId());
+        IConnector connector = connectorManager.getConnector(parentId.getRepositoryId());
+        return connector.insert(file, inputStream);
+        
     }
 
 }
