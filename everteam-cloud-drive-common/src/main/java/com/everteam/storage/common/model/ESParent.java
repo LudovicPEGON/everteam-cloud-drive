@@ -1,40 +1,40 @@
 package com.everteam.storage.common.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESParent
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-14T08:27:34.208Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-17T12:28:04.419Z")
 
 public class ESParent   {
   @JsonProperty("id")
-  private String id = null;
+  private ESFileId id = null;
 
   @JsonProperty("paths")
   private List<String> paths = new ArrayList<String>();
 
-  public ESParent id(String id) {
+  public ESParent id(ESFileId id) {
     this.id = id;
     return this;
   }
 
    /**
-   * Parent folders which contain this file. If no folders are provided, the file will be placed in the default root folder.
+   * Get id
    * @return id
   **/
-  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "Parent folders which contain this file. If no folders are provided, the file will be placed in the default root folder.")
-  public String getId() {
+  @ApiModelProperty(value = "")
+  public ESFileId getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(ESFileId id) {
     this.id = id;
   }
 

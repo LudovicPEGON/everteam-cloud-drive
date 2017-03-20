@@ -17,11 +17,14 @@ storage:
           rootDirectory: 
           clientSecrets: /client_secret.json
         - name: l1
-          type: LOCAL
+          type: FS
           rootDirectory: d:/tmp
         - name: l2
-          type: LOCAL
+          type: FS
           rootDirectory: d:/temp
+        - name: testlpe
+          type: FS
+          rootDirectory: D:\home\eclipse_workspace\es_head\icons\icon16  
 
 
 

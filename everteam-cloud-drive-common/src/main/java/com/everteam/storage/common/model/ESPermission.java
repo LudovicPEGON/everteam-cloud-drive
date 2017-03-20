@@ -1,20 +1,23 @@
 package com.everteam.storage.common.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESPermission
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-14T08:27:34.208Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-17T12:28:04.419Z")
 
 public class ESPermission   {
   /**
-   * The permission type. Allow or deny.
+   * The permission type. Allow or deny
    */
   public enum TypeEnum {
     ALLOW("allow"),
@@ -92,9 +95,9 @@ public class ESPermission   {
   private String domain = null;
 
   /**
-   * The primary role for this user
+   * The persmision role for this user
    */
-  public enum RoleEnum {
+  public enum RolesEnum {
     OWNER("owner"),
     
     READER("reader"),
@@ -103,7 +106,7 @@ public class ESPermission   {
 
     private String value;
 
-    RoleEnum(String value) {
+    RolesEnum(String value) {
       this.value = value;
     }
 
@@ -114,8 +117,8 @@ public class ESPermission   {
     }
 
     @JsonCreator
-    public static RoleEnum fromValue(String text) {
-      for (RoleEnum b : RoleEnum.values()) {
+    public static RolesEnum fromValue(String text) {
+      for (RolesEnum b : RolesEnum.values()) {
         if (String.valueOf(b.value).equals(text)) {
           return b;
         }
@@ -124,8 +127,8 @@ public class ESPermission   {
     }
   }
 
-  @JsonProperty("role")
-  private RoleEnum role = null;
+  @JsonProperty("roles")
+  private List<RolesEnum> roles = new ArrayList<RolesEnum>();
 
   public ESPermission type(TypeEnum type) {
     this.type = type;
@@ -133,10 +136,10 @@ public class ESPermission   {
   }
 
    /**
-   * The permission type. Allow or deny.
+   * The permission type. Allow or deny
    * @return type
   **/
-  @ApiModelProperty(value = "The permission type. Allow or deny.")
+  @ApiModelProperty(value = "The permission type. Allow or deny")
   public TypeEnum getType() {
     return type;
   }
@@ -169,10 +172,10 @@ public class ESPermission   {
   }
 
    /**
-   * The id (can be its email or user code) of the user or group this permission refers to.
+   * The id (can be its email or user code) of the user or group this permission refers to
    * @return userId
   **/
-  @ApiModelProperty(value = "The id (can be its email or user code) of the user or group this permission refers to.")
+  @ApiModelProperty(value = "The id (can be its email or user code) of the user or group this permission refers to")
   public String getUserId() {
     return userId;
   }
@@ -187,10 +190,10 @@ public class ESPermission   {
   }
 
    /**
-   * The domain name of the entity this permission refers to. It is present when the permission type is user, group or domain.
+   * The domain name of the entity this permission refers to. It is present when the permission type is user, group or domain
    * @return domain
   **/
-  @ApiModelProperty(value = "The domain name of the entity this permission refers to. It is present when the permission type is user, group or domain.")
+  @ApiModelProperty(value = "The domain name of the entity this permission refers to. It is present when the permission type is user, group or domain")
   public String getDomain() {
     return domain;
   }
@@ -199,22 +202,27 @@ public class ESPermission   {
     this.domain = domain;
   }
 
-  public ESPermission role(RoleEnum role) {
-    this.role = role;
+  public ESPermission roles(List<RolesEnum> roles) {
+    this.roles = roles;
+    return this;
+  }
+
+  public ESPermission addRolesItem(RolesEnum rolesItem) {
+    this.roles.add(rolesItem);
     return this;
   }
 
    /**
-   * The primary role for this user
-   * @return role
+   * Get roles
+   * @return roles
   **/
-  @ApiModelProperty(value = "The primary role for this user")
-  public RoleEnum getRole() {
-    return role;
+  @ApiModelProperty(value = "")
+  public List<RolesEnum> getRoles() {
+    return roles;
   }
 
-  public void setRole(RoleEnum role) {
-    this.role = role;
+  public void setRoles(List<RolesEnum> roles) {
+    this.roles = roles;
   }
 
 
@@ -231,12 +239,12 @@ public class ESPermission   {
         Objects.equals(this.accountType, esPermission.accountType) &&
         Objects.equals(this.userId, esPermission.userId) &&
         Objects.equals(this.domain, esPermission.domain) &&
-        Objects.equals(this.role, esPermission.role);
+        Objects.equals(this.roles, esPermission.roles);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, accountType, userId, domain, role);
+    return Objects.hash(type, accountType, userId, domain, roles);
   }
 
   @Override
@@ -248,7 +256,7 @@ public class ESPermission   {
     sb.append("    accountType: ").append(toIndentedString(accountType)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    domain: ").append(toIndentedString(domain)).append("\n");
-    sb.append("    role: ").append(toIndentedString(role)).append("\n");
+    sb.append("    roles: ").append(toIndentedString(roles)).append("\n");
     sb.append("}");
     return sb.toString();
   }

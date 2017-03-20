@@ -1,8 +1,8 @@
-package com.everteam.storage.connector;
+package com.everteam.storage.drive;
 
 import com.everteam.storage.common.model.ESRepository;
 
-public abstract class ConnectorImpl implements IConnector {
+public abstract class DriveImpl implements IDrive {
     ESRepository repository;
 
     @Override

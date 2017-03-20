@@ -5,24 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.everteam.storage.common.serializers.IdDeserializer;
-import com.everteam.storage.common.serializers.IdSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESFile
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-14T08:27:34.208Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-17T12:28:04.419Z")
 
 public class ESFile   {
   @JsonProperty("id")
-  @JsonSerialize(using = IdSerializer.class)
-  @JsonDeserialize(using = IdDeserializer.class)
-  private String id = null;
+  private ESFileId id = null;
 
   @JsonProperty("parents")
   private List<ESParent> parents = new ArrayList<ESParent>();
@@ -60,7 +54,10 @@ public class ESFile   {
   @JsonProperty("permissions")
   private List<ESPermission> permissions = new ArrayList<ESPermission>();
 
-  public ESFile id(String id) {
+  @JsonProperty("checksum")
+  private String checksum = null;
+
+  public ESFile id(ESFileId id) {
     this.id = id;
     return this;
   }
@@ -69,12 +66,12 @@ public class ESFile   {
    * Get id
    * @return id
   **/
-  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "")
-  public String getId() {
+  @ApiModelProperty(value = "")
+  public ESFileId getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(ESFileId id) {
     this.id = id;
   }
 
@@ -89,10 +86,10 @@ public class ESFile   {
   }
 
    /**
-   * Get parents
+   * The files parent list. Some drives juste manage one parent
    * @return parents
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The files parent list. Some drives juste manage one parent")
   public List<ESParent> getParents() {
     return parents;
   }
@@ -161,10 +158,10 @@ public class ESFile   {
   }
 
    /**
-   * A short description of the file.
+   * A short description of the file
    * @return description
   **/
-  @ApiModelProperty(example = "My first file", value = "A short description of the file.")
+  @ApiModelProperty(example = "My first file", value = "A short description of the file")
   public String getDescription() {
     return description;
   }
@@ -309,6 +306,24 @@ public class ESFile   {
     this.permissions = permissions;
   }
 
+  public ESFile checksum(String checksum) {
+    this.checksum = checksum;
+    return this;
+  }
+
+   /**
+   * The file's content  MD5 checksum
+   * @return checksum
+  **/
+  @ApiModelProperty(example = "2B693E6A1483B70BF5CD7C511035879E", value = "The file's content  MD5 checksum")
+  public String getChecksum() {
+    return checksum;
+  }
+
+  public void setChecksum(String checksum) {
+    this.checksum = checksum;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -331,12 +346,13 @@ public class ESFile   {
         Objects.equals(this.lastAccessTime, esFile.lastAccessTime) &&
         Objects.equals(this.lastModifiedUser, esFile.lastModifiedUser) &&
         Objects.equals(this.owners, esFile.owners) &&
-        Objects.equals(this.permissions, esFile.permissions);
+        Objects.equals(this.permissions, esFile.permissions) &&
+        Objects.equals(this.checksum, esFile.checksum);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, parents, name, fileSize, directory, description, mimeType, creationTime, lastModifiedTime, lastAccessTime, lastModifiedUser, owners, permissions);
+    return Objects.hash(id, parents, name, fileSize, directory, description, mimeType, creationTime, lastModifiedTime, lastAccessTime, lastModifiedUser, owners, permissions, checksum);
   }
 
   @Override
@@ -357,6 +373,7 @@ public class ESFile   {
     sb.append("    lastModifiedUser: ").append(toIndentedString(lastModifiedUser)).append("\n");
     sb.append("    owners: ").append(toIndentedString(owners)).append("\n");
     sb.append("    permissions: ").append(toIndentedString(permissions)).append("\n");
+    sb.append("    checksum: ").append(toIndentedString(checksum)).append("\n");
     sb.append("}");
     return sb.toString();
   }

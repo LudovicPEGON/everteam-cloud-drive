@@ -1,15 +1,15 @@
 package com.everteam.storage.common.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESUser
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-14T08:27:34.208Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-17T12:28:04.419Z")
 
 public class ESUser   {
   @JsonProperty("displayName")
@@ -42,10 +42,10 @@ public class ESUser   {
   }
 
    /**
-   * The email address of the owner.
+   * The email address of the owner
    * @return id
   **/
-  @ApiModelProperty(value = "The email address of the owner.")
+  @ApiModelProperty(value = "The email address of the owner")
   public String getId() {
     return id;
   }

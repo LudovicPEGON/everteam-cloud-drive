@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import com.everteam.storage.common.model.ESRepository;
-import com.everteam.storage.managers.ConnectorsManager;
+import com.everteam.storage.services.RepositoryService;
 
 @Component
 @ConfigurationProperties(prefix = "storage")
@@ -18,7 +18,7 @@ public class StorageConfiguration {
     private List<ESRepository> repositories = new ArrayList<>();
 
     @Autowired
-    ConnectorsManager storageManager;
+    RepositoryService storageManager;
         
     
     @PostConstruct

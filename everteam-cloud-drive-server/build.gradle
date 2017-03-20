@@ -25,9 +25,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("com.everteam.cloud:everteam-cloud-starter-server:1.0.0")
+    compile("com.everteam.cloud:everteam-cloud-starter-server:1.1.0")
     //compile("com.everteam.cloud:everteam-cloud-starter-security:1.0.0")
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.3.0-rc1'
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 

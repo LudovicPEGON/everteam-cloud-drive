@@ -1,4 +1,4 @@
-package com.everteam.storage.common.serializers;
+package com.everteam.storage.jackson;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;

@@ -1,6 +1,7 @@
 package com.everteam.storage.api;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
@@ -12,18 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.everteam.storage.common.model.ESFile;
+import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESFileList;
-import com.everteam.storage.common.model.ESParent;
 import com.everteam.storage.common.model.ESPermission;
-import com.everteam.storage.common.serializers.Encryptor;
-import com.everteam.storage.managers.FileId;
-import com.everteam.storage.managers.FilesManager;
+import com.everteam.storage.services.FileService;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-10T14:12:04.281Z")
 
@@ -31,43 +28,52 @@ import com.everteam.storage.managers.FilesManager;
 public class FilesApiController implements FilesApi {
 
     @Autowired
-    FilesManager filesManager;
+    FileService fileService;
 
     @Override
-    public ResponseEntity<ESFile> copyFile(@PathVariable("id") String id, @RequestBody ESFile file) {
-        ESFile fsource = buildFile(id);
+    public ResponseEntity<Void> checkUpdates(@PathVariable("id") ESFileId fileId,
+            @RequestParam(value = "fromDate", required = true) OffsetDateTime fromDate) {
         try {
-            filesManager.copy(fsource, file);
-            return new ResponseEntity<ESFile>(file, HttpStatus.OK);
+            fileService.checkUpdates(fileId, fromDate);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+
+    @Override
+    public ResponseEntity<ESFile> copyFile(@PathVariable("id") ESFileId fileId,
+            @RequestParam(value = "targetId", required = true) ESFileId targetId) {
+        try {
+            ESFileId result = fileService.copy(fileId, targetId);
+
+            return new ResponseEntity<ESFile>(fileService.getFile(result, false), HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
 
-        
     }
 
     @Override
-    public ResponseEntity<ESFile> createFile(@PathVariable("id") String id,
-            @RequestPart("content") MultipartFile content,
-            @RequestPart(value="name", required=true)  String name,
-            @RequestPart(value="description", required=false)  String description) {
+    public ResponseEntity<ESFile> createFile(@PathVariable("id") ESFileId fileId,
+            @RequestParam("content") MultipartFile content, @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "description", required = false) String description) {
         try {
-            ESFile file = new ESFile()
-                    .name(name)
-                    .addParentsItem(new ESParent().id(getDecyptId(id)))
-                    .description(description)
-                    .mimeType(content.getContentType());
-            FileId newFile = filesManager.create(file, content.getInputStream());
-            return new ResponseEntity<ESFile>(filesManager.getFile(newFile), HttpStatus.OK);
+            if (name == null || name.length() == 0) {
+                name = content.getOriginalFilename();
+            }
+            ESFileId newFileId = fileService.create(fileId, content.getInputStream(), name, description);
+            return new ResponseEntity<ESFile>(fileService.getFile(newFileId, false), HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
     }
 
     @Override
-    public ResponseEntity<Void> deleteFile(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteFile(@PathVariable("id") ESFileId fileId) {
         try {
-            filesManager.delete(getDecyptId(id));
+            fileService.delete(fileId);
             return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         } catch (WebApplicationException | IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
@@ -75,73 +81,87 @@ public class FilesApiController implements FilesApi {
     }
 
     @Override
-    public ResponseEntity<ESFileList> getFileChildren(@PathVariable("id") String id,
+    public ResponseEntity<ESFileList> getFileChildren(@PathVariable("id") ESFileId fileId,
             @RequestParam(value = "getPermissions", required = false, defaultValue = "false") Boolean getPermissions,
-            @RequestParam(value = "maxResult", required = false, defaultValue="100") Integer maxResult) {
+            @RequestParam(value = "maxResult", required = false, defaultValue = "100") Integer maxResult) {
         try {
-            ESFileList efl = filesManager.getChildren(getDecyptId(id));
+            if (maxResult<0) {
+                maxResult = Integer.MAX_VALUE;
+            }
+            ESFileList efl = fileService.getChildren(fileId, getPermissions, maxResult);
             return new ResponseEntity<ESFileList>(efl, HttpStatus.OK);
-        } catch (IOException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<byte[]> getFileContent(@PathVariable("id") String id) {
-        ESFile file = buildFile(id);
-        
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("content-disposition", "attachment; filename=" + file.getName());
-        responseHeaders.add("Content-Type",file.getMimeType());
-
-        try {
-            return new ResponseEntity<byte[]>(filesManager.getFileContent(getDecyptId(id)), responseHeaders, HttpStatus.OK);
-        } catch (IOException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<ESFile> getFile(@PathVariable("id") String id,
-            @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions) {
-        ESFile file = buildFile(id);
-        return new ResponseEntity<ESFile>(file,HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<List<ESPermission>> getFilePermissions(@PathVariable("id") String id) {
-        id = getDecyptId(id);
-        List<ESPermission> permissions = filesManager.getPermissions(id);
-
-        return new ResponseEntity<List<ESPermission>>(permissions,HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<ESFile> updateFile(@PathVariable("id") String id,
-            @RequestPart("file") MultipartFile content,
-            @RequestPart(value="name", required=false)  String name,
-            @RequestPart(value="description", required=false)  String description) {
-        try {
-            String decryptedId = getDecyptId(id);
-            filesManager.update(decryptedId, content, name, description);
-            ESFile updatedFile = filesManager.getFile(FileId.get(decryptedId));
-            return new ResponseEntity<ESFile>(updatedFile, HttpStatus.OK);
-        } catch (WebApplicationException | IOException e) {
-            throw new WebApplicationException(e, Status.BAD_REQUEST);
-        }
-    }
-
-    private ESFile buildFile(String id) {
-        FileId fileId = FileId.get(getDecyptId(id));
-        return filesManager.getFile(fileId);
-    }
-
-    private String getDecyptId(String id) throws WebApplicationException {
-        try {
-            return Encryptor.decrypt(id);
         } catch (Exception e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getFileContent(@PathVariable("id") ESFileId fileId) {
+
+        try {
+            ESFile file = fileService.getFile(fileId, false);
+            byte[] data = fileService.getFileContent(fileId);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", file.getMimeType());
+
+            headers.add("content-disposition", "attachment; filename = " + file.getName());
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ESFile> getFile(@PathVariable("id") ESFileId fileId,
+            @RequestParam(value = "getPermissions", required = false, defaultValue = "false") Boolean getPermissions) {
+        try {
+            ESFile file = fileService.getFile(fileId, false);
+            return new ResponseEntity<ESFile>(file, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<ESPermission>> getFilePermissions(@PathVariable("id") ESFileId fileId) {
+        try {
+            List<ESPermission> permissions = fileService.getPermissions(fileId);
+            return new ResponseEntity<List<ESPermission>>(permissions, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    
+    
+    @Override
+    public ResponseEntity<ESFile> moveFile(@PathVariable("id") ESFileId fileId,
+        @RequestParam(value = "targetId", required = true) ESFileId targetId) {
+        try {
+            ESFileId copiedFileId = fileService.copy(fileId, targetId);
+            fileService.delete(fileId);
+            ESFile copiedFile = fileService.getFile(copiedFileId, false);
+            return new ResponseEntity<ESFile>(copiedFile, HttpStatus.OK);
+        } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
     }
+    
+    
+    @Override
+    public ResponseEntity<ESFile> updateFile(@PathVariable("id") ESFileId fileId, 
+            @RequestParam("content") MultipartFile content,
+            @RequestParam(value = "description", required = false) String description) {
+        try {
+            fileService.update(fileId, content, description);
+            ESFile updatedFile = fileService.getFile(fileId, false);
+            return new ResponseEntity<ESFile>(updatedFile, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new WebApplicationException(e, Status.BAD_REQUEST);
+        }
+    }
+    
+   
 
 }
