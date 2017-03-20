@@ -1,0 +1,508 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a storage API"
+  version: "1.0.0"
+  title: "Storage API"
+  contact:
+    email: "you@your-company.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/EVER_TEAM_SOFTWARE/Storage/1.0.0"
+tags:
+- name: "Repositories"
+  description: "Operations available for repositories"
+- name: "Directories"
+  description: "Operations available for directories"
+- name: "Files"
+  description: "Operations available for files"
+schemes:
+- "https"
+paths:
+  /repositories:
+    get:
+      tags:
+      - "Repositories"
+      summary: "Search repositories"
+      description: "you can search for available repositories in the storage service\n"
+      operationId: "listRepositories"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ESRepository"
+  /files/{id}:
+    get:
+      tags:
+      - "Files"
+      summary: "Get file informations"
+      description: "Get file informations"
+      operationId: "getFile"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "getPermissions"
+        in: "query"
+        description: "set true if you want to get permissions at the same you get\
+          \ files"
+        required: false
+        type: "boolean"
+        default: false
+      responses:
+        200:
+          description: "search results"
+          schema:
+            $ref: "#/definitions/ESFile"
+    post:
+      tags:
+      - "Files"
+      summary: "Insert a new File"
+      description: "Create a new File using file content and required parameters"
+      operationId: "createFile"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "content"
+        in: "formData"
+        description: "Not required in case directory creation"
+        required: false
+        type: "file"
+      - name: "name"
+        in: "query"
+        description: "if content exists, we takes file name by default"
+        required: false
+        type: "string"
+      - name: "description"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "If successful, this method returns the created File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
+    put:
+      tags:
+      - "Files"
+      summary: "Updates a file"
+      description: "Updates a specified file metadata and/or content"
+      operationId: "updateFile"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "content"
+        in: "formData"
+        required: false
+        type: "file"
+      - name: "description"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "If successful, this method returns the updated File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
+    delete:
+      tags:
+      - "Files"
+      summary: "Delete a File"
+      description: "Delete a File or a directory using its id"
+      operationId: "deleteFile"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Successfully deleted"
+  /files/{id}/checkUpdates:
+    post:
+      tags:
+      - "Files"
+      summary: "Search updated files."
+      description: "Launch a batch which is going to search files which have been\
+        \ updated after a specified date.\n"
+      operationId: "checkUpdates"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "fromDate"
+        in: "query"
+        description: "Return only files modified after this date"
+        required: true
+        type: "string"
+        format: "date-time"
+      responses:
+        200:
+          description: "successfully started"
+  /files/{id}/copy:
+    post:
+      tags:
+      - "Files"
+      summary: "Create a copy"
+      description: "Copy a file of the specified file"
+      operationId: "copyFile"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "targetId"
+        in: "query"
+        description: "Target file's ID"
+        required: true
+        type: "string"
+      responses:
+        201:
+          description: "Successfully created"
+          schema:
+            $ref: "#/definitions/ESFile"
+  /files/{id}/move:
+    post:
+      tags:
+      - "Files"
+      summary: "Move a file"
+      description: "Move a file to a specified parent"
+      operationId: "moveFile"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "targetId"
+        in: "query"
+        description: "Target file's ID"
+        required: true
+        type: "string"
+      responses:
+        201:
+          description: "Successfully moved"
+          schema:
+            $ref: "#/definitions/ESFile"
+  /files/{id}/children:
+    get:
+      tags:
+      - "Files"
+      summary: "Get the file children"
+      description: "Get the specified file's direct children"
+      operationId: "getFileChildren"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "getPermissions"
+        in: "query"
+        description: "set true if you want to get permissions at the same you get\
+          \ files"
+        required: false
+        type: "boolean"
+        default: false
+      - name: "maxResult"
+        in: "query"
+        description: "Maximum number of files to return. Acceptable values are 0 to\
+          \ 1000. Use -1 for no limit"
+        required: false
+        type: "integer"
+        default: 100
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            $ref: "#/definitions/ESFileList"
+  /files/{id}/content:
+    get:
+      tags:
+      - "Files"
+      summary: "Get the content file"
+      description: "Get the specified file's content"
+      operationId: "getFileContent"
+      produces:
+      - "application/octet-stream"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully retrieved"
+          schema:
+            type: "string"
+            format: "byte"
+  /files/{id}/permissions:
+    get:
+      tags:
+      - "Files"
+      summary: "Get File's Permsissions"
+      description: "Lists a file's permissions"
+      operationId: "getFilePermissions"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ESPermission"
+definitions:
+  ESRepository:
+    type: "object"
+    properties:
+      id:
+        $ref: "#/definitions/ESFileId"
+      type:
+        type: "string"
+        enum:
+        - "FS"
+        - "GOOGLE"
+        - "ONEDRIVE"
+      name:
+        type: "string"
+      rootDirectory:
+        type: "string"
+        description: "can be a reference to json file containing all client secrets"
+      clientSecrets:
+        type: "string"
+        description: "can be a reference to json file containing all client secrets"
+  ESFile:
+    type: "object"
+    properties:
+      id:
+        $ref: "#/definitions/ESFileId"
+      parents:
+        type: "array"
+        description: "The files parent list. Some drives juste manage one parent"
+        items:
+          $ref: "#/definitions/ESParent"
+      name:
+        type: "string"
+        example: "My file.txt"
+        description: "The title of the file"
+      fileSize:
+        type: "integer"
+        format: "int64"
+        description: "The size of the file in bytes."
+        readOnly: true
+      directory:
+        type: "boolean"
+        description: "true if file is a directory, false otherwise"
+        readOnly: true
+      description:
+        type: "string"
+        example: "My first file"
+        description: "A short description of the file"
+      mimeType:
+        type: "string"
+        example: "text-plain"
+        description: "The MIME type of the file"
+        readOnly: true
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "Creation time for this file"
+        readOnly: true
+      lastModifiedTime:
+        type: "string"
+        format: "date-time"
+        description: "Last time this file was modified by anyone"
+        readOnly: true
+      lastAccessTime:
+        type: "string"
+        format: "date-time"
+        description: "Last time this file was acceded by anyone"
+        readOnly: true
+      lastModifiedUser:
+        $ref: "#/definitions/ESUser"
+      owners:
+        type: "array"
+        items:
+          $ref: "#/definitions/ESUser"
+      permissions:
+        type: "array"
+        items:
+          $ref: "#/definitions/ESPermission"
+      checksum:
+        type: "string"
+        example: "2B693E6A1483B70BF5CD7C511035879E"
+        description: "The file's content  MD5 checksum"
+  ESFileId:
+    type: "object"
+    properties:
+      repositoryName:
+        type: "string"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The repository's ID"
+      relativeId:
+        type: "string"
+        description: "The file ID in the repository"
+    example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+  ESFileList:
+    type: "object"
+    properties:
+      path:
+        type: "string"
+        description: "The list of files"
+      items:
+        type: "array"
+        description: "The list of files"
+        items:
+          $ref: "#/definitions/ESFile"
+  ESPermission:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        description: "The permission type. Allow or deny"
+        enum:
+        - "allow"
+        - "deny"
+      accountType:
+        type: "string"
+        description: "The account type."
+        enum:
+        - "user"
+        - "group"
+        - "domain"
+        - "anyone"
+      userId:
+        type: "string"
+        description: "The id (can be its email or user code) of the user or group\
+          \ this permission refers to"
+      domain:
+        type: "string"
+        description: "The domain name of the entity this permission refers to. It\
+          \ is present when the permission type is user, group or domain"
+      roles:
+        type: "array"
+        items:
+          type: "string"
+          description: "The persmision role for this user"
+          enum:
+          - "owner"
+          - "reader"
+          - "writer"
+  ESParent:
+    type: "object"
+    properties:
+      id:
+        $ref: "#/definitions/ESFileId"
+      paths:
+        type: "array"
+        description: "The list of parent names in order from root to direct parent\
+          \ file"
+        items:
+          type: "string"
+          example: "rootFolder"
+  ESUser:
+    type: "object"
+    properties:
+      displayName:
+        type: "string"
+        description: "The owner's display name"
+      id:
+        type: "string"
+        description: "The email address of the owner"
+parameters:
+  fileId:
+    name: "id"
+    in: "path"
+    description: "The file's ID"
+    required: true
+    type: "string"
+  targetId:
+    name: "targetId"
+    in: "query"
+    description: "Target file's ID"
+    required: true
+    type: "string"
+  file:
+    in: "body"
+    name: "file"
+    description: "File"
+    required: false
+    schema:
+      $ref: "#/definitions/ESFile"
+  repositoryId:
+    name: "id"
+    in: "path"
+    description: "Repository Id"
+    required: true
+    type: "string"
+  maxResultFile:
+    name: "maxResult"
+    in: "query"
+    description: "Maximum number of files to return. Acceptable values are 0 to 1000.\
+      \ Use -1 for no limit"
+    required: false
+    type: "integer"
+    default: 100
+  pageTokenFile:
+    name: "pageToken"
+    in: "query"
+    description: "Page token for files"
+    required: false
+    type: "string"
+  fromDate:
+    name: "fromDate"
+    in: "query"
+    description: "Return only files modified after this date"
+    required: true
+    type: "string"
+    format: "date-time"
+  getPermissions:
+    name: "getPermissions"
+    in: "query"
+    description: "set true if you want to get permissions at the same you get files"
+    required: false
+    type: "boolean"
+    default: false
