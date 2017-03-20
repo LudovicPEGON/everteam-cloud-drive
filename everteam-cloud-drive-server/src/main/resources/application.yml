@@ -16,6 +16,10 @@ storage:
           type: GOOGLE
           rootDirectory: 
           clientSecrets: /client_secret.json
+        - name: g2
+          type: GOOGLE
+          rootDirectory: 
+          clientSecrets: /client_secret2.json
         - name: l1
           type: FS
           rootDirectory: d:/tmp
