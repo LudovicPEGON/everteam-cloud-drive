@@ -20,7 +20,7 @@ import com.everteam.storage.common.model.ESPermission;
 @Scope("prototype")
 public class GoogleDrive extends DriveImpl {
     @Value("${storage.google.test:#{1000}}")
-    private int test;
+    private int lpe;
 
    
 
