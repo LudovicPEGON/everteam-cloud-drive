@@ -7,8 +7,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -23,46 +21,28 @@ import com.everteam.storage.onedrive.OneDriveClientAPI;
 @Scope("prototype")
 public class OneDrive extends DriveImpl {
 
-    private final static Logger LOG = LoggerFactory.getLogger(OneDrive.class);
-
-    private final static String RESOURCE_URL = "https://everteamsoftware365-my.sharepoint.com/personal/k_bennat_everteamsoftware365_onmicrosoft_com";
-    private final static String ACCESS_TOKEN = "";
+    private final static String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKUFhmX1J5cDgtLUxvcmg4bkN1Q3ctS0phT0NQTzIwVXlkbGNDYzg2bU0tTXdrNzFuVFVaS05kSFE1eVlLRHJxQ0ZoUjA0NXFWaHRMTEFidzJFbUpZY3lBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwMTk3NDE4LCJuYmYiOjE0OTAxOTc0MTgsImV4cCI6MTQ5MDIwMTMxOCwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKYjU2Qkl4Sm9HcHZBSlFXTVdSNFVjeXVLTzB0R0ZGQVFTam1uNE1KTEdEY3dMZjByMkhET3VnVEZFeEdzeWZCZ2VtT1VLcGxlUVRTVk92M1lvdGJmLXZaSXoyTVFEallzckt2dkpIclE3WndnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.uLLx2L9sC_Sb84yakHsclJxIT2IvIjU1AfGYIvT6rrGDlxw6YDjdETURBZ7l5FSdoyJRbboG0X4I39knAX9U5czoplgLyjchwT-hKxry2gIqdUT5Pm7RrsTj4CHXw8OWTMi51tMEstU_XkC5_DITY8q6uLLfdWFa6b_5za7Q9pL0dsG1XiU87L8ijedv3TIdqIIsm11cRUKAmZoKpUp06zJ2A2ftqx8kvIOoAlWqzqIYr5Byq0zSTrXDPvwBUlV8IVc3qDRzdFyxf7fe0obRUP2oeKRPKtlapo7E0Qi2WZ2cgidPVVZkfTfuGb-LeDApottFgTToqNdu8hO6lCuBFQ";
     private OneDriveClientAPI         api;
 
     @Override
     public void init(ESRepository repository) {
         super.init(repository);
-//        api = new OneDriveBusinessAPI(RESOURCE_URL, ACCESS_TOKEN);
-//        api = new OneDriveBasicAPI(ACCESS_TOKEN);
-         api = new OneDriveClientAPI(ACCESS_TOKEN);
+        api = new OneDriveClientAPI(ACCESS_TOKEN);
     }
 
     @Override
     public ESFileList children(ESFileId parentId, boolean addPermissions, int maxSize) throws IOException {
-//        OneDriveFolder parent = getOneDriveFolder(parentId);
-//        ESFileList files = new ESFileList();
-//        for (OneDriveItem.Metadata metadata : parent.getChildren()) {
-//            files.addItemsItem(getESFile(metadata));
-//        }
         return api.children(parentId, addPermissions, maxSize);
     }
 
     @Override
     public void downloadTo(ESFileId fileId, OutputStream outputstream) throws IOException {
-//        OneDriveFile file = getOneDriveFile(fileId);
-//        try (InputStream is = file.download()) {
-//            byte[] buffer = new byte[1024];
-//            int length;
-//            while ((length = is.read(buffer)) > 0) {
-//                outputstream.write(buffer, 0, length);
-//            }
-//        }
+        api.downloadTo(fileId, outputstream);
     }
 
     @Override
     public ESFileId insert(ESFileId parentId, InputStream in, String name, String description) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        return api.insert(parentId, in, name, description);
     }
 
     @Override
@@ -72,14 +52,11 @@ public class OneDrive extends DriveImpl {
 
     @Override
     public void delete(ESFileId fileId) throws IOException {
-        // TODO Auto-generated method stub
-
+        api.delete(fileId);
     }
 
     @Override
     public ESFile getFile(ESFileId fileId, boolean addPermissions) throws IOException {
-//        OneDriveItem item = getOneDriveItem(fileId);
-//        ESFile file = getESFile(item.getMetadata());
         return api.getFile(fileId, addPermissions);
     }
 
@@ -95,96 +72,4 @@ public class OneDrive extends DriveImpl {
 
     }
     
-//    private OneDriveItem getOneDriveItem(ESFileId fileId) throws OneDriveAPIException {
-//        OneDriveItem item = null;
-//        try {
-//            item = getOneDriveFolder(fileId);
-//        }
-//        catch (OneDriveAPIException e) {
-//            item = getOneDriveFile(fileId);
-//        }
-//        return item;
-//    }
-//    
-//    private OneDriveFile getOneDriveFile(ESFileId fileId) throws OneDriveAPIException {
-//        OneDriveFile file = null;
-//        file = new OneDriveFile(api, fileId.getRelativeId());
-//        // just to make sure it's a folder
-//        ((OneDriveFile)file).getMetadata();
-//        return file;
-//    }
-//
-//    private OneDriveFolder getOneDriveFolder(ESFileId fileId) throws OneDriveAPIException {
-//        OneDriveFolder folder = null;
-//        if (fileId!=null && !fileId.getRelativeId().isEmpty()) {
-//            folder = new OneDriveFolder(api, fileId.getRelativeId());
-//            // just to make sure it's a folder
-//            ((OneDriveFolder)folder).getMetadata();
-//        }
-//        else {
-//            folder = OneDriveFolder.getRoot(api);
-//        }
-//        return folder;
-//    }
-//    
-//    private ESFile getESFile(Metadata metadata) {
-//        ESFile file = new ESFile()
-//                .id(getESFileId(this, metadata.getId()))
-//                .name(metadata.getName())
-//                .description(metadata.getDescription())
-//                .creationTime(metadata.getCreatedDateTime().toOffsetDateTime())
-//                .directory(metadata.isFolder())
-//                .fileSize(metadata.getSize())
-//                .lastAccessTime(metadata.getLastModifiedDateTime().toOffsetDateTime())
-//                .lastModifiedTime(metadata.getLastModifiedDateTime().toOffsetDateTime())
-//                .lastModifiedUser(getESUser(metadata.getLastModifiedBy().getUser()))
-////                .checksum(checksum)
-////                .owners()
-////                .permissions(permissions)
-//                ;
-//        if (metadata.getParentReference()!=null) {
-//            file.addParentsItem(getESParent(metadata.getParentReference()));
-//        }
-//        if (metadata.isFile()) {
-//            file.mimeType(metadata.asFile().getMimeType());
-//        }
-//        return null;
-//    }
-//
-//    private ESParent getESParent(Reference parentReference) {
-//        ESParent parent = new ESParent()
-//                .id(getESFileId(this, parentReference.getId()))
-//                .addPathsItem(parentReference.getPath());
-//        return parent;
-//    }
-//
-//    private ESFileId getESFileId(OneDrive oneDrive, String driveId) {
-//        ESFileId fileId = new ESFileId()
-//                .repositoryName(this.getRepository().getName())
-//                .relativeId(driveId);
-//        return fileId;
-//    }
-//
-//    private ESUser getESUser(OneDriveIdentity odi) {
-//        ESUser user = new ESUser()
-//                .displayName(odi.getDisplayName())
-//                .id(odi.getId());
-//        return user;
-//    }
-//    
-//    
-//    protected class ESOneDriveAPI extends OneDriveBasicAPI {
-//
-//        public ESOneDriveAPI(String accessToken) {
-//            super(accessToken);
-//        }
-//
-//        @Override
-//        public String getBaseURL() {
-//            return "https://graph.microsoft.com/v1.0";
-//        }
-//        
-//        
-//    }
-
 }
