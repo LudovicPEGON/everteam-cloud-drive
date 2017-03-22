@@ -28,7 +28,10 @@ storage:
           rootDirectory: d:/temp
         - name: testlpe
           type: FS
-          rootDirectory: D:\home\eclipse_workspace\es_head\icons\icon16  
+          rootDirectory: D:\home\eclipse_workspace\es_head\icons\icon16
+        - name: od1
+          type: ONEDRIVE
+          clientSecrets: /microsoft_secret.json
 
 
 

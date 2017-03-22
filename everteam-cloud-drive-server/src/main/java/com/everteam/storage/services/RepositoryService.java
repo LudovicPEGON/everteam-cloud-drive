@@ -16,6 +16,7 @@ import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.drive.GoogleDrive;
 import com.everteam.storage.drive.IDrive;
+import com.everteam.storage.drive.OneDrive;
 import com.everteam.storage.drive.FSDrive;
 
 @Component
@@ -54,6 +55,9 @@ public class RepositoryService {
                 break;
             case FS:
                 drive = beanFactory.getBean(FSDrive.class);
+                break;
+            case ONEDRIVE:
+                drive = beanFactory.getBean(OneDrive.class);
                 break;
             default:
                 break;
