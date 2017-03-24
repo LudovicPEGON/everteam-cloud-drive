@@ -53,7 +53,14 @@ paths:
         description: "The file's ID"
         required: true
         type: "string"
-      - name: "getCheckSum"
+      - name: "getPermissions"
+        in: "query"
+        description: "set true if you want to get permissions at the same time you\
+          \ get files"
+        required: false
+        type: "boolean"
+        default: false
+      - name: "getChecksum"
         in: "query"
         description: "set true if you want to get checksum at the same time you get\
           \ files"
@@ -238,6 +245,13 @@ paths:
         in: "query"
         description: "set true if you want to get permissions at the same time you\
           \ get files"
+        required: false
+        type: "boolean"
+        default: false
+      - name: "getChecksum"
+        in: "query"
+        description: "set true if you want to get checksum at the same time you get\
+          \ files"
         required: false
         type: "boolean"
         default: false
@@ -507,8 +521,8 @@ parameters:
     required: false
     type: "boolean"
     default: false
-  getPermissions2:
-    name: "getCheckSum"
+  getChecksum:
+    name: "getChecksum"
     in: "query"
     description: "set true if you want to get checksum at the same time you get files"
     required: false
