@@ -55,7 +55,14 @@ paths:
         type: "string"
       - name: "getPermissions"
         in: "query"
-        description: "set true if you want to get permissions at the same you get\
+        description: "set true if you want to get permissions at the same time you\
+          \ get files"
+        required: false
+        type: "boolean"
+        default: false
+      - name: "getChecksum"
+        in: "query"
+        description: "set true if you want to get checksum at the same time you get\
           \ files"
         required: false
         type: "boolean"
@@ -236,7 +243,14 @@ paths:
         type: "string"
       - name: "getPermissions"
         in: "query"
-        description: "set true if you want to get permissions at the same you get\
+        description: "set true if you want to get permissions at the same time you\
+          \ get files"
+        required: false
+        type: "boolean"
+        default: false
+      - name: "getChecksum"
+        in: "query"
+        description: "set true if you want to get checksum at the same time you get\
           \ files"
         required: false
         type: "boolean"
@@ -382,9 +396,9 @@ definitions:
         type: "string"
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         description: "The repository's ID"
-      relativeId:
+      path:
         type: "string"
-        description: "The file ID in the repository"
+        description: "The file path in the repository"
     example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESFileList:
     type: "object"
@@ -502,7 +516,15 @@ parameters:
   getPermissions:
     name: "getPermissions"
     in: "query"
-    description: "set true if you want to get permissions at the same you get files"
+    description: "set true if you want to get permissions at the same time you get\
+      \ files"
+    required: false
+    type: "boolean"
+    default: false
+  getChecksum:
+    name: "getChecksum"
+    in: "query"
+    description: "set true if you want to get checksum at the same time you get files"
     required: false
     type: "boolean"
     default: false

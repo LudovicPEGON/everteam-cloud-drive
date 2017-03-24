@@ -61,6 +61,9 @@ public class FilesApiController implements FilesApi {
             @RequestParam(value = "description", required = false) String description) {
         try {
             if (name == null || name.length() == 0) {
+            	if (content == null) {
+                    throw new WebApplicationException(Status.BAD_REQUEST);
+                }
                 name = content.getName();
             }
             ESFileId newFileId = fileService.create(fileId, name, content.getContentType(), content.getInputStream(), description);
