@@ -31,7 +31,7 @@ public class OneDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileList children(ESFileId parentId, boolean addPermissions, int maxSize) throws IOException {
+    public ESFileList children(ESFileId parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
         return api.children(parentId, addPermissions, maxSize);
     }
 
@@ -41,7 +41,7 @@ public class OneDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileId insert(ESFileId parentId, InputStream in, String name, String description) throws IOException {
+    public ESFileId insert(ESFileId parentId, String name, String contentType, InputStream in, String description) throws IOException {
         return api.insert(parentId, in, name, description);
     }
 
@@ -56,12 +56,12 @@ public class OneDrive extends DriveImpl {
     }
 
     @Override
-    public ESFile getFile(ESFileId fileId, boolean addPermissions) throws IOException {
+    public ESFile getFile(ESFileId fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
         return api.getFile(fileId, addPermissions);
     }
 
     @Override
-    public void update(ESFileId fileId, InputStream in, String description) throws IOException {
+    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
         // TODO Auto-generated method stub
 
     }

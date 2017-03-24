@@ -63,7 +63,7 @@ public class OneDriveClientAPI {
         OneDriveClientAPI oda = new OneDriveClientAPI("eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKcHY0UnRMdjNKZDZ4T0oxTXBIdWlwdlJvbGw0WklFMG1sdUVTX291ZDlRX2NNN3JnakpoNklFUHc2bnhMempiRFVFTjBCZUVfNXVfbW8yTUh6UWN2d3lBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwMTg3NjkxLCJuYmYiOjE0OTAxODc2OTEsImV4cCI6MTQ5MDE5MTU5MSwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKNGowNDhYRUFQQzhjV0cycUZFcEtuaFYyWmRvU0UxWjhheGNWZXhhekRDNFJoVjI5Mlo5TEEwbVVMVGduc1RvalU4Vnl1TWFManJZbFJVZW11aWE2c3ZKMHltNVdub2twSVE2QklaQVl2ZFlnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.WVa1RTnPCRZXeWv2GCx33o-m_SKgQkIFSljxhBquL-VApF3CX_fyuxMjPPFphYx3PqbBUnx0Nfe2NSdDQBHOI-s9NQxpG5OuQRBy7W-808RKSV_pHOU0Nb8wAxhfuHGkvEwOd_NMTv9rzRDKPdrWFAUUQLMICvdPrwTHerwEcIjRVL54CdBEet7CVHjLzBUIFjqp9i2LApZCTLZ28HNqq8V29zgtwZOuF1FI918qm4b5AnfaamKVCAtUm0yeh-V_q_BIarzvJomvIBlDRIbG3cdj6KBMZTpKJDLEPe6meVU1p6h2MqUXG9SWzsrcbx5lAvQZ55QGsiF8fBuwZPlvbQ");
         oda.children(new ESFileId().repositoryName("od1"), true, -1);
         try {
-            LOG.debug(oda.getFile(new ESFileId().repositoryName("od1").relativeId("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ"), true).toString());
+            LOG.debug(oda.getFile(new ESFileId().repositoryName("od1").path("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ"), true).toString());
 //            LOG.debug(oda.getPermissions(new ESFileId().repositoryName("od1").relativeId("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ")).toString());
         } catch (IOException e) {
             LOG.error(e.getMessage(),e);
@@ -77,8 +77,8 @@ public class OneDriveClientAPI {
         if (maxSize!=-1) {
             builder.queryParam("top", maxSize);
         }
-        if (parentId!=null && parentId.getRelativeId() != null && !parentId.getRelativeId().isEmpty()) {
-            result = exchangeUri(builder.path(ITEM_CHILDREN_URL).build(parentId.getRelativeId())).getBody();
+        if (parentId!=null && parentId.getPath() != null && !parentId.getPath().isEmpty()) {
+            result = exchangeUri(builder.path(ITEM_CHILDREN_URL).build(parentId.getPath())).getBody();
         }
         else {
             result = exchangeUri(builder.path(ROOT_CHILDREN_URL).build()).getBody();
@@ -130,7 +130,7 @@ public class OneDriveClientAPI {
 //                org.apache.tomcat.util.http.fileupload.IOUtils.copy(is, outputstream);
 //            }
 //        }
-        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId.getRelativeId());
+        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId.getPath());
         String result = exchangeUri(uri).getBody();
         if (result != null) {
             LOG.debug(result);
@@ -162,7 +162,7 @@ public class OneDriveClientAPI {
 
 
     public List<ESPermission> getPermissions(ESFileId fileId) throws IOException {
-        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_PERMISSIONS_URL).build(fileId.getRelativeId());
+        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_PERMISSIONS_URL).build(fileId.getPath());
         String result = exchangeUri(uri).getBody();
         List<ESPermission> permissions = null;
         if (result != null) {
@@ -185,7 +185,7 @@ public class OneDriveClientAPI {
 
 
     public void delete(ESFileId fileId) throws IOException {
-        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId.getRelativeId());
+        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId.getPath());
         ResponseEntity<String> response = exchangeUri(uri, HttpMethod.DELETE);
         if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
             throw new IOException("CannotDeleteThisFile");
@@ -194,7 +194,7 @@ public class OneDriveClientAPI {
 
 
     public ESFile getFile(ESFileId fileId, boolean addPermissions) throws IOException {
-        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId.getRelativeId());
+        URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId.getPath());
         String result = exchangeUri(uri).getBody();
         ESFile file = null;
         if (result != null) {
@@ -235,8 +235,8 @@ public class OneDriveClientAPI {
     
     private ESFileId insertFolder(ESFileId parentId, String name, String description) {
         URI uri = null;
-        if (parentId.getRelativeId() != null && !parentId.getRelativeId().isEmpty()) {
-            uri = UriBuilder.fromPath(BASE_URL).path(ITEM_CHILDREN_URL).build(parentId.getRelativeId());
+        if (parentId.getPath() != null && !parentId.getPath().isEmpty()) {
+            uri = UriBuilder.fromPath(BASE_URL).path(ITEM_CHILDREN_URL).build(parentId.getPath());
         }
         else {
             uri = UriBuilder.fromPath(BASE_URL).path(ROOT_CHILDREN_URL).build();
@@ -402,7 +402,7 @@ public class OneDriveClientAPI {
             FileNameMap fileNameMap = URLConnection.getFileNameMap();
             file = new ESFile();
             
-            file.id(new ESFileId().repositoryName(repositoryName).relativeId(id))
+            file.id(new ESFileId().repositoryName(repositoryName).path(id))
                 .name(name)
                 .creationTime(created)
                 .directory(isFolder)

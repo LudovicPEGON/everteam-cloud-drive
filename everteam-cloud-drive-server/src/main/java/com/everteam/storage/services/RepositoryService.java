@@ -10,16 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESRepository;
-import com.everteam.storage.drive.GoogleDrive;
 import com.everteam.storage.drive.IDrive;
 import com.everteam.storage.drive.OneDrive;
-import com.everteam.storage.drive.FSDrive;
 
 @Component
 public class RepositoryService {
