@@ -34,26 +34,27 @@ public class StorageApplication extends WebMvcConfigurerAdapter {
         registry.addConverter(new FileIdConverter());
         registry.addConverter(new StringToOffsetDateTimeConverter());
     }
-    
-    
+
     public static void main(String[] args) throws Exception {
         SpringApplication.run(StorageApplication.class, args);
     }
 
-    //To allow multipart requests with PUT methods.  By default only POST methods are permits.  
+    // To allow multipart requests with PUT methods. By default only POST
+    // methods are permits.
     @Bean
     public MultipartResolver multipartResolver() {
-       return new StandardServletMultipartResolver() {
-         @Override
-         public boolean isMultipart(HttpServletRequest request) {
-            String method = request.getMethod().toLowerCase();
-            //By default, only POST is allowed. Since this is an 'update' we should accept PUT.
-            if (!Arrays.asList("put", "post").contains(method)) {
-               return false;
+        return new StandardServletMultipartResolver() {
+            @Override
+            public boolean isMultipart(HttpServletRequest request) {
+                String method = request.getMethod().toLowerCase();
+                // By default, only POST is allowed. Since this is an 'update'
+                // we should accept PUT.
+                if (!Arrays.asList("put", "post").contains(method)) {
+                    return false;
+                }
+                String contentType = request.getContentType();
+                return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
             }
-            String contentType = request.getContentType();
-            return (contentType != null &&contentType.toLowerCase().startsWith("multipart/"));
-         }
-       };
+        };
     }
 }

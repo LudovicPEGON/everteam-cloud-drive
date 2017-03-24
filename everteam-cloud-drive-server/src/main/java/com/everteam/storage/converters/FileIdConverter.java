@@ -13,7 +13,7 @@ public class FileIdConverter implements Converter<String, ESFileId> {
     public ESFileId convert(String source) {
         try {
             URI uri = new URI(Encryptor.decrypt(source));
-            return new ESFileId().repositoryName(uri.getScheme()).relativeId(uri.getPath().substring(1));
+            return new ESFileId().repositoryName(uri.getScheme()).path(uri.getPath().substring(1));
         } catch (Throwable e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }

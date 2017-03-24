@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESRepository;
@@ -22,7 +24,7 @@ import com.everteam.storage.drive.FSDrive;
 public class RepositoryService {
     private final static Logger LOG = LoggerFactory.getLogger(RepositoryService.class);
 
-    @Autowired
+    @Autowired 
     BeanFactory beanFactory;
 
     public static Map<String, IDrive> drives = new HashMap<>();
@@ -50,10 +52,10 @@ public class RepositoryService {
         if (drive == null) {
             switch (repository.getType()) {
             case GOOGLE:
-                drive = beanFactory.getBean(GoogleDrive.class);
+                drive = (IDrive) beanFactory.getBean("google");
                 break;
             case FS:
-                drive = beanFactory.getBean(FSDrive.class);
+                drive = (IDrive) beanFactory.getBean("fs");
                 break;
             default:
                 break;

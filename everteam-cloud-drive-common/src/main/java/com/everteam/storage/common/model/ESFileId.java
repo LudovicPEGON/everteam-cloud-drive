@@ -1,22 +1,22 @@
 package com.everteam.storage.common.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESFileId
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-17T12:28:04.419Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-24T10:07:37.096Z")
 
 public class ESFileId   {
   @JsonProperty("repositoryName")
   private String repositoryName = null;
 
-  @JsonProperty("relativeId")
-  private String relativeId = null;
+  @JsonProperty("path")
+  private String path = null;
 
   public ESFileId repositoryName(String repositoryName) {
     this.repositoryName = repositoryName;
@@ -36,22 +36,22 @@ public class ESFileId   {
     this.repositoryName = repositoryName;
   }
 
-  public ESFileId relativeId(String relativeId) {
-    this.relativeId = relativeId;
+  public ESFileId path(String path) {
+    this.path = path;
     return this;
   }
 
    /**
-   * The file ID in the repository
-   * @return relativeId
+   * The file path in the repository
+   * @return path
   **/
-  @ApiModelProperty(value = "The file ID in the repository")
-  public String getRelativeId() {
-    return relativeId;
+  @ApiModelProperty(value = "The file path in the repository")
+  public String getPath() {
+    return path;
   }
 
-  public void setRelativeId(String relativeId) {
-    this.relativeId = relativeId;
+  public void setPath(String path) {
+    this.path = path;
   }
 
 
@@ -65,12 +65,12 @@ public class ESFileId   {
     }
     ESFileId esFileId = (ESFileId) o;
     return Objects.equals(this.repositoryName, esFileId.repositoryName) &&
-        Objects.equals(this.relativeId, esFileId.relativeId);
+        Objects.equals(this.path, esFileId.path);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(repositoryName, relativeId);
+    return Objects.hash(repositoryName, path);
   }
 
   @Override
@@ -79,7 +79,7 @@ public class ESFileId   {
     sb.append("class ESFileId {\n");
     
     sb.append("    repositoryName: ").append(toIndentedString(repositoryName)).append("\n");
-    sb.append("    relativeId: ").append(toIndentedString(relativeId)).append("\n");
+    sb.append("    path: ").append(toIndentedString(path)).append("\n");
     sb.append("}");
     return sb.toString();
   }

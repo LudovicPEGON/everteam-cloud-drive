@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileId;
@@ -41,9 +40,9 @@ public class FileService {
     private ObjectMapper jacksonObjectMapper;
     
 
-    public ESFile getFile(ESFileId fileId, boolean addPermissions) throws IOException {
+    public ESFile getFile(ESFileId fileId, boolean addPermissions, Boolean addChecksum) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        return drive.getFile(fileId, addPermissions);
+        return drive.getFile(fileId, addPermissions, addChecksum);
     }
 
     public ESFileId copy(ESFileId sourceId, ESFileId targetId) throws IOException {
@@ -53,14 +52,13 @@ public class FileService {
 
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
         sourcedrive.downloadTo(sourceId, baOS);
-        ESFile sourceFile = sourcedrive.getFile(sourceId, false);
-        return targetDrive.insert(targetId, new ByteArrayInputStream(baOS.toByteArray()), sourceFile.getName(),
-                sourceFile.getDescription());
+        ESFile sourceFile = sourcedrive.getFile(sourceId, false, false);
+        return targetDrive.insert(targetId,  sourceFile.getName(), sourceFile.getMimeType(), new ByteArrayInputStream(baOS.toByteArray()), sourceFile.getDescription());
     }
 
-    public ESFileList getChildren(ESFileId fileId, boolean addPermissions, int maxSize) throws IOException {
+    public ESFileList getChildren(ESFileId fileId, boolean addPermissions, Boolean addChecksum, int maxSize) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        return drive.children(fileId, addPermissions, maxSize);
+        return drive.children(fileId, addPermissions, addChecksum, maxSize);
     }
 
     public void delete(ESFileId fileId) throws IOException {
@@ -90,15 +88,15 @@ public class FileService {
 
     }
 
-    public void update(ESFileId fileId, MultipartFile content, String description) throws IOException {
+    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        drive.update(fileId, content.getInputStream(), description);
+        drive.update(fileId, name, contentType, in,  description);
     }
 
-    public ESFileId create(ESFileId parentId, InputStream inputStream, String name, String description)
+    public ESFileId create(ESFileId parentId, String name, String contentType, InputStream in, String description)
             throws IOException {
         IDrive drive = driveManager.getDrive(parentId.getRepositoryName());
-        return drive.insert(parentId, inputStream, name, description);
+        return drive.insert(parentId, name, contentType, in, description);
     }
 
     public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate) throws IOException {
@@ -110,10 +108,19 @@ public class FileService {
 
     public void exportWatcherFile(ESFile file) {
         try {
-            Path targetDir = Paths.get(watcherDirectory);
+            Path targetDir = Paths.get(watcherDirectory)
+            .resolve(file.getId().getRepositoryName())
+            .resolve(String.valueOf(file.getLastModifiedTime().getYear()))
+            .resolve(String.valueOf(file.getLastModifiedTime().getMonth()))
+            .resolve(String.valueOf(file.getLastModifiedTime().getDayOfMonth()));
+            
             targetDir.toFile().mkdirs();
             
-            Path target = targetDir.resolve(FileIdSerializer.encrypt(file.getId()));
+            
+            Path target = targetDir
+            .resolve(FileIdSerializer.encrypt(file.getId()));
+            
+            
             jacksonObjectMapper.writeValue(target.toFile(), file);
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
@@ -155,7 +162,6 @@ public class FileService {
         @Override
         public void accept(ESFile file) {
             fileService.exportWatcherFile(file);
-
         }
 
       

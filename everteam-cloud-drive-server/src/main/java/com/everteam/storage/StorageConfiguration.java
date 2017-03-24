@@ -19,15 +19,14 @@ public class StorageConfiguration {
 
     @Autowired
     RepositoryService storageManager;
-        
-    
+
     @PostConstruct
     public void init() {
-        
-            for (ESRepository current : this.getRepositories()) {
-                storageManager.startRepository(current);
-            }
-        
+
+        for (ESRepository current : this.getRepositories()) {
+            storageManager.startRepository(current);
+        }
+
     }
 
     public List<ESRepository> getRepositories() {

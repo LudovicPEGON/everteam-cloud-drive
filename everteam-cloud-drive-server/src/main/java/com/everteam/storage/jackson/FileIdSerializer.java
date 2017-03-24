@@ -19,11 +19,11 @@ public class FileIdSerializer extends JsonSerializer<ESFileId> {
 
     public static String encrypt(ESFileId fileId) throws IOException {
         try { 
-            String relativeId =  fileId.getRelativeId();
-            if (relativeId== null) {
-                relativeId = "";
+            String path =  fileId.getPath();
+            if (path== null) {
+                path = "";
             }
-            String sESFileId = new URI(fileId.getRepositoryName(), "", "/" + relativeId, null).toString();
+            String sESFileId = new URI(fileId.getRepositoryName(), "", "/" + path, null).toString();
             return Encryptor.encrypt(sESFileId);
         }
         catch (Exception e) {

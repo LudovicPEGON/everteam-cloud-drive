@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-17T12:28:04.419Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-24T10:07:37.096Z")
 
 @Api(value = "files", description = "the files API")
 public interface FilesApi {
@@ -62,8 +62,8 @@ public interface FilesApi {
         method = RequestMethod.POST)
     default ResponseEntity<ESFile> createFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId fileId,
         @ApiParam(value = "file detail") @RequestPart("file") MultipartFile content,
-        @ApiParam(value = "if content exists, we takes file name by default" ) @RequestPart(value="name", required=false)  String name,
-        @ApiParam(value = "" ) @RequestPart(value="description", required=false)  String description) {
+        @ApiParam(value = "if content exists, we takes file name by default") @RequestParam(value = "name", required = false) String name,
+        @ApiParam(value = "") @RequestParam(value = "description", required = false) String description) {
         // do some magic!
         return new ResponseEntity<ESFile>(HttpStatus.OK);
     }
@@ -87,7 +87,8 @@ public interface FilesApi {
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     default ResponseEntity<ESFile> getFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId fileId,
-        @ApiParam(value = "set true if you want to get permissions at the same you get files", defaultValue = "false") @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions) {
+        @ApiParam(value = "set true if you want to get permissions at the same time you get files", defaultValue = "false") @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions,
+        @ApiParam(value = "set true if you want to get checksum at the same time you get files", defaultValue = "false") @RequestParam(value = "getChecksum", required = false, defaultValue="false") Boolean getChecksum) {
         // do some magic!
         return new ResponseEntity<ESFile>(HttpStatus.OK);
     }
@@ -100,7 +101,8 @@ public interface FilesApi {
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     default ResponseEntity<ESFileList> getFileChildren(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId fileId,
-        @ApiParam(value = "set true if you want to get permissions at the same you get files", defaultValue = "false") @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions,
+        @ApiParam(value = "set true if you want to get permissions at the same time you get files", defaultValue = "false") @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions,
+        @ApiParam(value = "set true if you want to get checksum at the same time you get files", defaultValue = "false") @RequestParam(value = "getChecksum", required = false, defaultValue="false") Boolean getChecksum,
         @ApiParam(value = "Maximum number of files to return. Acceptable values are 0 to 1000. Use -1 for no limit", defaultValue = "100") @RequestParam(value = "maxResult", required = false, defaultValue="100") Integer maxResult) {
         // do some magic!
         return new ResponseEntity<ESFileList>(HttpStatus.OK);
@@ -152,14 +154,9 @@ public interface FilesApi {
         method = RequestMethod.PUT)
     default ResponseEntity<ESFile> updateFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId fileId,
         @ApiParam(value = "file detail") @RequestPart("file") MultipartFile content,
-        @ApiParam(value = "" ) @RequestPart(value="description", required=false)  String description) {
+        @ApiParam(value = "") @RequestParam(value = "description", required = false) String description) {
         // do some magic!
         return new ResponseEntity<ESFile>(HttpStatus.OK);
     }
-    
-    
-    
-    
-    
 
 }

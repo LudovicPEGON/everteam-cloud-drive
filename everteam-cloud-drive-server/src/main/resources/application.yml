@@ -14,7 +14,7 @@ storage:
     repositories:
         - name: g1
           type: GOOGLE
-          rootDirectory: 
+          rootDirectory: 0BweRDtBuW6eURy05TXZvUFdjbHM
           clientSecrets: /client_secret.json
         - name: g2
           type: GOOGLE

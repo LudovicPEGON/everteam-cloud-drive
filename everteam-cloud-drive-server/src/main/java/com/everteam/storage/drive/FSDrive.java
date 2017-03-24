@@ -47,7 +47,7 @@ import com.everteam.storage.common.model.ESPermission.TypeEnum;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.common.model.ESUser;
 
-@Component
+@Component(value="fs")
 @Scope("prototype")
 public class FSDrive extends DriveImpl {
 
@@ -67,7 +67,7 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileList children(ESFileId parentId, boolean addPermissions, int maxSize) throws IOException {
+    public ESFileList children(ESFileId parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
         Path p = buildPath(parentId);
 
         List<ESFile> items = new ArrayList<>();
@@ -95,7 +95,7 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileId insert(ESFileId fileId, InputStream in, String name, String description) throws IOException {
+    public ESFileId insert(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
         ESFileId newId = null;
         Path path = buildPath(fileId);
         if (path.toFile().isDirectory()) {
@@ -122,13 +122,13 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public ESFile getFile(ESFileId fileId, boolean addPermissions) throws IOException {
+    public ESFile getFile(ESFileId fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
         Path path = buildPath(fileId);
         return getFile(path, addPermissions);
     }
 
     @Override
-    public void update(ESFileId fileId, InputStream in, String description) throws IOException {
+    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
         Path path = buildPath(fileId);
         Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
         //description can't be manage is this drive 
@@ -146,7 +146,7 @@ public class FSDrive extends DriveImpl {
                 public void accept(Path t) {
                     try {
                         
-                        consumer.accept(getFile(buildFileId(t), false));
+                        consumer.accept(getFile(buildFileId(t), false, false));
                         
                     } catch (IOException e) {
                         LOG.error(e.getMessage(), e);
@@ -173,7 +173,7 @@ public class FSDrive extends DriveImpl {
         // build a ESFile from file object
         ESFile esfile = new ESFile()
                 .id(new ESFileId().repositoryName(getRepository().getName())
-                        .relativeId(buildRelativePath(path).toString()))
+                        .path(buildRelativePath(path).toString()))
                 .name(file.getName()).mimeType(type).directory(file.isDirectory());
 
         if (!file.isDirectory()) {
@@ -224,7 +224,7 @@ public class FSDrive extends DriveImpl {
 
         if (parentPath.startsWith(repositoryPath)) {
             esfile.addParentsItem(new ESParent()
-                    .id(new ESFileId().repositoryName(getRepository().getName()).relativeId(relativePath.toString()))
+                    .id(new ESFileId().repositoryName(getRepository().getName()).path(relativePath.toString()))
                     .paths(paths));
         }
 
@@ -236,14 +236,14 @@ public class FSDrive extends DriveImpl {
         ESRepository repository = getRepository();
         p = Paths.get(repository.getRootDirectory());
         if (fileId != null) {
-            p = p.resolve(fileId.getRelativeId());
+            p = p.resolve(fileId.getPath());
         }
         return p;
     }
 
     private ESFileId buildFileId(Path filePath) throws IOException {
         Path relativePath = buildRelativePath(filePath);
-        return new ESFileId().repositoryName(this.getRepository().getName()).relativeId(relativePath.toString());
+        return new ESFileId().repositoryName(this.getRepository().getName()).path(relativePath.toString());
     }
 
     private Path buildRelativePath(Path filePath) throws IOException {

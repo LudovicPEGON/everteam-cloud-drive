@@ -48,7 +48,7 @@ public class FilesApiController implements FilesApi {
         try {
             ESFileId result = fileService.copy(fileId, targetId);
 
-            return new ResponseEntity<ESFile>(fileService.getFile(result, false), HttpStatus.OK);
+            return new ResponseEntity<ESFile>(fileService.getFile(result, false, false), HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
@@ -61,10 +61,10 @@ public class FilesApiController implements FilesApi {
             @RequestParam(value = "description", required = false) String description) {
         try {
             if (name == null || name.length() == 0) {
-                name = content.getOriginalFilename();
+                name = content.getName();
             }
-            ESFileId newFileId = fileService.create(fileId, content.getInputStream(), name, description);
-            return new ResponseEntity<ESFile>(fileService.getFile(newFileId, false), HttpStatus.OK);
+            ESFileId newFileId = fileService.create(fileId, name, content.getContentType(), content.getInputStream(), description);
+            return new ResponseEntity<ESFile>(fileService.getFile(newFileId, false, false), HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
@@ -83,12 +83,13 @@ public class FilesApiController implements FilesApi {
     @Override
     public ResponseEntity<ESFileList> getFileChildren(@PathVariable("id") ESFileId fileId,
             @RequestParam(value = "getPermissions", required = false, defaultValue = "false") Boolean getPermissions,
+            @RequestParam(value = "getChecksum", required = false, defaultValue="false") Boolean getChecksum,
             @RequestParam(value = "maxResult", required = false, defaultValue = "100") Integer maxResult) {
         try {
             if (maxResult<0) {
                 maxResult = Integer.MAX_VALUE;
             }
-            ESFileList efl = fileService.getChildren(fileId, getPermissions, maxResult);
+            ESFileList efl = fileService.getChildren(fileId, getPermissions, getChecksum, maxResult);
             return new ResponseEntity<ESFileList>(efl, HttpStatus.OK);
         } catch (Exception e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -99,7 +100,7 @@ public class FilesApiController implements FilesApi {
     public ResponseEntity<byte[]> getFileContent(@PathVariable("id") ESFileId fileId) {
 
         try {
-            ESFile file = fileService.getFile(fileId, false);
+            ESFile file = fileService.getFile(fileId, false, false);
             byte[] data = fileService.getFileContent(fileId);
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", file.getMimeType());
@@ -113,9 +114,10 @@ public class FilesApiController implements FilesApi {
 
     @Override
     public ResponseEntity<ESFile> getFile(@PathVariable("id") ESFileId fileId,
-            @RequestParam(value = "getPermissions", required = false, defaultValue = "false") Boolean getPermissions) {
+            @RequestParam(value = "getPermissions", required = false, defaultValue = "false") Boolean getPermissions,
+            @RequestParam(value = "getChecksum", required = false, defaultValue="false") Boolean getChecksum) {
         try {
-            ESFile file = fileService.getFile(fileId, false);
+            ESFile file = fileService.getFile(fileId, getPermissions, getChecksum);
             return new ResponseEntity<ESFile>(file, HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -141,7 +143,7 @@ public class FilesApiController implements FilesApi {
         try {
             ESFileId copiedFileId = fileService.copy(fileId, targetId);
             fileService.delete(fileId);
-            ESFile copiedFile = fileService.getFile(copiedFileId, false);
+            ESFile copiedFile = fileService.getFile(copiedFileId, false, false);
             return new ResponseEntity<ESFile>(copiedFile, HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
@@ -154,8 +156,8 @@ public class FilesApiController implements FilesApi {
             @RequestParam("content") MultipartFile content,
             @RequestParam(value = "description", required = false) String description) {
         try {
-            fileService.update(fileId, content, description);
-            ESFile updatedFile = fileService.getFile(fileId, false);
+            fileService.update(fileId, content.getName(), content.getContentType(), content.getInputStream(),  description);
+            ESFile updatedFile = fileService.getFile(fileId, false, false);
             return new ResponseEntity<ESFile>(updatedFile, HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
