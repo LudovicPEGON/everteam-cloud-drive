@@ -396,9 +396,9 @@ definitions:
         type: "string"
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         description: "The repository's ID"
-      relativeId:
+      path:
         type: "string"
-        description: "The file ID in the repository"
+        description: "The file path in the repository"
     example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESFileList:
     type: "object"
