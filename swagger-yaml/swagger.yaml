@@ -53,13 +53,6 @@ paths:
         description: "The file's ID"
         required: true
         type: "string"
-      - name: "getPermissions"
-        in: "query"
-        description: "set true if you want to get permissions at the same time you\
-          \ get files"
-        required: false
-        type: "boolean"
-        default: false
       responses:
         200:
           description: "search results"
