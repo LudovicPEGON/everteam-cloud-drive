@@ -53,6 +53,13 @@ paths:
         description: "The file's ID"
         required: true
         type: "string"
+      - name: "getCheckSum"
+        in: "query"
+        description: "set true if you want to get checksum at the same time you get\
+          \ files"
+        required: false
+        type: "boolean"
+        default: false
       responses:
         200:
           description: "search results"
@@ -500,7 +507,7 @@ parameters:
     required: false
     type: "boolean"
     default: false
-  getCheckSum5:
+  getPermissions2:
     name: "getCheckSum"
     in: "query"
     description: "set true if you want to get checksum at the same time you get files"
