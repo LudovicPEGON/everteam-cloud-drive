@@ -332,7 +332,17 @@ definitions:
     type: "object"
     properties:
       id:
-        $ref: "#/definitions/ESFileId"
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The file's id."
+        readOnly: true
+      repositoryId:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The repository's id."
+        readOnly: true
       parents:
         type: "array"
         description: "The files parent list. Some drives juste manage one parent"
@@ -389,17 +399,6 @@ definitions:
         type: "string"
         example: "2B693E6A1483B70BF5CD7C511035879E"
         description: "The file's content  MD5 checksum"
-  ESFileId:
-    type: "object"
-    properties:
-      repositoryName:
-        type: "string"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The repository's ID"
-      path:
-        type: "string"
-        description: "The file path in the repository"
-    example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESFileList:
     type: "object"
     properties:
@@ -449,7 +448,11 @@ definitions:
     type: "object"
     properties:
       id:
-        $ref: "#/definitions/ESFileId"
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "Parent folders which contain this file"
+        readOnly: true
       paths:
         type: "array"
         description: "The list of parent names in order from root to direct parent\
