@@ -33,8 +33,6 @@ storage:
         - name: od1
           type: ONEDRIVE
           clientSecrets: /microsoft_secret.json
-    google:
-        test: 2000
 
 #remove this block in cloud environment    
 eureka:
@@ -42,9 +40,3 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
-storage-v1-0:
-    ribbon:
-        eureka:
-            enabled: false
-        listOfServers: localhost:7070
-        ServerListRefreshInterval: 15000

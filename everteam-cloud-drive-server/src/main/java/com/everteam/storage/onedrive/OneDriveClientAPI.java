@@ -50,24 +50,17 @@ public class OneDriveClientAPI {
     /*
      * Source https://dev.onedrive.com/resources/item.htm
      */
-    private static final String ITEM_CHILDREN_URL = "/drive/items/{item-id}/children";
+    
     private static final String ROOT_CHILDREN_URL = "/drive/root/children";
-    private static final String ITEM_PERMISSIONS_URL = "/drive/items/{item-id}/permissions";
+    private static final String ROOT_SIMPLE_UPLOAD_URL = "/drive/root/{filename}/content";;
     
     private static final String ITEM_URL = "/drive/items/{id}";
-    
-    @SuppressWarnings("unused")
+    private static final String ITEM_PERMISSIONS_URL = "/drive/items/{item-id}/permissions";
+    private static final String ITEM_CHILDREN_URL = "/drive/items/{item-id}/children";
+    private static final String ITEM_SIMPLE_UPLOAD_URL = "/drive/items/{parent-id}/children/{filename}/content";
     private static final String ITEM_CONTENT_URL = "/drive/items/{item-id}/content";
+
     
-    public static void main(String [] args) {
-        OneDriveClientAPI oda = new OneDriveClientAPI("eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKcHY0UnRMdjNKZDZ4T0oxTXBIdWlwdlJvbGw0WklFMG1sdUVTX291ZDlRX2NNN3JnakpoNklFUHc2bnhMempiRFVFTjBCZUVfNXVfbW8yTUh6UWN2d3lBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwMTg3NjkxLCJuYmYiOjE0OTAxODc2OTEsImV4cCI6MTQ5MDE5MTU5MSwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKNGowNDhYRUFQQzhjV0cycUZFcEtuaFYyWmRvU0UxWjhheGNWZXhhekRDNFJoVjI5Mlo5TEEwbVVMVGduc1RvalU4Vnl1TWFManJZbFJVZW11aWE2c3ZKMHltNVdub2twSVE2QklaQVl2ZFlnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.WVa1RTnPCRZXeWv2GCx33o-m_SKgQkIFSljxhBquL-VApF3CX_fyuxMjPPFphYx3PqbBUnx0Nfe2NSdDQBHOI-s9NQxpG5OuQRBy7W-808RKSV_pHOU0Nb8wAxhfuHGkvEwOd_NMTv9rzRDKPdrWFAUUQLMICvdPrwTHerwEcIjRVL54CdBEet7CVHjLzBUIFjqp9i2LApZCTLZ28HNqq8V29zgtwZOuF1FI918qm4b5AnfaamKVCAtUm0yeh-V_q_BIarzvJomvIBlDRIbG3cdj6KBMZTpKJDLEPe6meVU1p6h2MqUXG9SWzsrcbx5lAvQZ55QGsiF8fBuwZPlvbQ");
-        oda.children(null, true, -1);
-        try {
-            LOG.debug(oda.getFile("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ", true).toString());
-        } catch (IOException e) {
-            LOG.error(e.getMessage(),e);
-        }
-    }
     
     
     public ESFileList children (String parentId, boolean addPermissions, int maxSize) {
@@ -165,26 +158,46 @@ public class OneDriveClientAPI {
             "folder": { }
             }
          */
+        ESFile newfolder = null;
         try {
             JSONObject obj = new JSONObject();
             obj.put(Item.NAME, name);
             obj.put(Item.FOLDER, new JSONObject());
-            exchangeUri(uri, HttpMethod.POST, obj);
+            String response = exchangeUri(uri, HttpMethod.POST, obj).getBody();
+            newfolder = getESFileFromJSONObject(new JSONObject(response));
         } catch (JSONException e) {
             LOG.error(e.getMessage(),e);
         }
-        return null;
+        if (newfolder == null) {
+            throw new IOException("ErrorOccursWhenCreatingFolder");
+        }
+        return newfolder.getId();
     }
     
     public String insertFile(String parentId, FileInfo info) throws IOException {
-        return null;
+        /*
+         * https://dev.onedrive.com/items/upload.htm
+         * There are two upload mode depending on file size
+         */
+        String fileId = null;
+        if (info.getSize()/1024.0 <= 4) {
+            fileId = simpleItemUpload(parentId, info); 
+        }
+        else {
+            fileId = resumableItemUpload(parentId, info);
+        }
+        if (fileId == null) {
+            throw new IOException("ErrorOccursWhenCreatingFile");
+        }
+        return fileId;
         // we're inserting a file
     }
 
     
-    public boolean isFolder(String fileId) {
-        // TODO Auto-generated method stub
-        return false;
+
+    public boolean isFolder(String fileId) throws IOException {
+        ESFile file = getFile(fileId);
+        return file.getDirectory();
     }
 
     public List<ESPermission> getPermissions(String  fileId) throws IOException {
@@ -219,7 +232,10 @@ public class OneDriveClientAPI {
     }
 
 
-    public ESFile getFile(String fileId, boolean addPermissions) throws IOException {
+    public ESFile getFile(String fileId) throws IOException {
+        return getFile(fileId, false, false);
+    }
+    public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId);
         String result = exchangeUri(uri).getBody();
         ESFile file = null;
@@ -228,7 +244,7 @@ public class OneDriveClientAPI {
             JSONObject obj;
             try {
                 obj = new JSONObject(result);
-                file = getESFileFromJSONObject(obj);
+                file = getESFileFromJSONObject(obj, addChecksum);
                 if (addPermissions) {
                     try {
                         file.permissions(getPermissions(fileId));
@@ -259,11 +275,45 @@ public class OneDriveClientAPI {
 //    }
     
     
+    private String resumableItemUpload(String parentId, FileInfo info) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    private String simpleItemUpload(String parentId, FileInfo info) {
+        /*
+         *  https://dev.onedrive.com/items/upload_put.htm
+         *  PUT /drive/items/{parent-id}/children/{filename}/content
+            Content-Type: text/plain
+
+            The contents of the file goes here.
+         */
+        URI uri = null;
+        ESFile file = null;
+        if (parentId != null && !parentId.isEmpty()) {
+            uri = UriBuilder.fromPath(BASE_URL).path(ITEM_SIMPLE_UPLOAD_URL).build(parentId, info.getName());
+        }
+        else {
+            uri = UriBuilder.fromPath(BASE_URL).path(ROOT_SIMPLE_UPLOAD_URL).build(info.getName());
+        }
+        try {
+            String response = exchangeUri(uri, HttpMethod.PUT, info.getInputStream()).getBody();
+            file = getESFileFromJSONObject(new JSONObject(response));
+        } catch (Exception e) {
+            LOG.error(e.getMessage(),e);
+        }
+        return file.getId();
+    }
 
     
     /* *********************  HTTP METHODS *************** */
     private ResponseEntity<String> exchangeUri(URI url, Object...params) {
         return exchangeUri(url, HttpMethod.GET, null, params);
+    }
+    
+    private ResponseEntity<String> exchangeUri(URI url, HttpMethod method) {
+        return exchangeUri(url, method, null);
     }
     
     private ResponseEntity<String> exchangeUri(URI url, HttpMethod method,  Object body, Object...params) {
@@ -379,6 +429,9 @@ public class OneDriveClientAPI {
     }
     
     private ESFile getESFileFromJSONObject(JSONObject jsonObject) {
+        return getESFileFromJSONObject(jsonObject, false);
+    }
+    private ESFile getESFileFromJSONObject(JSONObject jsonObject, boolean addChecksum) {
         ESFile file = null;
         try {
             String id = jsonObject.getString(Item.ID);
@@ -408,7 +461,7 @@ public class OneDriveClientAPI {
 //                .permissions(permissions)
                 ;
             
-            if (!isFolder) {
+            if (!isFolder && addChecksum) {
                 downloadUrl = jsonObject.getString(Item.DOWNLOAD_URL);
                 md5 = DigestUtils.md5DigestAsHex(getFileInputStream(new URI(downloadUrl)));
                 file.checksum(md5);
