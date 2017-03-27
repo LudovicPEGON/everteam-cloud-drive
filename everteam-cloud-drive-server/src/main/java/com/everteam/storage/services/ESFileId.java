@@ -1,5 +1,7 @@
 package com.everteam.storage.services;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 
@@ -9,25 +11,43 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-24T10:07:37.096Z")
 
 public class ESFileId   {
-  private String repositoryName = null;
-
+  private String repositoryId = null;
   private String path = null;
 
   public ESFileId repositoryName(String repositoryName) {
-    this.repositoryName = repositoryName;
+    this.repositoryId = repositoryName;
     return this;
+  }
+  
+  public ESFileId(String repositoryId, String fileId) {
+      if (fileId == null) {
+          fileId = "";
+      }
+      this.repositoryId = repositoryId;
+      this.path = fileId;
+  }
+  
+  public String toUri() throws URISyntaxException {
+      return new URI(repositoryId, null, "/" + path, null).toString();
+  }
+  
+  
+  public ESFileId(String uri) throws URISyntaxException {
+      URI u = new URI(uri);
+      this.repositoryId = u.getScheme();
+      this.path = u.getPath().substring(1);
   }
 
    /**
    * The repository's ID
    * @return repositoryName
   **/
-  public String getRepositoryName() {
-    return repositoryName;
+  public String getRepositoryId() {
+    return repositoryId;
   }
 
-  public void setRepositoryName(String repositoryName) {
-    this.repositoryName = repositoryName;
+  public void setRepositoryId(String repositoryId) {
+    this.repositoryId = repositoryId;
   }
 
   public ESFileId path(String path) {
@@ -57,13 +77,13 @@ public class ESFileId   {
       return false;
     }
     ESFileId esFileId = (ESFileId) o;
-    return Objects.equals(this.repositoryName, esFileId.repositoryName) &&
+    return Objects.equals(this.repositoryId, esFileId.repositoryId) &&
         Objects.equals(this.path, esFileId.path);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(repositoryName, path);
+    return Objects.hash(repositoryId, path);
   }
 
   @Override
@@ -71,7 +91,7 @@ public class ESFileId   {
     StringBuilder sb = new StringBuilder();
     sb.append("class ESFileId {\n");
     
-    sb.append("    repositoryName: ").append(toIndentedString(repositoryName)).append("\n");
+    sb.append("    repositoryId: ").append(toIndentedString(repositoryId)).append("\n");
     sb.append("    path: ").append(toIndentedString(path)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -87,5 +107,7 @@ public class ESFileId   {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
+
 }
 
