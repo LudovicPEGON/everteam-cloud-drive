@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESParent;
-import com.everteam.storage.services.ESFileId;
+import com.everteam.storage.utils.ESFileId;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;

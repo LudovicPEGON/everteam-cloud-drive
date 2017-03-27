@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
-import com.everteam.storage.services.ESFileId;
 import com.everteam.storage.services.FileService;
+import com.everteam.storage.utils.ESFileId;
+import com.everteam.storage.utils.FileInfo;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-10T14:12:04.281Z")
 
@@ -76,8 +76,8 @@ public class FilesApiController implements FilesApi {
                 if (name == null || name.length() == 0) {
                     name = content.getName();
                 }
-                FileMetadata mfm = new FileMetadata(name, description, content.getContentType(), content.getSize());
-                newFileId = fileService.createFile(fileId, mfm, content.getInputStream());
+                FileInfo info = new FileInfo(name, description, content.getContentType(), content.getSize(), content.getInputStream());
+                newFileId = fileService.createFile(fileId, info);
             }
             return new ResponseEntity<ESFile>(fileService.getFile(newFileId, false, false), HttpStatus.OK);
         } catch (IOException e) {

@@ -1,4 +1,4 @@
-package com.everteam.storage.services;
+package com.everteam.storage.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;

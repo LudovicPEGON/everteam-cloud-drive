@@ -3,7 +3,7 @@ package com.everteam.storage.jackson;
 import java.io.IOException;
 
 import com.everteam.storage.common.model.ESRepository;
-import com.everteam.storage.services.ESFileId;
+import com.everteam.storage.utils.ESFileId;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;

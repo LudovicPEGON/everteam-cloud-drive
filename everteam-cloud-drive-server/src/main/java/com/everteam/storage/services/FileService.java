@@ -18,13 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.drive.IDrive;
 import com.everteam.storage.jackson.ESFileSerializer;
-import com.everteam.storage.jackson.FileIdSerializer;
+import com.everteam.storage.utils.ESFileId;
+import com.everteam.storage.utils.FileInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -56,11 +56,9 @@ public class FileService {
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
         sourcedrive.downloadTo(sourceId.getPath(), baOS);
         ESFile sourceFile = sourcedrive.getFile(sourceId.getPath(), false, false);
-        FileMetadata metadata = new FileMetadata(sourceFile.getName(), sourceFile.getDescription(),
-                sourceFile.getMimeType(), sourceFile.getFileSize());
-        String newFileId = targetDrive.insertFile(targetId.getPath(),  
-                metadata, 
-                new ByteArrayInputStream(baOS.toByteArray()));
+        FileInfo info = new FileInfo(sourceFile.getName(), sourceFile.getDescription(),
+                sourceFile.getMimeType(), sourceFile.getFileSize(), new ByteArrayInputStream(baOS.toByteArray()));
+        String newFileId = targetDrive.insertFile(targetId.getPath(), info);
         return new ESFileId(targetId.getRepositoryId(), newFileId);
         
     }
@@ -121,12 +119,12 @@ public class FileService {
         return new ESFileId(parentId.getRepositoryId(), newFileId);
     }
 
-    public ESFileId createFile(ESFileId parentId, FileMetadata metadata, InputStream in)
+    public ESFileId createFile(ESFileId parentId, FileInfo info)
             throws IOException {
         IDrive drive = driveManager.getDrive(parentId.getRepositoryId());
         String newFileId = null;
         if (drive.isFolder(parentId.getPath())) {
-            newFileId = drive.insertFile(parentId.getPath(), metadata, in);
+            newFileId = drive.insertFile(parentId.getPath(), info);
         }
         else {
             throw new IOException("CannotCreateItemInAFile");

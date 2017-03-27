@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESParent;
@@ -25,6 +24,7 @@ import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESPermission.AccountTypeEnum;
 import com.everteam.storage.common.model.ESPermission.RolesEnum;
 import com.everteam.storage.common.model.ESPermission.TypeEnum;
+import com.everteam.storage.utils.FileInfo;
 import com.everteam.storage.common.model.ESUser;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -160,8 +160,8 @@ public class GoogleDrive extends DriveImpl {
     }
 
     @Override
-    public String insertFile(String parentId, FileMetadata metadata, InputStream in) throws IOException {
-        return insert(parentId, metadata.getName(), metadata.getMimeType(), in, metadata.getDescription());
+    public String insertFile(String parentId, FileInfo info) throws IOException {
+        return insert(parentId, info.getName(), info.getMimeType(), info.getInputStream(), info.getDescription());
     }
 
     @Override

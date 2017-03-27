@@ -35,6 +35,7 @@ import com.everteam.storage.common.model.ESPermission.RolesEnum;
 import com.everteam.storage.common.model.ESPermission.TypeEnum;
 import com.everteam.storage.common.model.ESUser;
 import com.everteam.storage.drive.OneDrive;
+import com.everteam.storage.utils.FileInfo;
 
 public class OneDriveClientAPI {
 
@@ -175,8 +176,8 @@ public class OneDriveClientAPI {
         return null;
     }
     
-    public String insertFile(String parentId, String contentType, InputStream in, String name, String description) throws IOException {
-        return description;
+    public String insertFile(String parentId, FileInfo info) throws IOException {
+        return null;
         // we're inserting a file
     }
 

@@ -15,6 +15,7 @@ import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.onedrive.OneDriveClientAPI;
+import com.everteam.storage.utils.FileInfo;
 
 @Component
 @Scope("prototype")
@@ -40,8 +41,8 @@ public class OneDrive extends DriveImpl {
     }
 
     @Override
-    public String insertFile(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
-        return api.insertFile(parentId, contentType, in, name, description);
+    public String insertFile(String parentId, FileInfo info) throws IOException {
+        return api.insertFile(parentId, info);
     }
     
     @Override

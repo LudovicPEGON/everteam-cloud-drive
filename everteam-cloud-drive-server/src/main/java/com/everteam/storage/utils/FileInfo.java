@@ -1,18 +1,21 @@
-package com.everteam.storage.common;
+package com.everteam.storage.utils;
 
-public class FileMetadata {
+import java.io.InputStream;
+
+public class FileInfo {
     
     private String name;
     private String description;
     private String mimeType;
     private Long size;
+    private InputStream inputStream;
     
-    
-    public FileMetadata(String name, String description, String mimeType, Long size) {
+    public FileInfo(String name, String description, String mimeType, Long size, InputStream inputStream) {
         this.name = name;
         this.description = description;
         this.mimeType = mimeType;
         this.size = size;
+        this.inputStream = inputStream;
     }
     public String getName() {
         return name;
@@ -37,6 +40,12 @@ public class FileMetadata {
     }
     public void setSize(Long size) {
         this.size = size;
+    }
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
     }
     
     

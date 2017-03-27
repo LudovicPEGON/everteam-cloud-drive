@@ -3,7 +3,7 @@ package com.everteam.storage.converters;
 import org.springframework.core.convert.converter.Converter;
 
 import com.everteam.storage.jackson.Encryptor;
-import com.everteam.storage.services.ESFileId;
+import com.everteam.storage.utils.ESFileId;
 
 public class FileIdConverter implements Converter<String, ESFileId> {
 

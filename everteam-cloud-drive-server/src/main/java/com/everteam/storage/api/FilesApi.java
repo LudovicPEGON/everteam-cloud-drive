@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
-import com.everteam.storage.services.ESFileId;
+import com.everteam.storage.utils.ESFileId;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

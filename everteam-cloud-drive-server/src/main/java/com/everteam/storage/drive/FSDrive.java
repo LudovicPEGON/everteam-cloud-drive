@@ -36,7 +36,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
-import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESParent;
@@ -44,6 +43,7 @@ import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESPermission.AccountTypeEnum;
 import com.everteam.storage.common.model.ESPermission.RolesEnum;
 import com.everteam.storage.common.model.ESPermission.TypeEnum;
+import com.everteam.storage.utils.FileInfo;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.common.model.ESUser;
 
@@ -95,11 +95,11 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public String insertFile(String fileId, FileMetadata metadata, InputStream in) throws IOException {
+    public String insertFile(String fileId, FileInfo info) throws IOException {
         String newId = null;
         Path path = buildPath(fileId);
-        Path newFilePath = path.resolve(metadata.getName());
-        Files.copy(in, newFilePath);
+        Path newFilePath = path.resolve(info.getName());
+        Files.copy(info.getInputStream(), newFilePath);
         newId = buildFileId(newFilePath);
         return newId;
     }

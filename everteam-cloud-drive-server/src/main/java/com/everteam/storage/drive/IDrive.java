@@ -7,11 +7,11 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESRepository;
+import com.everteam.storage.utils.FileInfo;
 
 public interface IDrive {
 
@@ -22,12 +22,11 @@ public interface IDrive {
      * Insert file into directory.<br> 
      * <b>We guarantee that parentId is a directory</b>
      * @param parentId
-     * @param metadata
-     * @param in
+     * @param info
      * @return new File Id
      * @throws IOException
      */
-    String insertFile(String parentId, FileMetadata metadata, InputStream in) throws IOException;
+    String insertFile(String parentId, FileInfo info) throws IOException;
     /**
      * Insert folder into directory.<br> 
      * <b>We guarantee that parentId is a directory</b>
