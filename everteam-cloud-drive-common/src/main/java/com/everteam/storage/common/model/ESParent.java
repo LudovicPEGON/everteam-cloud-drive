@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * ESParent
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-24T10:07:37.096Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-27T09:11:31.184Z")
 
 public class ESParent   {
   @JsonProperty("id")
@@ -26,10 +26,10 @@ public class ESParent   {
   }
 
    /**
-   * Get id
+   * Parent folders which contain this file
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "Parent folders which contain this file")
   public String getId() {
     return id;
   }

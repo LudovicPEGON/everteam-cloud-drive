@@ -12,11 +12,14 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * ESFile
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-24T10:07:37.096Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-27T09:11:31.184Z")
 
 public class ESFile   {
   @JsonProperty("id")
   private String id = null;
+
+  @JsonProperty("repositoryId")
+  private String repositoryId = null;
 
   @JsonProperty("parents")
   private List<ESParent> parents = new ArrayList<ESParent>();
@@ -56,9 +59,6 @@ public class ESFile   {
 
   @JsonProperty("checksum")
   private String checksum = null;
-  
-  @JsonProperty("repositoryId")
-  private String repositoryId = null;
 
   public ESFile id(String id) {
     this.id = id;
@@ -66,16 +66,34 @@ public class ESFile   {
   }
 
    /**
-   * Get id
+   * The file's id.
    * @return id
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "The file's id.")
   public String getId() {
     return id;
   }
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public ESFile repositoryId(String repositoryId) {
+    this.repositoryId = repositoryId;
+    return this;
+  }
+
+   /**
+   * The repository's id.
+   * @return repositoryId
+  **/
+  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "The repository's id.")
+  public String getRepositoryId() {
+    return repositoryId;
+  }
+
+  public void setRepositoryId(String repositoryId) {
+    this.repositoryId = repositoryId;
   }
 
   public ESFile parents(List<ESParent> parents) {
@@ -338,6 +356,7 @@ public class ESFile   {
     }
     ESFile esFile = (ESFile) o;
     return Objects.equals(this.id, esFile.id) &&
+        Objects.equals(this.repositoryId, esFile.repositoryId) &&
         Objects.equals(this.parents, esFile.parents) &&
         Objects.equals(this.name, esFile.name) &&
         Objects.equals(this.fileSize, esFile.fileSize) &&
@@ -355,7 +374,7 @@ public class ESFile   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, parents, name, fileSize, directory, description, mimeType, creationTime, lastModifiedTime, lastAccessTime, lastModifiedUser, owners, permissions, checksum);
+    return Objects.hash(id, repositoryId, parents, name, fileSize, directory, description, mimeType, creationTime, lastModifiedTime, lastAccessTime, lastModifiedUser, owners, permissions, checksum);
   }
 
   @Override
@@ -364,6 +383,7 @@ public class ESFile   {
     sb.append("class ESFile {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    repositoryId: ").append(toIndentedString(repositoryId)).append("\n");
     sb.append("    parents: ").append(toIndentedString(parents)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    fileSize: ").append(toIndentedString(fileSize)).append("\n");
@@ -391,20 +411,5 @@ public class ESFile   {
     }
     return o.toString().replace("\n", "\n    ");
   }
-
-public String getRepositoryId() {
-    return repositoryId;
-}
-
-public void setRepositoryId(String repositoryId) {
-    this.repositoryId = repositoryId;
-}
-
-
-public ESFile repositoryId(String repositoryId) {
-    this.repositoryId = repositoryId;
-    return this;
-}
-
 }
 
