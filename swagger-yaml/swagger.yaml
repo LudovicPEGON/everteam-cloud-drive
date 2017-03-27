@@ -406,9 +406,6 @@ definitions:
   ESFileList:
     type: "object"
     properties:
-      path:
-        type: "string"
-        description: "The list of files"
       items:
         type: "array"
         description: "The list of files"
