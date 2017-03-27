@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESParent;
@@ -159,30 +160,22 @@ public class GoogleDrive extends DriveImpl {
     }
 
     @Override
-    public String insert(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
-            // File's metadata.
-            File body = new File();
-            body.setName(name);
-            body.setDescription(description);
-            body.setMimeType(contentType);
-
-            // Set the parent folder.
-            String pId = parentId;
-            if (pId != null && pId.length() > 0) {
-              body.setParents(Arrays.asList(pId));
-            }
-           
-
-            // File's content.
-            InputStreamContent mediaContent = new InputStreamContent(contentType, in); 
-            File file = getDriveService().files().create(body, mediaContent).execute();
-            
-            
-            return file.getId();
+    public String insertFile(String parentId, FileMetadata metadata, InputStream in) throws IOException {
+        return insert(parentId, metadata.getName(), metadata.getMimeType(), in, metadata.getDescription());
     }
 
+    @Override
+    public String insertFolder(String parentId, String name, String description) throws IOException {
+        return insert(parentId, name, null, null, description);
+    }
     
-    
+    @Override
+    public boolean isFolder(String fileId) throws IOException {
+        Files.Get request = getDriveService().files().get(fileId);
+        request.setFields("mimeType");
+        File file = request.execute();
+        return file.getMimeType()=="application/vnd.google-apps.folder";
+    }
     
     
     @Override
@@ -245,7 +238,35 @@ public class GoogleDrive extends DriveImpl {
     }
 
     
-    
+    public String insert(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
+        // File's metadata.
+        File body = new File();
+        body.setName(name);
+        body.setDescription(description);
+        body.setMimeType(contentType);
+
+        // Set the parent folder.
+        String pId = parentId;
+        if (pId != null && pId.length() > 0) {
+          body.setParents(Arrays.asList(pId));
+        }
+       File file = null;
+        if (in != null) {
+            // File's content.
+            InputStreamContent mediaContent = new InputStreamContent(contentType, in); 
+            file = getDriveService().files().create(body, mediaContent).execute();
+        }
+        else {
+            // it's a folder
+            file = getDriveService().files().create(body).execute();
+        }
+        
+        if (file==null) {
+            throw new IOException("CannotBeAbleToCreateItem");
+        }
+        
+        return file.getId();
+    }
     
     
     

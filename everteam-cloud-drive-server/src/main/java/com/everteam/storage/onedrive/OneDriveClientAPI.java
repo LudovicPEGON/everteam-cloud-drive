@@ -13,6 +13,9 @@ import java.util.List;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
@@ -24,9 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.amazonaws.util.json.JSONArray;
-import com.amazonaws.util.json.JSONException;
-import com.amazonaws.util.json.JSONObject;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
@@ -63,7 +63,6 @@ public class OneDriveClientAPI {
         oda.children(null, true, -1);
         try {
             LOG.debug(oda.getFile("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ", true).toString());
-//            LOG.debug(oda.getPermissions(new String().repositoryName("od1").relativeId("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ")).toString());
         } catch (IOException e) {
             LOG.error(e.getMessage(),e);
         }
@@ -148,17 +147,44 @@ public class OneDriveClientAPI {
     }
 
 
-    public String insert(String parentId, InputStream in, String name, String description) throws IOException {
-        // we're inserting a folder
-        if (in == null) {
-            return insertFolder(parentId, name, description);
+    public String insertFolder(String parentId, String name, String description) throws IOException {
+        URI uri = null;
+        if (parentId != null && !parentId.isEmpty()) {
+            uri = UriBuilder.fromPath(BASE_URL).path(ITEM_CHILDREN_URL).build(parentId);
         }
-        // we're inserting a file
         else {
-            return insertFolder(parentId, in, name, description);
+            uri = UriBuilder.fromPath(BASE_URL).path(ROOT_CHILDREN_URL).build();
         }
+        /*
+         * POST /drive/root/children  OR /drive/items/{parent-id}/children
+            Content-Type: application/json
+            
+            {
+            "name": "FolderA",
+            "folder": { }
+            }
+         */
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put(Item.NAME, name);
+            obj.put(Item.FOLDER, new JSONObject());
+            exchangeUri(uri, HttpMethod.POST, obj);
+        } catch (JSONException e) {
+            LOG.error(e.getMessage(),e);
+        }
+        return null;
+    }
+    
+    public String insertFile(String parentId, String contentType, InputStream in, String name, String description) throws IOException {
+        return description;
+        // we're inserting a file
     }
 
+    
+    public boolean isFolder(String fileId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
     public List<ESPermission> getPermissions(String  fileId) throws IOException {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_PERMISSIONS_URL).build(fileId);
@@ -232,50 +258,17 @@ public class OneDriveClientAPI {
 //    }
     
     
-    private String insertFolder(String parentId, String name, String description) {
-        URI uri = null;
-        if (parentId != null && !parentId.isEmpty()) {
-            uri = UriBuilder.fromPath(BASE_URL).path(ITEM_CHILDREN_URL).build(parentId);
-        }
-        else {
-            uri = UriBuilder.fromPath(BASE_URL).path(ROOT_CHILDREN_URL).build();
-        }
-        /*
-         * POST /drive/root/children  OR /drive/items/{parent-id}/children
-            Content-Type: application/json
-            
-            {
-            "name": "FolderA",
-            "folder": { }
-            }
-         */
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put(Item.NAME, name);
-            obj.put(Item.FOLDER, "");
-            exchangeUri(uri, HttpMethod.POST, obj);
-        } catch (JSONException e) {
-            LOG.error(e.getMessage(),e);
-        }
-        return null;
-    }
-
-
-    private String insertFolder(String parentId, InputStream in, String name, String description) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     
     /* *********************  HTTP METHODS *************** */
     private ResponseEntity<String> exchangeUri(URI url, Object...params) {
-        return exchangeUri(url, HttpMethod.GET, params);
+        return exchangeUri(url, HttpMethod.GET, null, params);
     }
     
-    private ResponseEntity<String> exchangeUri(URI url, HttpMethod method, Object...params) {
+    private ResponseEntity<String> exchangeUri(URI url, HttpMethod method,  Object body, Object...params) {
         HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.set("Authorization", "Bearer "+ACCESS_TOKEN);
-        HttpEntity<Object> entity = new HttpEntity<Object>(headers);
+        HttpEntity<Object> entity = new HttpEntity<Object>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
         LOG.debug(url.toString());
         ResponseEntity<String> response = restTemplate.exchange(url.toString(), method, entity, String.class, params);
@@ -510,4 +503,6 @@ public class OneDriveClientAPI {
         UrlResource resource = new UrlResource(downloadURI);
         return resource.getInputStream();
     }
+
+
 }

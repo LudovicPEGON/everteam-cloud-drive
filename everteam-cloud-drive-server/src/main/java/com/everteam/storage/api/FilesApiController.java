@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
@@ -60,13 +61,24 @@ public class FilesApiController implements FilesApi {
             @RequestParam("content") MultipartFile content, @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "description", required = false) String description) {
         try {
-            if (name == null || name.length() == 0) {
-            	if (content == null) {
+            ESFileId newFileId = null;
+            // if content is null we're trying to insert folder
+            if (content == null) {
+                if (name != null && !name.isEmpty()) {
+                    newFileId = fileService.createFolder(fileId, name, description);
+                }
+                else {
                     throw new WebApplicationException(Status.BAD_REQUEST);
                 }
-                name = content.getName();
             }
-            ESFileId newFileId = fileService.create(fileId, name, content.getContentType(), content.getInputStream(), description);
+            // else we're trying to insert a file
+            else {
+                if (name == null || name.length() == 0) {
+                    name = content.getName();
+                }
+                FileMetadata mfm = new FileMetadata(name, description, content.getContentType(), content.getSize());
+                newFileId = fileService.createFile(fileId, mfm, content.getInputStream());
+            }
             return new ResponseEntity<ESFile>(fileService.getFile(newFileId, false, false), HttpStatus.OK);
         } catch (IOException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);

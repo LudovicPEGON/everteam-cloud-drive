@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
+import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESParent;
@@ -94,19 +95,29 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public String insert(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public String insertFile(String fileId, FileMetadata metadata, InputStream in) throws IOException {
         String newId = null;
         Path path = buildPath(fileId);
-        if (path.toFile().isDirectory()) {
-            // TODO : add some extension based on +"."+file.getMimeType()
-            Path newFilePath = path.resolve(name);
-            Files.copy(in, newFilePath);
-            newId = buildFileId(newFilePath);
-
-        } else {
-            throw new IOException("CannotInsertFileInNonDirectory");
-        }
+        Path newFilePath = path.resolve(metadata.getName());
+        Files.copy(in, newFilePath);
+        newId = buildFileId(newFilePath);
         return newId;
+    }
+    
+    @Override
+    public String insertFolder(String fileId, String name, String description) throws IOException {
+        String newId = null;
+        Path path = buildPath(fileId);
+        Path newFilePath = path.resolve(name);
+        Files.createDirectory(newFilePath);
+        newId = buildFileId(newFilePath);
+        return newId;
+    }
+    
+    @Override
+    public boolean isFolder(String fileId) {
+        Path path = buildPath(fileId);
+        return path.toFile().isDirectory();
     }
 
     @Override

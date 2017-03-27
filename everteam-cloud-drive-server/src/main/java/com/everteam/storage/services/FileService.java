@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.everteam.storage.common.FileMetadata;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
@@ -49,14 +50,15 @@ public class FileService {
         IDrive sourcedrive = driveManager.getDrive(sourceId.getRepositoryName());
 
         IDrive targetDrive = driveManager.getDrive(targetId.getRepositoryName());
-
+        // TODO : Have to handle if we copy file or directory and its content, for now just handling file copy
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
         sourcedrive.downloadTo(sourceId.getPath(), baOS);
         ESFile sourceFile = sourcedrive.getFile(sourceId.getPath(), false, false);
-        String newFileId = targetDrive.insert(targetId.getPath(),  
-                sourceFile.getName(), 
-                sourceFile.getMimeType(), 
-                new ByteArrayInputStream(baOS.toByteArray()), sourceFile.getDescription());
+        FileMetadata metadata = new FileMetadata(sourceFile.getName(), sourceFile.getDescription(),
+                sourceFile.getMimeType(), sourceFile.getFileSize());
+        String newFileId = targetDrive.insertFile(targetId.getPath(),  
+                metadata, 
+                new ByteArrayInputStream(baOS.toByteArray()));
         return new ESFileId()
                 .repositoryName(targetId.getRepositoryName())
                 .path(newFileId);
@@ -106,11 +108,32 @@ public class FileService {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
         drive.update(fileId.getPath(), name, contentType, in,  description);
     }
+    
+    public ESFileId createFolder(ESFileId parentId, String name, String description) throws IOException {
+        IDrive drive = driveManager.getDrive(parentId.getRepositoryName());
+        String newFileId = null;
+        if (drive.isFolder(parentId.getPath())) {
+            newFileId = drive.insertFolder(parentId.getPath(), name, description);
+        }
+        else {
+            throw new IOException("CannotCreateItemInAFile");
+        }
+          
+        return new ESFileId()
+                .repositoryName(parentId.getRepositoryName())
+                .path(newFileId);
+    }
 
-    public ESFileId create(ESFileId parentId, String name, String contentType, InputStream in, String description)
+    public ESFileId createFile(ESFileId parentId, FileMetadata metadata, InputStream in)
             throws IOException {
         IDrive drive = driveManager.getDrive(parentId.getRepositoryName());
-        String newFileId =  drive.insert(parentId.getPath(), name, contentType, in, description);
+        String newFileId = null;
+        if (drive.isFolder(parentId.getPath())) {
+            newFileId = drive.insertFile(parentId.getPath(), metadata, in);
+        }
+        else {
+            throw new IOException("CannotCreateItemInAFile");
+        }
         return new ESFileId()
                 .repositoryName(parentId.getRepositoryName())
                 .path(newFileId);

@@ -40,8 +40,18 @@ public class OneDrive extends DriveImpl {
     }
 
     @Override
-    public String insert(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
-        return api.insert(parentId, in, name, description);
+    public String insertFile(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
+        return api.insertFile(parentId, contentType, in, name, description);
+    }
+    
+    @Override
+    public String insertFolder(String parentId, String name, String description) throws IOException {
+        return api.insertFolder(parentId, name, description);
+    }
+    
+    @Override
+    public boolean isFolder(String fileId) throws IOException {
+        return api.isFolder(fileId);
     }
 
     @Override
