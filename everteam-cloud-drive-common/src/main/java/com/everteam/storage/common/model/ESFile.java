@@ -1,17 +1,13 @@
 package com.everteam.storage.common.model;
 
-import java.util.Objects;
-import com.everteam.storage.common.model.ESFileId;
-import com.everteam.storage.common.model.ESParent;
-import com.everteam.storage.common.model.ESPermission;
-import com.everteam.storage.common.model.ESUser;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESFile
@@ -20,7 +16,7 @@ import java.util.List;
 
 public class ESFile   {
   @JsonProperty("id")
-  private ESFileId id = null;
+  private String id = null;
 
   @JsonProperty("parents")
   private List<ESParent> parents = new ArrayList<ESParent>();
@@ -60,8 +56,11 @@ public class ESFile   {
 
   @JsonProperty("checksum")
   private String checksum = null;
+  
+  @JsonProperty("repositoryId")
+  private String repositoryId = null;
 
-  public ESFile id(ESFileId id) {
+  public ESFile id(String id) {
     this.id = id;
     return this;
   }
@@ -71,11 +70,11 @@ public class ESFile   {
    * @return id
   **/
   @ApiModelProperty(value = "")
-  public ESFileId getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(ESFileId id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -392,5 +391,20 @@ public class ESFile   {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
+public String getRepositoryId() {
+    return repositoryId;
+}
+
+public void setRepositoryId(String repositoryId) {
+    this.repositoryId = repositoryId;
+}
+
+
+public ESFile repositoryId(String repositoryId) {
+    this.repositoryId = repositoryId;
+    return this;
+}
+
 }
 

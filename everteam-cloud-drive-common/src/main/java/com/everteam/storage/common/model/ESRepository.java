@@ -1,11 +1,11 @@
 package com.everteam.storage.common.model;
 
 import java.util.Objects;
-import com.everteam.storage.common.model.ESFileId;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class ESRepository   {
   @JsonProperty("id")
-  private ESFileId id = null;
+  private String id = null;
 
   /**
    * Gets or Sets type
@@ -62,7 +62,7 @@ public class ESRepository   {
   @JsonProperty("clientSecrets")
   private String clientSecrets = null;
 
-  public ESRepository id(ESFileId id) {
+  public ESRepository id(String id) {
     this.id = id;
     return this;
   }
@@ -72,11 +72,11 @@ public class ESRepository   {
    * @return id
   **/
   @ApiModelProperty(value = "")
-  public ESFileId getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(ESFileId id) {
+  public void setId(String id) {
     this.id = id;
   }
 

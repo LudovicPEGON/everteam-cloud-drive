@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.everteam.storage.common.model.ESFile;
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESRepository;
@@ -31,43 +30,43 @@ public class OneDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileList children(ESFileId parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
+    public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
         return api.children(parentId, addPermissions, maxSize);
     }
 
     @Override
-    public void downloadTo(ESFileId fileId, OutputStream outputstream) throws IOException {
+    public void downloadTo(String fileId, OutputStream outputstream) throws IOException {
         api.downloadTo(fileId, outputstream);
     }
 
     @Override
-    public ESFileId insert(ESFileId parentId, String name, String contentType, InputStream in, String description) throws IOException {
+    public String insert(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
         return api.insert(parentId, in, name, description);
     }
 
     @Override
-    public List<ESPermission> getPermissions(ESFileId fileId) throws IOException {
+    public List<ESPermission> getPermissions(String fileId) throws IOException {
         return api.getPermissions(fileId);
     }
 
     @Override
-    public void delete(ESFileId fileId) throws IOException {
+    public void delete(String fileId) throws IOException {
         api.delete(fileId);
     }
 
     @Override
-    public ESFile getFile(ESFileId fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
+    public ESFile getFile(String fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
         return api.getFile(fileId, addPermissions);
     }
 
     @Override
-    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public void update(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
+    public void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
         // TODO Auto-generated method stub
 
     }

@@ -2,8 +2,8 @@ package com.everteam.storage.jackson;
 
 import java.io.IOException;
 
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.converters.FileIdConverter;
+import com.everteam.storage.services.ESFileId;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;

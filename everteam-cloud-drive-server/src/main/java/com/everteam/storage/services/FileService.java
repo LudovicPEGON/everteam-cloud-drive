@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.everteam.storage.common.model.ESFile;
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.drive.IDrive;
@@ -42,7 +41,8 @@ public class FileService {
 
     public ESFile getFile(ESFileId fileId, boolean addPermissions, Boolean addChecksum) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        return drive.getFile(fileId, addPermissions, addChecksum);
+        return drive.getFile(fileId.getPath(), addPermissions, addChecksum)
+                .repositoryId(fileId.getRepositoryName());
     }
 
     public ESFileId copy(ESFileId sourceId, ESFileId targetId) throws IOException {
@@ -51,31 +51,45 @@ public class FileService {
         IDrive targetDrive = driveManager.getDrive(targetId.getRepositoryName());
 
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
-        sourcedrive.downloadTo(sourceId, baOS);
-        ESFile sourceFile = sourcedrive.getFile(sourceId, false, false);
-        return targetDrive.insert(targetId,  sourceFile.getName(), sourceFile.getMimeType(), new ByteArrayInputStream(baOS.toByteArray()), sourceFile.getDescription());
+        sourcedrive.downloadTo(sourceId.getPath(), baOS);
+        ESFile sourceFile = sourcedrive.getFile(sourceId.getPath(), false, false);
+        String newFileId = targetDrive.insert(targetId.getPath(),  
+                sourceFile.getName(), 
+                sourceFile.getMimeType(), 
+                new ByteArrayInputStream(baOS.toByteArray()), sourceFile.getDescription());
+        return new ESFileId()
+                .repositoryName(targetId.getRepositoryName())
+                .path(newFileId);
+        
+        
     }
 
     public ESFileList getChildren(ESFileId fileId, boolean addPermissions, Boolean addChecksum, int maxSize) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        return drive.children(fileId, addPermissions, addChecksum, maxSize);
+        ESFileList files = drive.children(fileId.getPath(), addPermissions, addChecksum, maxSize);
+        for (ESFile file : files.getItems()) {
+            file.setRepositoryId(fileId.getRepositoryName());
+        }
+        return files;
+        
+        
     }
 
     public void delete(ESFileId fileId) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        drive.delete(fileId);
+        drive.delete(fileId.getPath());
     }
 
     public List<ESPermission> getPermissions(ESFileId fileId) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
 
-        return drive.getPermissions(fileId);
+        return drive.getPermissions(fileId.getPath());
     }
 
     public void downloadTo(ESFileId fileId, OutputStream outputStream) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
 
-        drive.downloadTo(fileId, outputStream);
+        drive.downloadTo(fileId.getPath(), outputStream);
 
     }
 
@@ -83,25 +97,28 @@ public class FileService {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
 
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
-        drive.downloadTo(fileId, baOS);
+        drive.downloadTo(fileId.getPath(), baOS);
         return baOS.toByteArray();
 
     }
 
     public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        drive.update(fileId, name, contentType, in,  description);
+        drive.update(fileId.getPath(), name, contentType, in,  description);
     }
 
     public ESFileId create(ESFileId parentId, String name, String contentType, InputStream in, String description)
             throws IOException {
         IDrive drive = driveManager.getDrive(parentId.getRepositoryName());
-        return drive.insert(parentId, name, contentType, in, description);
+        String newFileId =  drive.insert(parentId.getPath(), name, contentType, in, description);
+        return new ESFileId()
+                .repositoryName(parentId.getRepositoryName())
+                .path(newFileId);
     }
 
     public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryName());
-        CheckUpdate cu = new CheckUpdate(this, drive, fileId, fromDate);
+        CheckUpdate cu = new CheckUpdate(this, drive, fileId.getPath(), fromDate);
         Thread thread = new Thread(cu);
         thread.start();
     }
@@ -109,7 +126,7 @@ public class FileService {
     public void exportWatcherFile(ESFile file) {
         try {
             Path targetDir = Paths.get(watcherDirectory)
-            .resolve(file.getId().getRepositoryName())
+            .resolve(file.getRepositoryId())
             .resolve(String.valueOf(file.getLastModifiedTime().getYear()))
             .resolve(String.valueOf(file.getLastModifiedTime().getMonth()))
             .resolve(String.valueOf(file.getLastModifiedTime().getDayOfMonth()));
@@ -117,9 +134,11 @@ public class FileService {
             targetDir.toFile().mkdirs();
             
             
-            Path target = targetDir
-            .resolve(FileIdSerializer.encrypt(file.getId()));
-            
+            Path target = targetDir.resolve(FileIdSerializer.encrypt(
+                    new ESFileId()
+                        .repositoryName(file.getRepositoryId())
+                        .path(file.getId())
+                    ));            
             
             jacksonObjectMapper.writeValue(target.toFile(), file);
         } catch (IOException e) {
@@ -132,10 +151,10 @@ public class FileService {
 
         FileService service;
         IDrive drive;
-        ESFileId fileId;
+        String fileId;
         OffsetDateTime fromDate;
 
-        public CheckUpdate(FileService service, IDrive drive, ESFileId fileId, OffsetDateTime fromDate) {
+        public CheckUpdate(FileService service, IDrive drive, String fileId, OffsetDateTime fromDate) {
             this.service= service;
             this.drive = drive;
             this.fileId = fileId;
@@ -145,7 +164,7 @@ public class FileService {
         @Override
         public void run() {
             try {
-                drive.checkUpdates(fileId, fromDate, new FileConsumer(service));
+                drive.checkUpdates(fileId, fromDate, new FileConsumer( service, drive.getRepository().getId()));
             } catch (IOException e) {
                 LOG.error(e.getMessage(), e);
             }
@@ -154,14 +173,17 @@ public class FileService {
 
     private static class FileConsumer implements Consumer<ESFile> {
         FileService fileService;
+        String repositoryId;
         
-        public FileConsumer(FileService fileService) {
+        public FileConsumer(FileService fileService, String repositoryId) {
             this.fileService = fileService;
+            this.repositoryId = repositoryId;
         }
         
         @Override
         public void accept(ESFile file) {
-            fileService.exportWatcherFile(file);
+            fileService.exportWatcherFile(file.repositoryId(repositoryId));
+            
         }
 
       

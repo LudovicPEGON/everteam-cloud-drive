@@ -18,7 +18,7 @@ import com.everteam.storage.common.model.ESPermission;
 
 
 @FeignClient("${everteam.feignclient.storage:storage-v1-0}")
-public interface FilesClient {
+public interface FilesApi {
 
     @RequestMapping(value = "/files/{id}/copy", method = RequestMethod.POST)
     ESFile copyFile(@PathVariable("id") String id,

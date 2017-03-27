@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.everteam.storage.common.model.ESFile;
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESParent;
 import com.everteam.storage.common.model.ESPermission;
@@ -93,14 +92,14 @@ public class GoogleDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileList children(ESFileId parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
+    public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
         ESFileList result = new ESFileList();
         Drive service = getDriveService();
 
         Files.List request = service.files().list().setPageSize(maxSize)
                 // .setFields("id,md5Checksum,createdTime,description,mimeType,size,modifiedTime,lastModifyingUser,mimeType,name");
                 .setFields("*");
-        String relativeParentId = parentId.getPath();
+        String relativeParentId = parentId;
         if (relativeParentId == null || relativeParentId.length() == 0) {
             relativeParentId = repository.getRootDirectory();
         }
@@ -119,31 +118,31 @@ public class GoogleDrive extends DriveImpl {
     }
 
     @Override
-    public void downloadTo(ESFileId fileId, OutputStream outputstream) throws IOException {
-        getDriveService().files().get(fileId.getPath()).executeMediaAndDownloadTo(outputstream);
+    public void downloadTo(String fileId, OutputStream outputstream) throws IOException {
+        getDriveService().files().get(fileId).executeMediaAndDownloadTo(outputstream);
     }
 
     @Override
-    public List<ESPermission> getPermissions(ESFileId fileId) throws IOException {
-        PermissionList permissions = getDriveService().permissions().list(fileId.getPath()).execute();
+    public List<ESPermission> getPermissions(String fileId) throws IOException {
+        PermissionList permissions = getDriveService().permissions().list(fileId).execute();
         return buildPermissions(permissions.getPermissions());
     }
 
     @Override
-    public void delete(ESFileId fileId) throws IOException {
-        getDriveService().files().delete(fileId.getPath()).execute();
+    public void delete(String fileId) throws IOException {
+        getDriveService().files().delete(fileId).execute();
 
     }
 
     @Override
-    public ESFile getFile(ESFileId fileId, boolean addPermissions, boolean addChecksum) throws IOException {
-        Files.Get request = getDriveService().files().get(fileId.getPath());
+    public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException {
+        Files.Get request = getDriveService().files().get(fileId);
         request.setFields("*");
         return buildFile(request.execute(), addPermissions, addChecksum);
     }
 
     @Override
-    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public void update(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
             // First retrieve the file from the API.
             File file = new File();
             
@@ -156,11 +155,11 @@ public class GoogleDrive extends DriveImpl {
             InputStreamContent mediaContent = new InputStreamContent(contentType, in); 
 
             // Send the request to the API.
-            getDriveService().files().update(fileId.getPath(), file, mediaContent).execute();
+            getDriveService().files().update(fileId, file, mediaContent).execute();
     }
 
     @Override
-    public ESFileId insert(ESFileId parentId, String name, String contentType, InputStream in, String description) throws IOException {
+    public String insert(String parentId, String name, String contentType, InputStream in, String description) throws IOException {
             // File's metadata.
             File body = new File();
             body.setName(name);
@@ -168,7 +167,7 @@ public class GoogleDrive extends DriveImpl {
             body.setMimeType(contentType);
 
             // Set the parent folder.
-            String pId = parentId.getPath();
+            String pId = parentId;
             if (pId != null && pId.length() > 0) {
               body.setParents(Arrays.asList(pId));
             }
@@ -179,9 +178,7 @@ public class GoogleDrive extends DriveImpl {
             File file = getDriveService().files().create(body, mediaContent).execute();
             
             
-            return  new ESFileId()
-                    .repositoryName(getRepository().getName())
-                    .path(file.getId());
+            return file.getId();
     }
 
     
@@ -189,7 +186,7 @@ public class GoogleDrive extends DriveImpl {
     
     
     @Override
-    public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
+    public void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
         Files.List request = getDriveService().files()
                 .list()
                 .setPageSize(100)
@@ -264,7 +261,7 @@ public class GoogleDrive extends DriveImpl {
         }
 
         ESFile esfile = new ESFile()
-                .id(new ESFileId().path(file.getId()).repositoryName(getRepository().getName()))
+                .id(file.getId())
                 .creationTime(OffsetDateTime.parse(file.getCreatedTime().toStringRfc3339()))
                 .description(file.getDescription())
                 .directory(file.getMimeType().equals("application/vnd.google-apps.folder")).fileSize(file.getSize())
@@ -286,7 +283,7 @@ public class GoogleDrive extends DriveImpl {
         if (parents != null) {
             for (String parent : parents) {
                 esfile.addParentsItem(new ESParent()
-                        .id(new ESFileId().repositoryName(getRepository().getName()).path(parent))
+                        .id(parent)
                         .paths(absPath(file)));
             }
         }
