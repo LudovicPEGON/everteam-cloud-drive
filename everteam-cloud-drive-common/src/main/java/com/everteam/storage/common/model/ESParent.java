@@ -1,13 +1,12 @@
 package com.everteam.storage.common.model;
 
-import java.util.Objects;
-import com.everteam.storage.common.model.ESFileId;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ESParent
@@ -16,12 +15,12 @@ import java.util.List;
 
 public class ESParent   {
   @JsonProperty("id")
-  private ESFileId id = null;
+  private String id = null;
 
   @JsonProperty("paths")
   private List<String> paths = new ArrayList<String>();
 
-  public ESParent id(ESFileId id) {
+  public ESParent id(String id) {
     this.id = id;
     return this;
   }
@@ -31,11 +30,11 @@ public class ESParent   {
    * @return id
   **/
   @ApiModelProperty(value = "")
-  public ESFileId getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(ESFileId id) {
+  public void setId(String id) {
     this.id = id;
   }
 

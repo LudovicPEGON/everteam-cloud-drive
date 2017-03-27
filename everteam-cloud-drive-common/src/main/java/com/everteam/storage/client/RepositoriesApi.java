@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.everteam.storage.common.model.ESRepository;
 
 @FeignClient("${everteam.feignclient.storage:storage-v1-0}")
-public interface RepositoriesClient {
+//@FeignClient(name="storage-v1-0",url="http://localhost:7070")
+public interface RepositoriesApi {
 
     @RequestMapping(value = "/repositories", produces = { "application/json" }, method = RequestMethod.GET)
     List<ESRepository> listRepositories();

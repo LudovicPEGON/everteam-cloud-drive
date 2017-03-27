@@ -37,7 +37,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import com.everteam.storage.common.model.ESFile;
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESParent;
 import com.everteam.storage.common.model.ESPermission;
@@ -67,10 +66,10 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public ESFileList children(ESFileId parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
+    public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
         Path p = buildPath(parentId);
 
-        List<ESFile> items = new ArrayList<>();
+        List<ESFile> items = new ArrayList<>(100);
 
         try (Stream<Path> paths = Files.list(p)) {
             paths.limit(maxSize).forEach(new Consumer<Path>() {
@@ -89,14 +88,14 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public void downloadTo(ESFileId fileId, OutputStream outputstream) throws IOException {
+    public void downloadTo(String fileId, OutputStream outputstream) throws IOException {
         Path p = buildPath(fileId);
         Files.copy(p, outputstream);
     }
 
     @Override
-    public ESFileId insert(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
-        ESFileId newId = null;
+    public String insert(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
+        String newId = null;
         Path path = buildPath(fileId);
         if (path.toFile().isDirectory()) {
             // TODO : add some extension based on +"."+file.getMimeType()
@@ -111,31 +110,31 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public List<ESPermission> getPermissions(ESFileId fileId) throws IOException {
+    public List<ESPermission> getPermissions(String fileId) throws IOException {
         return getPermissions(buildPath(fileId));
     }
 
     @Override
-    public void delete(ESFileId repositoryFileId) throws IOException {
+    public void delete(String repositoryFileId) throws IOException {
         Path path = buildPath(repositoryFileId);
         deleteAllInPath(path);
     }
 
     @Override
-    public ESFile getFile(ESFileId fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
+    public ESFile getFile(String fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
         Path path = buildPath(fileId);
         return getFile(path, addPermissions);
     }
 
     @Override
-    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public void update(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
         Path path = buildPath(fileId);
         Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
         //description can't be manage is this drive 
     }
 
     @Override
-    public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
+    public void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
         Path start = buildPath(fileId);
         
         try (Stream<Path> paths = Files
@@ -172,8 +171,7 @@ public class FSDrive extends DriveImpl {
 
         // build a ESFile from file object
         ESFile esfile = new ESFile()
-                .id(new ESFileId().repositoryName(getRepository().getName())
-                        .path(buildRelativePath(path).toString()))
+                .id(buildRelativePath(path).toString())
                 .name(file.getName()).mimeType(type).directory(file.isDirectory());
 
         if (!file.isDirectory()) {
@@ -224,26 +222,25 @@ public class FSDrive extends DriveImpl {
 
         if (parentPath.startsWith(repositoryPath)) {
             esfile.addParentsItem(new ESParent()
-                    .id(new ESFileId().repositoryName(getRepository().getName()).path(relativePath.toString()))
+                    .id(relativePath.toString())
                     .paths(paths));
         }
 
         return esfile;
     }
 
-    private Path buildPath(ESFileId fileId) {
+    private Path buildPath(String fileId) {
         Path p;
         ESRepository repository = getRepository();
         p = Paths.get(repository.getRootDirectory());
         if (fileId != null) {
-            p = p.resolve(fileId.getPath());
+            p = p.resolve(fileId);
         }
         return p;
     }
 
-    private ESFileId buildFileId(Path filePath) throws IOException {
-        Path relativePath = buildRelativePath(filePath);
-        return new ESFileId().repositoryName(this.getRepository().getName()).path(relativePath.toString());
+    private String buildFileId(Path filePath) throws IOException {
+        return buildRelativePath(filePath).toString();
     }
 
     private Path buildRelativePath(Path filePath) throws IOException {

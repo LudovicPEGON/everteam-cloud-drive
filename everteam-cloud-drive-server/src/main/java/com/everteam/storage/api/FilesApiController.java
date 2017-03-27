@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.everteam.storage.common.model.ESFile;
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
+import com.everteam.storage.services.ESFileId;
 import com.everteam.storage.services.FileService;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-10T14:12:04.281Z")

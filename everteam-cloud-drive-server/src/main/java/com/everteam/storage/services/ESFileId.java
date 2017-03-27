@@ -1,10 +1,7 @@
-package com.everteam.storage.common.model;
+package com.everteam.storage.services;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
 
 /**
  * ESFileId
@@ -12,10 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-24T10:07:37.096Z")
 
 public class ESFileId   {
-  @JsonProperty("repositoryName")
   private String repositoryName = null;
 
-  @JsonProperty("path")
   private String path = null;
 
   public ESFileId repositoryName(String repositoryName) {
@@ -27,7 +22,6 @@ public class ESFileId   {
    * The repository's ID
    * @return repositoryName
   **/
-  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "The repository's ID")
   public String getRepositoryName() {
     return repositoryName;
   }
@@ -45,7 +39,6 @@ public class ESFileId   {
    * The file path in the repository
    * @return path
   **/
-  @ApiModelProperty(value = "The file path in the repository")
   public String getPath() {
     return path;
   }

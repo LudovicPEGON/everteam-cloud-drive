@@ -3,8 +3,6 @@ package com.everteam.storage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.everteam.storage.common.model.ESFileId;
-
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -37,7 +35,6 @@ public class SwaggerDocumentationConfig {
                     .build()
                 .directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
                 .directModelSubstitute(java.time.OffsetDateTime.class, java.util.Date.class)
-                .directModelSubstitute(ESFileId.class, String.class)
                 .apiInfo(apiInfo());
     }
 

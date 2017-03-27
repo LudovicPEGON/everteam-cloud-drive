@@ -12,7 +12,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.everteam.storage.common.model.ESFileId;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.drive.IDrive;
 import com.everteam.storage.drive.OneDrive;
@@ -62,7 +61,7 @@ public class RepositoryService {
             }
             if (drive != null) {
                 try {
-                    repository.setId(new ESFileId().repositoryName(repository.getName()));
+                    repository.setId(repository.getName());
                     drive.init(repository);
                     
                     drives.put(repository.getName(), drive);
