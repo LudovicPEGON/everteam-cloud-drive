@@ -21,7 +21,6 @@ public class ESRepositorySerializer extends JsonSerializer<ESRepository> {
             String uri =  new ESFileId(repository.getId(), null).toUri();
             repository.setId(Encryptor.encrypt(uri));
            
-            repository.setId(Encryptor.encrypt(uri));
             defaultSerializer.serialize(repository, gen, provider);
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);

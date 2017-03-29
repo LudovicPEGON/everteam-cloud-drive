@@ -81,5 +81,11 @@ public class OneDrive extends DriveImpl {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public boolean exists(String fileId) throws IOException {
+        // TODO Auto-generated method stub
+        return false;
+    }
     
 }

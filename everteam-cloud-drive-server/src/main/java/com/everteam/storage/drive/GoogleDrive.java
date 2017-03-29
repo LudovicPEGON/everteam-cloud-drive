@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
@@ -24,14 +25,15 @@ import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESPermission.AccountTypeEnum;
 import com.everteam.storage.common.model.ESPermission.RolesEnum;
 import com.everteam.storage.common.model.ESPermission.TypeEnum;
-import com.everteam.storage.utils.FileInfo;
 import com.everteam.storage.common.model.ESUser;
+import com.everteam.storage.utils.FileInfo;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.JsonFactory;
@@ -58,10 +60,10 @@ public class GoogleDrive extends DriveImpl {
     private int lpe2;
 
     /** Application name. */
-    private static final String APPLICATION_NAME = "Everteam MS Storage";
+    private static final String APPLICATION_NAME = "everteam-ms-storage";
 
     /** Directory to store user credentials for this application. */
-    private static final java.io.File DATA_STORE_DIR = new java.io.File(System.getProperty("user.home"),
+    private static final java.io.File DATA_STORE_DIR = new java.io.File(
             ".credentials/drive-java-etms-storage");
 
     /** Global instance of the {@link FileDataStoreFactory}. */
@@ -95,9 +97,9 @@ public class GoogleDrive extends DriveImpl {
     @Override
     public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
         ESFileList result = new ESFileList();
-        Drive service = getDriveService();
+        Drive drive = getDriveService();
 
-        Files.List request = service.files().list().setPageSize(maxSize)
+        Files.List request = drive.files().list().setPageSize(maxSize)
                 // .setFields("id,md5Checksum,createdTime,description,mimeType,size,modifiedTime,lastModifyingUser,mimeType,name");
                 .setFields("*");
         String relativeParentId = parentId;
@@ -111,7 +113,7 @@ public class GoogleDrive extends DriveImpl {
         FileList files = request.execute();
 
         for (File f : files.getFiles()) {
-            result.addItemsItem(buildFile(f, addPermissions,addChecksum));
+            result.addItemsItem(buildFile(drive, f, addPermissions,addChecksum));
         }
 
         return result;
@@ -137,9 +139,11 @@ public class GoogleDrive extends DriveImpl {
 
     @Override
     public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException {
-        Files.Get request = getDriveService().files().get(fileId);
+        Drive drive = getDriveService();
+        
+        Files.Get request = drive.files().get(fileId);
         request.setFields("*");
-        return buildFile(request.execute(), addPermissions, addChecksum);
+        return buildFile(drive, request.execute(), addPermissions, addChecksum);
     }
 
     @Override
@@ -156,6 +160,7 @@ public class GoogleDrive extends DriveImpl {
             InputStreamContent mediaContent = new InputStreamContent(contentType, in); 
 
             // Send the request to the API.
+            
             getDriveService().files().update(fileId, file, mediaContent).execute();
     }
 
@@ -174,13 +179,14 @@ public class GoogleDrive extends DriveImpl {
         Files.Get request = getDriveService().files().get(fileId);
         request.setFields("mimeType");
         File file = request.execute();
-        return file.getMimeType()=="application/vnd.google-apps.folder";
+        return file.getMimeType().equals("application/vnd.google-apps.folder");
     }
     
     
     @Override
     public void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
-        Files.List request = getDriveService().files()
+        Drive drive = getDriveService();
+        Files.List request = drive.files()
                 .list()
                 .setPageSize(100)
                 .setFields("*")
@@ -193,7 +199,7 @@ public class GoogleDrive extends DriveImpl {
                   @Override
                   public void accept(File t) {
                       try {
-                          consumer.accept(buildFile(t, true,true));
+                          consumer.accept(buildFile(drive, t, true,true));
                       } catch (IOException e) {
                           LOG.error(e.getMessage(), e);
                       }
@@ -243,21 +249,26 @@ public class GoogleDrive extends DriveImpl {
         File body = new File();
         body.setName(name);
         body.setDescription(description);
-        body.setMimeType(contentType);
+        
 
         // Set the parent folder.
         String pId = parentId;
+        if (pId == null ||pId.isEmpty()) {
+            pId = repository.getRootDirectory(); 
+        }
         if (pId != null && pId.length() > 0) {
           body.setParents(Arrays.asList(pId));
         }
        File file = null;
         if (in != null) {
             // File's content.
+            body.setMimeType(contentType);
             InputStreamContent mediaContent = new InputStreamContent(contentType, in); 
             file = getDriveService().files().create(body, mediaContent).execute();
         }
         else {
             // it's a folder
+            body.setMimeType("application/vnd.google-apps.folder");
             file = getDriveService().files().create(body).execute();
         }
         
@@ -268,12 +279,31 @@ public class GoogleDrive extends DriveImpl {
         return file.getId();
     }
     
-    
+    @Override
+    public boolean exists(String fileId) throws IOException{
+        boolean bret = false; 
+        Files.Get request = getDriveService().files().get(fileId);
+        try {
+            request.execute();
+            bret = true;
+        } 
+        catch (GoogleJsonResponseException e) {
+            if (e.getDetails().getCode() == 404) {
+                bret = false;
+            }
+            else {
+                throw e;
+            }
+            
+        }
+        return bret;
+    }
+
     
     
     
 
-    private ESFile buildFile(File file, boolean addPermissions, boolean addChecksum) throws IOException {
+    private ESFile buildFile(Drive drive, File file, boolean addPermissions, boolean addChecksum) throws IOException {
         ESUser lastModifiedUser = null;
         User lastModifyingUser = file.getLastModifyingUser();
         if (lastModifyingUser != null) {
@@ -305,7 +335,7 @@ public class GoogleDrive extends DriveImpl {
             for (String parent : parents) {
                 esfile.addParentsItem(new ESParent()
                         .id(parent)
-                        .paths(absPath(file)));
+                        .paths(absPath(drive, file)));
             }
         }
         return esfile;
@@ -328,11 +358,11 @@ public class GoogleDrive extends DriveImpl {
     
     
     
-    private List<String> absPath(File file) throws IOException {
+    private List<String> absPath(Drive drive, File file) throws IOException {
         List<String> path = new ArrayList<>();
 
         while (true) {
-            File parent = getFile(file.getParents().get(0));
+            File parent = getFile(drive, file.getParents().get(0));
 
             // Stop when we find the root dir
 
@@ -348,11 +378,11 @@ public class GoogleDrive extends DriveImpl {
         return path;
     }
 
-    private File getFile(String id) throws IOException {
+    private File getFile(Drive drive, String id) throws IOException {
         // Fetch file from drive
         File file = cache.get(id);
         if (file == null) {
-            Files.Get request = getDriveService().files().get(id);
+            Files.Get request = drive.files().get(id);
             request.setFields("id,name,parents");
             file = request.execute();
             
@@ -368,6 +398,7 @@ public class GoogleDrive extends DriveImpl {
         
     }
 
+    
     
     
     
