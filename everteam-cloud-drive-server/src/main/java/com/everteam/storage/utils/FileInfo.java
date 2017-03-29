@@ -17,6 +17,8 @@ public class FileInfo {
         this.size = size;
         this.inputStream = inputStream;
     }
+    public FileInfo() {
+    }
     public String getName() {
         return name;
     }
@@ -28,6 +30,10 @@ public class FileInfo {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public FileInfo description(String description) {
+        this.description = description;
+        return this;
     }
     public String getMimeType() {
         return mimeType;
@@ -46,6 +52,10 @@ public class FileInfo {
     }
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+    }
+    public FileInfo inputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+        return this;
     }
     
     

@@ -34,7 +34,6 @@ storage:
         - name: od1
           type: ONEDRIVE
           clientSecrets: /microsoft_secret.json
-    
 
 #remove this block in cloud environment    
 eureka:
@@ -75,4 +74,5 @@ eureka:
 #      scope: files.readwrite offline_access 
 #    resource:
 #       user-info-uri: https://graph.microsoft.com/v1.0/me
+
 

@@ -3,7 +3,6 @@ package com.everteam.storage.drive;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
@@ -43,9 +42,9 @@ import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESPermission.AccountTypeEnum;
 import com.everteam.storage.common.model.ESPermission.RolesEnum;
 import com.everteam.storage.common.model.ESPermission.TypeEnum;
-import com.everteam.storage.utils.FileInfo;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.common.model.ESUser;
+import com.everteam.storage.utils.FileInfo;
 
 @Component(value="fs")
 @Scope("prototype")
@@ -138,9 +137,9 @@ public class FSDrive extends DriveImpl {
     }
 
     @Override
-    public void update(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public void update(String fileId, FileInfo info) throws IOException {
         Path path = buildPath(fileId);
-        Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(info.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         //description can't be manage is this drive 
     }
 

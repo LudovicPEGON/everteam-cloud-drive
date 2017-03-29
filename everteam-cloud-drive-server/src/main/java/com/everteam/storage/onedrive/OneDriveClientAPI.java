@@ -1,5 +1,6 @@
 package com.everteam.storage.onedrive;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,9 +8,12 @@ import java.net.FileNameMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -23,12 +27,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
+import com.everteam.storage.common.model.ESParent;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESPermission.AccountTypeEnum;
 import com.everteam.storage.common.model.ESPermission.RolesEnum;
@@ -40,99 +46,85 @@ import com.everteam.storage.utils.FileInfo;
 public class OneDriveClientAPI {
 
     private final static Logger LOG = LoggerFactory.getLogger(OneDrive.class);
-    
+
     private final String ACCESS_TOKEN;
     private final String BASE_URL = "https://graph.microsoft.com/v1.0/me";
-    
+
     public OneDriveClientAPI(String accessToken) {
         ACCESS_TOKEN = accessToken;
     }
     /*
      * Source https://dev.onedrive.com/resources/item.htm
      */
-    private static final String ITEM_CHILDREN_URL = "/drive/items/{item-id}/children";
-    private static final String ROOT_CHILDREN_URL = "/drive/root/children";
-    private static final String ITEM_PERMISSIONS_URL = "/drive/items/{item-id}/permissions";
-    
-    private static final String ITEM_URL = "/drive/items/{id}";
-    
-    @SuppressWarnings("unused")
-    private static final String ITEM_CONTENT_URL = "/drive/items/{item-id}/content";
-    
-    public static void main(String [] args) {
-        OneDriveClientAPI oda = new OneDriveClientAPI("eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKcHY0UnRMdjNKZDZ4T0oxTXBIdWlwdlJvbGw0WklFMG1sdUVTX291ZDlRX2NNN3JnakpoNklFUHc2bnhMempiRFVFTjBCZUVfNXVfbW8yTUh6UWN2d3lBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwMTg3NjkxLCJuYmYiOjE0OTAxODc2OTEsImV4cCI6MTQ5MDE5MTU5MSwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKNGowNDhYRUFQQzhjV0cycUZFcEtuaFYyWmRvU0UxWjhheGNWZXhhekRDNFJoVjI5Mlo5TEEwbVVMVGduc1RvalU4Vnl1TWFManJZbFJVZW11aWE2c3ZKMHltNVdub2twSVE2QklaQVl2ZFlnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.WVa1RTnPCRZXeWv2GCx33o-m_SKgQkIFSljxhBquL-VApF3CX_fyuxMjPPFphYx3PqbBUnx0Nfe2NSdDQBHOI-s9NQxpG5OuQRBy7W-808RKSV_pHOU0Nb8wAxhfuHGkvEwOd_NMTv9rzRDKPdrWFAUUQLMICvdPrwTHerwEcIjRVL54CdBEet7CVHjLzBUIFjqp9i2LApZCTLZ28HNqq8V29zgtwZOuF1FI918qm4b5AnfaamKVCAtUm0yeh-V_q_BIarzvJomvIBlDRIbG3cdj6KBMZTpKJDLEPe6meVU1p6h2MqUXG9SWzsrcbx5lAvQZ55QGsiF8fBuwZPlvbQ");
-        oda.children(null, true, -1);
-        try {
-            LOG.debug(oda.getFile("012YP5EGF7GLCCXV5EVNB2QJAYVRLLUEUZ", true).toString());
-        } catch (IOException e) {
-            LOG.error(e.getMessage(),e);
-        }
-    }
-    
-    
-    public ESFileList children (String parentId, boolean addPermissions, int maxSize) {
-        String result = null;
+
+    private static final String ROOT_CHILDREN_URL      = "/drive/root/children";
+    private static final String ROOT_SIMPLE_UPLOAD_URL = "/drive/root:/{fileName}:/content";
+    private static final String ROOT_DELTA_URL         = "/drive/root/delta";
+
+    private static final String ITEM_URL               = "/drive/items/{id}";
+    private static final String ITEM_PERMISSIONS_URL   = "/drive/items/{item-id}/permissions";
+    private static final String ITEM_CHILDREN_URL      = "/drive/items/{item-id}/children";
+    private static final String ITEM_SIMPLE_UPLOAD_URL = "/drive/items/{parent-id}/children/{filename}/content";
+
+    public ESFileList children(String parentId, boolean addPermissions, int maxSize) {
+        ResponseEntity<String> response = null;
         UriBuilder builder = UriBuilder.fromPath(BASE_URL);
-        if (maxSize!=-1) {
+        if (maxSize != -1) {
             builder.queryParam("top", maxSize);
         }
-        if (parentId!=null && !parentId.isEmpty()) {
-            result = exchangeUri(builder.path(ITEM_CHILDREN_URL).build(parentId)).getBody();
+        if (parentId != null && !parentId.isEmpty()) {
+            response = exchangeUri(builder.path(ITEM_CHILDREN_URL).build(parentId));
+        } else {
+            response = exchangeUri(builder.path(ROOT_CHILDREN_URL).build());
         }
-        else {
-            result = exchangeUri(builder.path(ROOT_CHILDREN_URL).build()).getBody();
-        }
-        LOG.debug(result);
         ESFileList fileList = null;
-        if (result != null) {
+        if (HttpStatus.OK.equals(response.getStatusCode()) && response != null) {
+            String result = response.getBody();
             fileList = new ESFileList();
             JSONObject obj;
             try {
                 obj = new JSONObject(result);
                 JSONArray array = obj.getJSONArray("value");
-                for(int i = 0 ; i < array.length() ; i++){
+                for (int i = 0; i < array.length(); i++) {
                     ESFile file = getESFileFromJSONObject(array.getJSONObject(i));
                     if (addPermissions) {
                         try {
                             file.permissions(getPermissions(file.getId()));
                         } catch (IOException e) {
-                            LOG.error(e.getMessage(),e);
+                            LOG.error(e.getMessage(), e);
                         }
                     }
                     fileList.addItemsItem(file);
                 }
             } catch (JSONException e) {
-                LOG.error(e.getMessage(),e);
+                LOG.error(e.getMessage(), e);
             }
-            
+
         }
-        LOG.debug(fileList.toString());
         return fileList;
     }
 
-
-
     public void downloadTo(String fileId, OutputStream outputstream) throws IOException {
         // This call was the one documented for OneDrive but the stream returned is not well formatted
-        // https://dev.onedrive.com/items/download.htm 
-//        URI uri = UriBuilder.fromPath(BASE_URL).path(GET_ITEM_CONTENT).build(fileId.getRelativeId());
-//        ResponseEntity<String> response = getForObject(uri);
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(response.getBody().getBytes())) {
-//                org.apache.tomcat.util.http.fileupload.IOUtils.copy(inputStream, outputstream);
-//            }
-//        }
-//        else if (response.getStatusCode() == HttpStatus.FOUND) {
-//            HttpHeaders headers = response.getHeaders();
-//            URI downloadURI = headers.getLocation();
-//            try (InputStream is = getFileInputStream(downloadURI)) {
-//                org.apache.tomcat.util.http.fileupload.IOUtils.copy(is, outputstream);
-//            }
-//        }
+        // https://dev.onedrive.com/items/download.htm
+        // URI uri = UriBuilder.fromPath(BASE_URL).path(GET_ITEM_CONTENT).build(fileId.getRelativeId());
+        // ResponseEntity<String> response = getForObject(uri);
+        // if (response.getStatusCode() == HttpStatus.OK) {
+        // try (ByteArrayInputStream inputStream = new ByteArrayInputStream(response.getBody().getBytes())) {
+        // org.apache.tomcat.util.http.fileupload.IOUtils.copy(inputStream, outputstream);
+        // }
+        // }
+        // else if (response.getStatusCode() == HttpStatus.FOUND) {
+        // HttpHeaders headers = response.getHeaders();
+        // URI downloadURI = headers.getLocation();
+        // try (InputStream is = getFileInputStream(downloadURI)) {
+        // org.apache.tomcat.util.http.fileupload.IOUtils.copy(is, outputstream);
+        // }
+        // }
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId);
-        String result = exchangeUri(uri).getBody();
-        if (result != null) {
-            LOG.debug(result);
+        ResponseEntity<String> response = exchangeUri(uri);
+        if (HttpStatus.OK.equals(response.getStatusCode()) && response.getBody() != null) {
+            String result = response.getBody();
             JSONObject obj;
             try {
                 obj = new JSONObject(result);
@@ -142,18 +134,16 @@ public class OneDriveClientAPI {
                     }
                 }
             } catch (Exception e) {
-                LOG.error(e.getMessage(),e);
+                LOG.error(e.getMessage(), e);
             }
         }
     }
-
 
     public String insertFolder(String parentId, String name, String description) throws IOException {
         URI uri = null;
         if (parentId != null && !parentId.isEmpty()) {
             uri = UriBuilder.fromPath(BASE_URL).path(ITEM_CHILDREN_URL).build(parentId);
-        }
-        else {
+        } else {
             uri = UriBuilder.fromPath(BASE_URL).path(ROOT_CHILDREN_URL).build();
         }
         /*
@@ -165,29 +155,50 @@ public class OneDriveClientAPI {
             "folder": { }
             }
          */
+        ESFile newfolder = null;
         try {
             JSONObject obj = new JSONObject();
             obj.put(Item.NAME, name);
             obj.put(Item.FOLDER, new JSONObject());
-            exchangeUri(uri, HttpMethod.POST, obj);
+            String response = exchangeUri(uri, HttpMethod.POST, null, obj).getBody();
+            newfolder = getESFileFromJSONObject(new JSONObject(response));
         } catch (JSONException e) {
-            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         }
-        return null;
+        if (newfolder == null) {
+            throw new IOException("ErrorOccursWhenCreatingFolder");
+        }
+        return newfolder.getId();
     }
-    
+
     public String insertFile(String parentId, FileInfo info) throws IOException {
-        return null;
+        /*
+         * https://dev.onedrive.com/items/upload.htm
+         * There are two upload mode depending on file size
+         */
+        String fileId = null;
+        if (info.getSize() / Math.pow(1024.0, 2) <= 4) {
+            fileId = simpleItemUpload(parentId, info);
+        } else {
+            fileId = resumableItemUpload(parentId, info);
+        }
+        if (fileId == null) {
+            throw new IOException("ErrorOccursWhenCreatingFile");
+        }
+        return fileId;
         // we're inserting a file
     }
 
-    
-    public boolean isFolder(String fileId) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean isFolder(String fileId) throws IOException {
+        boolean isFolder = true;
+        if (fileId != null && !fileId.isEmpty()) {
+            ESFile file = getFile(fileId);
+            isFolder = file.getDirectory();
+        }
+        return isFolder;
     }
 
-    public List<ESPermission> getPermissions(String  fileId) throws IOException {
+    public List<ESPermission> getPermissions(String fileId) throws IOException {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_PERMISSIONS_URL).build(fileId);
         String result = exchangeUri(uri).getBody();
         List<ESPermission> permissions = null;
@@ -197,18 +208,15 @@ public class OneDriveClientAPI {
             try {
                 obj = new JSONObject(result);
                 JSONArray array = obj.getJSONArray("value");
-                for(int i = 0 ; i < array.length() ; i++){
+                for (int i = 0; i < array.length(); i++) {
                     permissions.add(getESPermissionFromJSONObject(array.getJSONObject(i)));
                 }
             } catch (JSONException e) {
-                LOG.error(e.getMessage(),e);
+                LOG.error(e.getMessage(), e);
             }
         }
         return permissions;
     }
-    
-    
-
 
     public void delete(String fileId) throws IOException {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId);
@@ -218,67 +226,186 @@ public class OneDriveClientAPI {
         }
     }
 
+    public ESFile getFile(String fileId) throws IOException {
+        return getFile(fileId, false, false);
+    }
 
-    public ESFile getFile(String fileId, boolean addPermissions) throws IOException {
+    public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId);
-        String result = exchangeUri(uri).getBody();
+        ResponseEntity<String> response = exchangeUri(uri);
         ESFile file = null;
-        if (result != null) {
+        if (HttpStatus.OK.equals(response.getStatusCode()) && response.getBody() != null) {
+            String result = response.getBody();
             LOG.debug(result);
             JSONObject obj;
             try {
                 obj = new JSONObject(result);
-                file = getESFileFromJSONObject(obj);
+                file = getESFileFromJSONObject(obj, addChecksum);
                 if (addPermissions) {
                     try {
                         file.permissions(getPermissions(fileId));
                     } catch (IOException e) {
-                        LOG.error(e.getMessage(),e);
+                        LOG.error(e.getMessage(), e);
                     }
                 }
             } catch (JSONException e) {
-                LOG.error(e.getMessage(),e);
+                LOG.error(e.getMessage(), e);
             }
-                
+        }
+        
+        if (file == null) {
+            throw new IOException("NoFileWithThisFileId");
         }
         return file;
     }
 
-//
-//    @Override
-//    public void update(String fileId, InputStream in, String description) throws IOException {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//
-//    @Override
-//    public void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
-//        // TODO Auto-generated method stub
-//        
-//    }
-    
-    
+    public void update(String fileId, FileInfo info) throws IOException {
+        // for OneDrive we achieve this with uploading content
+        // as OneDrive doesn't handle description we'll never update just the metadata
+        ESFile file = getFile(fileId);
+        String parentId = null;
+        if (file.getParents()!=null && file.getParents().size()>0) {
+            parentId = file.getParents().get(0).getId();
+        }
+        // setting original name to update it and not create new file
+        info.setName(file.getName());
+        insertFile(parentId, info);
+    }
 
     
-    /* *********************  HTTP METHODS *************** */
-    private ResponseEntity<String> exchangeUri(URI url, Object...params) {
-        return exchangeUri(url, HttpMethod.GET, null, params);
+    public void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException {
+        /*
+         * https://dev.onedrive.com/items/view_delta.htm#http-request
+         * GET /drive/root/delta
+         * 
+         * Your app begins by calling delta without any parameters. 
+         * The service starts enumerating the folder's hierarchy, returning pages of items and either an @odata.nextLink or an @odata.deltaLink, as described above. 
+         * Your app should continue calling delta either with the @odata.nextLink until you no longer see an @odata.nextLink returned, or you see a response with an empty set of changes. 
+         * After you have finished receiving all the changes, you may apply them to your local state.
+         * 
+         */
+        ESFile fileFilter = null;
+        if (fileId != null && !fileId.isEmpty()) {
+            fileFilter = getFile(fileId);
+        }
+        URI uri = UriBuilder.fromPath(BASE_URL).path(ROOT_DELTA_URL).build();
+        do {
+            ResponseEntity<String> response = exchangeUri(uri);
+            if (response != null) {
+                List<ESFile> fileList = new ArrayList<>();
+                try {
+                    JSONObject obj = new JSONObject(response.getBody());
+                    JSONArray values = obj.getJSONArray(Delta.VALUE);
+
+                    for (int i = 0; i < values.length(); i++) {
+                        JSONObject subobj = values.getJSONObject(i);
+                        if (!subobj.has(Item.ROOT)) {
+                            ESFile file = getESFileFromJSONObject(subobj);
+                            // creation or last modification > fromDate ; ie we've to take this into account
+                            if (file.getCreationTime().isAfter(fromDate) || file.getLastModifiedTime().isAfter(fromDate)) {
+                                // if there is a fileId we only take file/folder which have this for parent
+                                if (fileFilter != null) {
+                                    if (fileFilter.getDirectory()) {
+                                        Path fileFilterPath = Paths.get(fileFilter.getParents().get(0).getPaths().get(0), fileFilter.getName());
+                                        String filePath = file.getParents().get(0).getPaths().get(0);
+                                        if (filePath.startsWith(fileFilterPath.toString())) {
+                                            fileList.add(file);
+                                        }
+                                    } else if (fileId.equals(file.getId())) {
+                                        fileList.add(file);
+                                    }
+                                } else {
+                                    fileList.add(file);
+                                }
+                            }
+                        }
+                    }
+
+                    fileList.forEach(consumer);
+                    
+                    if (obj.has(Delta.NEXT_LINK) && values.length() > 0) {
+                        uri = new URI(obj.getString(Delta.NEXT_LINK));
+                    } else {
+                        uri = null;
+                    }
+                } catch (JSONException | URISyntaxException e) {
+                    LOG.error(e.getMessage(),e);
+                    e.printStackTrace();
+                }
+            }
+        } while (uri != null);
+            
     }
-    
-    private ResponseEntity<String> exchangeUri(URI url, HttpMethod method,  Object body, Object...params) {
-        HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        headers.set("Authorization", "Bearer "+ACCESS_TOKEN);
-        HttpEntity<Object> entity = new HttpEntity<Object>(body, headers);
+
+    private String resumableItemUpload(String parentId, FileInfo info) throws IOException {
+        throw new IOException("UploadFileBiggerThan4MBNotImplementedYet");
+    }
+
+    private String simpleItemUpload(String parentId, FileInfo info) {
+        /*
+         *  https://dev.onedrive.com/items/upload_put.htm
+         *  PUT /drive/items/{parent-id}/children/{filename}/content
+            Content-Type: text/plain
+        
+            The contents of the file goes here.
+         */
+        URI uri = null;
+        String fileId = null;
+        ESFile file = null;
+        if (parentId != null && !parentId.isEmpty()) {
+            uri = UriBuilder.fromPath(BASE_URL).path(ITEM_SIMPLE_UPLOAD_URL).build(parentId, info.getName());
+        } else {
+            uri = UriBuilder.fromPath(BASE_URL).path(ROOT_SIMPLE_UPLOAD_URL).build(info.getName());
+        }
+        try {
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = info.getInputStream().read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.TEXT_PLAIN);
+            ResponseEntity<String> response = exchangeUri(uri, HttpMethod.PUT, headers, result.toByteArray());
+            file = getESFileFromJSONObject(new JSONObject(response.getBody()));
+            fileId = file.getId();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return fileId;
+    }
+
+    /* *********************  HTTP METHODS *************** */
+    private ResponseEntity<String> exchangeUri(URI url) {
+        return exchangeUri(url, HttpMethod.GET, null, null);
+    }
+
+    private ResponseEntity<String> exchangeUri(URI url, HttpMethod method) {
+        return exchangeUri(url, method, null, null);
+    }
+
+    private ResponseEntity<String> exchangeUri(URI url, HttpMethod method, HttpHeaders headers, Object body) {
+        if (headers == null) {
+            headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + ACCESS_TOKEN);
+        } else if (!headers.containsKey("Authorization")) {
+            headers.set("Authorization", "Bearer " + ACCESS_TOKEN);
+        }
+        HttpEntity<Object> entity = null;
+        if (body != null) {
+            entity = new HttpEntity<Object>(body, headers);
+        } else {
+            entity = new HttpEntity<Object>(headers);
+        }
         RestTemplate restTemplate = new RestTemplate();
-        LOG.debug(url.toString());
-        ResponseEntity<String> response = restTemplate.exchange(url.toString(), method, entity, String.class, params);
+        ResponseEntity<String> response = restTemplate.exchange(url, method, entity, String.class);
         return response;
     }
 
 
     /* *********************  JSON DESERIALIZE METHODS *************** */
-    
+
     protected static final class Item {
         /*
          * A file item 
@@ -323,62 +450,74 @@ public class OneDriveClientAPI {
                 },
                 "size": 845941
             }
-         */   
-         /* A folder item
-         * 
-          {
-              "createdBy": {
-                "user": {
-                  "id": "8dd5c724-7035-48a5-9481-0ca40cbe7318",
-                  "displayName": "Kader Bennat"
-                }
-              },
-              "createdDateTime": "2017-03-22T09:21:24Z",
-              "eTag": "\"{D9AEA7C3-98BA-4221-AF8F-8DD0C3A9FD87},1\"",
-              "id": "012YP5EGGDU6XNTOUYEFBK7D4N2DB2T7MH",
-              "lastModifiedBy": {
-                "user": {
-                  "id": "8dd5c724-7035-48a5-9481-0ca40cbe7318",
-                  "displayName": "Kader Bennat"
-                }
-              },
-              "lastModifiedDateTime": "2017-03-22T09:21:24Z",
-              "name": "Test TTR",
-              "webUrl": "https://everteamsoftware365-my.sharepoint.com/personal/k_bennat_everteamsoftware365_onmicrosoft_com/Documents/Test%20TTR",
-              "cTag": "\"c:{D9AEA7C3-98BA-4221-AF8F-8DD0C3A9FD87},0\"",
-              "fileSystemInfo": {
-                "createdDateTime": "2017-03-22T09:21:24Z",
-                "lastModifiedDateTime": "2017-03-22T09:21:24Z"
-              },
-              "folder": {
-                "childCount": 0
-              },
-              "parentReference": {
-                "driveId": "b!kkEY-OuMtUyR3G9XJuVtiYSU-chcIHpLp6x9vXqZOxvhr2cySdbmTaywovS6o4if",
-                "id": "012YP5EGF6Y2GOVW7725BZO354PWSELRRZ",
-                "path": "/drive/root:"
-              },
-              "size": 0
-          }
          */
-        public static final String ID = "id";
-        public static final String NAME = "name";
-        public static final String CREATION_TIME = "createdDateTime";
-        public static final String SIZE = "size";
+        /* A folder item
+        * 
+         {
+             "createdBy": {
+               "user": {
+                 "id": "8dd5c724-7035-48a5-9481-0ca40cbe7318",
+                 "displayName": "Kader Bennat"
+               }
+             },
+             "createdDateTime": "2017-03-22T09:21:24Z",
+             "eTag": "\"{D9AEA7C3-98BA-4221-AF8F-8DD0C3A9FD87},1\"",
+             "id": "012YP5EGGDU6XNTOUYEFBK7D4N2DB2T7MH",
+             "lastModifiedBy": {
+               "user": {
+                 "id": "8dd5c724-7035-48a5-9481-0ca40cbe7318",
+                 "displayName": "Kader Bennat"
+               }
+             },
+             "lastModifiedDateTime": "2017-03-22T09:21:24Z",
+             "name": "Test TTR",
+             "webUrl": "https://everteamsoftware365-my.sharepoint.com/personal/k_bennat_everteamsoftware365_onmicrosoft_com/Documents/Test%20TTR",
+             "cTag": "\"c:{D9AEA7C3-98BA-4221-AF8F-8DD0C3A9FD87},0\"",
+             "fileSystemInfo": {
+               "createdDateTime": "2017-03-22T09:21:24Z",
+               "lastModifiedDateTime": "2017-03-22T09:21:24Z"
+             },
+             "folder": {
+               "childCount": 0
+             },
+             "parentReference": {
+               "driveId": "b!kkEY-OuMtUyR3G9XJuVtiYSU-chcIHpLp6x9vXqZOxvhr2cySdbmTaywovS6o4if",
+               "id": "012YP5EGF6Y2GOVW7725BZO354PWSELRRZ",
+               "path": "/drive/root:"
+             },
+             "size": 0
+         }
+        */
+        public static final String ID                 = "id";
+        public static final String NAME               = "name";
+        public static final String CREATION_TIME      = "createdDateTime";
+        public static final String SIZE               = "size";
         public static final String LAST_MODIFIED_DATE = "lastModifiedDateTime";
-        public static final String LAST_MODIFIED_BY = "lastModifiedBy";
-        public static final String FOLDER = "folder";
-        public static final String FILE = "file";
-        public static final String DOWNLOAD_URL = "@microsoft.graph.downloadUrl";
+        public static final String LAST_MODIFIED_BY   = "lastModifiedBy";
+        public static final String FOLDER             = "folder";
+        public static final String FILE               = "file";
+        public static final String ROOT               = "root";
+        public static final String DOWNLOAD_URL       = "@microsoft.graph.downloadUrl";
+        public static final String PARENT_REFERENCE   = "parentReference";
     }
-    
+
     protected static final class User {
-        public static final String TAG_NAME = "user";
-        public static final String ID = "id";
+        public static final String TAG_NAME     = "user";
+        public static final String ID           = "id";
         public static final String DISPLAY_NAME = "displayName";
     }
     
+    protected static final class ParentReference {
+        public static final String ID       = "id";
+        public static final String DRIVE_ID = "driveId";
+        public static final String PATH     = "path";
+    }
+
     private ESFile getESFileFromJSONObject(JSONObject jsonObject) {
+        return getESFileFromJSONObject(jsonObject, false);
+    }
+
+    private ESFile getESFileFromJSONObject(JSONObject jsonObject, boolean addChecksum) {
         ESFile file = null;
         try {
             String id = jsonObject.getString(Item.ID);
@@ -387,38 +526,46 @@ public class OneDriveClientAPI {
             OffsetDateTime lastModified = OffsetDateTime.parse(jsonObject.getString(Item.LAST_MODIFIED_DATE));
             boolean isFolder = jsonObject.has(Item.FOLDER);
             Long size = jsonObject.getLong(Item.SIZE);
-            JSONObject lastModifiedBy = jsonObject.getJSONObject(Item.LAST_MODIFIED_BY).getJSONObject(User.TAG_NAME);
-            String lastModifiedById = lastModifiedBy.getString(User.ID);
-            String lastModifiedByName = lastModifiedBy.getString(User.DISPLAY_NAME);
+            
+            JSONObject parentReference = jsonObject.getJSONObject(Item.PARENT_REFERENCE);
+            String parentId = parentReference.getString(ParentReference.ID);
+            String parentPath = parentReference.getString(ParentReference.PATH);
+            if (parentPath.endsWith("root:")) {
+                parentId = "";
+            }
             String downloadUrl = null;
             String md5 = null;
             FileNameMap fileNameMap = URLConnection.getFileNameMap();
             file = new ESFile();
-            
-            file
-                .id(id)
+
+            file.id(id)
                 .name(name)
                 .creationTime(created)
                 .directory(isFolder)
                 .fileSize(size)
                 .lastModifiedTime(lastModified)
-                .lastModifiedUser(new ESUser().id(lastModifiedById).displayName(lastModifiedByName))
                 .mimeType(fileNameMap.getContentTypeFor(name))
-//                .owners()
-//                .permissions(permissions)
-                ;
-            
-            if (!isFolder) {
+                .addParentsItem(new ESParent().id(parentId).addPathsItem(parentPath));
+            ;
+            // we don't have it in delta cf checkUpdates method
+            if (jsonObject.has(Item.LAST_MODIFIED_BY)) {
+                JSONObject lastModifiedBy = jsonObject.getJSONObject(Item.LAST_MODIFIED_BY).getJSONObject(User.TAG_NAME);
+                String lastModifiedById = lastModifiedBy.getString(User.ID);
+                String lastModifiedByName = lastModifiedBy.getString(User.DISPLAY_NAME);
+                file.lastModifiedUser(new ESUser().id(lastModifiedById).displayName(lastModifiedByName));
+            }
+
+            if (!isFolder && addChecksum) {
                 downloadUrl = jsonObject.getString(Item.DOWNLOAD_URL);
                 md5 = DigestUtils.md5DigestAsHex(getFileInputStream(new URI(downloadUrl)));
                 file.checksum(md5);
             }
         } catch (JSONException e) {
-            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         } catch (IOException e) {
-            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         } catch (URISyntaxException e) {
-            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         }
         return file;
     }
@@ -450,29 +597,29 @@ public class OneDriveClientAPI {
               ]
             }
          */
-        public static final String ID = "id";
+        public static final String ID         = "id";
         public static final String GRANTED_TO = "grantedTo";
-        public static final String LINK = "link";
-        public static final String ROLES = "roles";
+        public static final String LINK       = "link";
+        public static final String ROLES      = "roles";
     }
+
     protected static final class Link {
-        public static final String SCOPE = "scope";
-        public static final String TYPE = "type";
+        public static final String SCOPE   = "scope";
+        public static final String TYPE    = "type";
         public static final String WEB_URL = "webUrl";
     }
-    
+
     private ESPermission getESPermissionFromJSONObject(JSONObject jsonObject) {
         ESPermission permission = null;
         try {
             permission = new ESPermission();
-//            String id = jsonObject.getString(Permission.ID);
+            // String id = jsonObject.getString(Permission.ID);
             JSONArray roles = jsonObject.getJSONArray(Permission.ROLES);
-            for (int i=0;i<roles.length();i++) {
+            for (int i = 0; i < roles.length(); i++) {
                 String role = roles.getString(i);
                 switch (role) {
                     case "write":
-                        permission.addRolesItem(RolesEnum.WRITER)
-                            .type(TypeEnum.ALLOW);
+                        permission.addRolesItem(RolesEnum.WRITER).type(TypeEnum.ALLOW);
                         break;
                     default:
                         break;
@@ -480,8 +627,7 @@ public class OneDriveClientAPI {
             }
             if (jsonObject.has(Permission.GRANTED_TO)) {
                 JSONObject grantedTo = jsonObject.getJSONObject(Permission.GRANTED_TO).getJSONObject(User.TAG_NAME);
-                permission.userId(grantedTo.getString(User.ID))
-                    .accountType(AccountTypeEnum.USER);
+                permission.userId(grantedTo.getString(User.ID)).accountType(AccountTypeEnum.USER);
             }
             if (jsonObject.has(Permission.LINK)) {
                 JSONObject link = jsonObject.getJSONObject(Permission.LINK);
@@ -495,15 +641,30 @@ public class OneDriveClientAPI {
                 }
             }
         } catch (JSONException e) {
-            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         }
         return permission;
     }
+
+    protected static final class Delta {
+        /*
+         * A delta object
+         *  {
+                "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(driveItem)",
+                "@odata.deltaLink": "https://graph.microsoft.com/v1.0/users('8dd5c724-7035-48a5-9481-0ca40cbe7318')/drive/root/microsoft.graph.delta(token='1;%234;%231;3;3267afe1-d649-4de6-acb0-a2f4baa3889f;636262901470930000;53088938;%23')",
+                "value": [Item]
+            }
+         * 
+         */
+        public static final String DELTA_LINK = "@odata.deltaLink";
+        public static final String NEXT_LINK  = "@odata.nextLink";
+        public static final String VALUE      = "value";
+    }
+    
     
     private InputStream getFileInputStream(URI downloadURI) throws IOException {
         UrlResource resource = new UrlResource(downloadURI);
         return resource.getInputStream();
     }
-
 
 }

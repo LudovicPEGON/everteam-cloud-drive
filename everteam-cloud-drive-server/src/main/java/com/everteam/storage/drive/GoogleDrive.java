@@ -147,17 +147,17 @@ public class GoogleDrive extends DriveImpl {
     }
 
     @Override
-    public void update(String fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public void update(String fileId, FileInfo info) throws IOException {
             // First retrieve the file from the API.
             File file = new File();
             
             // File's new metadata.
             //file.setName(newName);
-            file.setDescription(description);
+            file.setDescription(info.getDescription());
             //file.setMimeType(newMimeType);
 
             
-            InputStreamContent mediaContent = new InputStreamContent(contentType, in); 
+            InputStreamContent mediaContent = new InputStreamContent(info.getMimeType(), info.getInputStream()); 
 
             // Send the request to the API.
             

@@ -171,7 +171,11 @@ public class FilesApiController implements FilesApi {
             @RequestParam("content") MultipartFile content,
             @RequestParam(value = "description", required = false) String description) {
         try {
-            fileService.update(fileId, content.getName(), content.getContentType(), content.getInputStream(),  description);
+            if (content==null) {
+                throw new WebApplicationException(Status.BAD_REQUEST);
+            }
+            FileInfo info = new FileInfo(content.getName(), description, content.getContentType(), content.getSize(), content.getInputStream());
+            fileService.update(fileId, info);
             ESFile updatedFile = fileService.getFile(fileId, false, false);
             return new ResponseEntity<ESFile>(updatedFile, HttpStatus.OK);
         } catch (IOException e) {

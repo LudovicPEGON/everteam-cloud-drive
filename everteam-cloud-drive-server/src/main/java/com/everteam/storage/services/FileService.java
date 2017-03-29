@@ -3,7 +3,6 @@ package com.everteam.storage.services;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -101,9 +100,9 @@ public class FileService {
 
     }
 
-    public void update(ESFileId fileId, String name, String contentType, InputStream in, String description) throws IOException {
+    public void update(ESFileId fileId, FileInfo info) throws IOException {
         IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
-        drive.update(fileId.getPath(), name, contentType, in,  description);
+        drive.update(fileId.getPath(), info);
     }
     
     public ESFileId createFolder(ESFileId parentId, String name, String description) throws IOException {

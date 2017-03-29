@@ -1,7 +1,6 @@
 package com.everteam.storage.drive;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -50,8 +49,20 @@ public interface IDrive {
 
     ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException;
 
-    void update(String fileId, String name, String contentType, InputStream in, String description) throws IOException;
+    void update(String fileId, FileInfo info) throws IOException;
 
+    /**
+     * Get updates in the drive from the given date <b>fromDate</b>
+     * <br>
+     * If <b>fileId</b> is specified <br>
+     *    - <i>If it's a folder</i> : get updates for all files and folders in sub-hierarchy <br>
+     *    - <i>If it's a file</i> : get updates for this file if there is some<br>
+     *    - <i>If it's empty</i> : get updates for all the drive (from root)
+     * @param fileId
+     * @param fromDate
+     * @param consumer
+     * @throws IOException
+     */
     void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException;
     
     boolean exists(String fileId) throws IOException;
