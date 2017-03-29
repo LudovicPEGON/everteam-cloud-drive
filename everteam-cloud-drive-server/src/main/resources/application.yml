@@ -34,6 +34,7 @@ storage:
         - name: od1
           type: ONEDRIVE
           clientSecrets: /microsoft_secret.json
+    
 
 #remove this block in cloud environment    
 eureka:
@@ -41,19 +42,6 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
-#security:
-#   oauth2:
-#    client:
-#      clientId: 233668646673605
-#      clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
-#      accessTokenUri: https://graph.facebook.com/oauth/access_token
-#      userAuthorizationUri: https://www.facebook.com/dialog/oauth
-#      tokenName: oauth_token
-#      authenticationScheme: query
-#      clientAuthenticationScheme: form
-#    resource:
-#       user-info-uri: https://graph.facebook.com/me
-
 #storage-v1-0:
 #    ribbon:
 #        eureka:
@@ -74,5 +62,4 @@ eureka:
 #      scope: files.readwrite offline_access 
 #    resource:
 #       user-info-uri: https://graph.microsoft.com/v1.0/me
-
 
