@@ -35,7 +35,7 @@ dependencies {
     
     compile 'com.google.apis:google-api-services-drive:v3-rev64-1.22.0'
     
-    //compile("com.everteam.cloud:everteam-cloud-starter-security:1.0.0")
+    //compile("com.everteam.cloud:everteam-cloud-starter-security:2.0.0")
    
 }
 

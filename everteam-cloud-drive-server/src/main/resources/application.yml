@@ -1,5 +1,6 @@
 server:
-    port: 7070
+    port: 8000
+   
 
 spring:
     application:
@@ -15,7 +16,7 @@ storage:
     repositories:
         - name: g1
           type: GOOGLE
-          rootDirectory: 0BweRDtBuW6eURy05TXZvUFdjbHM
+          rootDirectory: 
           clientSecrets: /client_secret.json
         - name: g2
           type: GOOGLE
@@ -40,3 +41,38 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
+#security:
+#   oauth2:
+#    client:
+#      clientId: 233668646673605
+#      clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
+#      accessTokenUri: https://graph.facebook.com/oauth/access_token
+#      userAuthorizationUri: https://www.facebook.com/dialog/oauth
+#      tokenName: oauth_token
+#      authenticationScheme: query
+#      clientAuthenticationScheme: form
+#    resource:
+#       user-info-uri: https://graph.facebook.com/me
+
+#storage-v1-0:
+#    ribbon:
+#        eureka:
+#            enabled: false
+#        listOfServers: localhost:7070
+#        ServerListRefreshInterval: 15000
+
+#security:
+#   oauth2:
+#    client:
+#      clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
+#      clientSecret: MyGnyPdRuQe12RJSFRNobTe
+#      accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
+#      userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+#      tokenName: access_token
+#      authenticationScheme: header
+#      clientAuthenticationScheme: form
+#      scope: files.readwrite offline_access 
+#    resource:
+#       user-info-uri: https://graph.microsoft.com/v1.0/me
+
+

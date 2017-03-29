@@ -64,5 +64,8 @@ public interface IDrive {
      * @throws IOException
      */
     void checkUpdates(String fileId, OffsetDateTime fromDate, Consumer<ESFile> consumer) throws IOException;
+    
+    boolean exists(String fileId) throws IOException;
+   
 
 }

@@ -79,5 +79,11 @@ public class OneDrive extends DriveImpl {
         api.checkUpdates(fileId, fromDate, consumer);
 
     }
+
+    @Override
+    public boolean exists(String fileId) throws IOException {
+        // TODO Auto-generated method stub
+        return false;
+    }
     
 }
