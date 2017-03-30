@@ -16,21 +16,14 @@ storage:
     repositories:
         - name: g1
           type: GOOGLE
-          rootDirectory: 
+          rootDirectory: 0B-pBfcA-dNNOdzgtVUhNSFJQU0k
           clientSecrets: /client_secret.json
-        - name: g2
-          type: GOOGLE
-          rootDirectory: 
-          clientSecrets: /client_secret2.json
         - name: l1
           type: FS
-          rootDirectory: d:/tmp
+          rootDirectory: /home/local/storage1
         - name: l2
           type: FS
-          rootDirectory: d:/temp
-        - name: testlpe
-          type: FS
-          rootDirectory: D:\home\eclipse_workspace\es_head\icons\icon16
+          rootDirectory: /home/local/storage2
         - name: od1
           type: ONEDRIVE
           clientSecrets: /microsoft_secret.json
