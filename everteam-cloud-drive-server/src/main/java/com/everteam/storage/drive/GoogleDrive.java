@@ -13,10 +13,8 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
@@ -25,6 +23,7 @@ import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESPermission.AccountTypeEnum;
 import com.everteam.storage.common.model.ESPermission.RolesEnum;
 import com.everteam.storage.common.model.ESPermission.TypeEnum;
+import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.common.model.ESUser;
 import com.everteam.storage.utils.FileInfo;
 import com.google.api.client.auth.oauth2.Credential;
@@ -56,18 +55,18 @@ public class GoogleDrive extends DriveImpl {
     
     private final ConcurrentHashMap<String, File> cache = new ConcurrentHashMap<>();
 
-    @Value("${storage.google.test:#{1000}}")
-    private int lpe2;
+   
 
     /** Application name. */
     private static final String APPLICATION_NAME = "everteam-ms-storage";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
+            //System.getProperty("user.home"),
             ".credentials/drive-java-etms-storage");
 
     /** Global instance of the {@link FileDataStoreFactory}. */
-    private static FileDataStoreFactory DATA_STORE_FACTORY;
+    private FileDataStoreFactory DATA_STORE_FACTORY;
 
     /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -83,15 +82,25 @@ public class GoogleDrive extends DriveImpl {
      */
     private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE);
 
-    static {
+   
+    
+    
+    
+
+    @Override
+    public void init(ESRepository repository) {
+        super.init(repository);
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+            java.io.File dataDirectory = new java.io.File(DATA_STORE_DIR, repository.getId());
+            dataDirectory.mkdirs();
+            DATA_STORE_FACTORY = new FileDataStoreFactory(dataDirectory);
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(1);
 
         }
+        
     }
 
     @Override
