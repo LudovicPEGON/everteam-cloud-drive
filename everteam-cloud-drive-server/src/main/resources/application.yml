@@ -1,5 +1,6 @@
 server:
-    port: 7070
+    port: 8000
+   
 
 spring:
     application:
@@ -15,24 +16,18 @@ storage:
     repositories:
         - name: g1
           type: GOOGLE
-          rootDirectory: 0BweRDtBuW6eURy05TXZvUFdjbHM
+          rootDirectory: 0B-pBfcA-dNNOdzgtVUhNSFJQU0k
           clientSecrets: /client_secret.json
-        - name: g2
-          type: GOOGLE
-          rootDirectory: 
-          clientSecrets: /client_secret2.json
         - name: l1
           type: FS
-          rootDirectory: d:/tmp
+          rootDirectory: /home/local/storage1
         - name: l2
           type: FS
-          rootDirectory: d:/temp
-        - name: testlpe
-          type: FS
-          rootDirectory: D:\home\eclipse_workspace\es_head\icons\icon16
+          rootDirectory: /home/local/storage2
         - name: od1
           type: ONEDRIVE
           clientSecrets: /microsoft_secret.json
+    
 
 #remove this block in cloud environment    
 eureka:
@@ -40,3 +35,24 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
+#storage-v1-0:
+#    ribbon:
+#        eureka:
+#            enabled: false
+#        listOfServers: localhost:7070
+#        ServerListRefreshInterval: 15000
+
+#security:
+#   oauth2:
+#    client:
+#      clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
+#      clientSecret: MyGnyPdRuQe12RJSFRNobTe
+#      accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
+#      userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+#      tokenName: access_token
+#      authenticationScheme: header
+#      clientAuthenticationScheme: form
+#      scope: files.readwrite offline_access 
+#    resource:
+#       user-info-uri: https://graph.microsoft.com/v1.0/me
+

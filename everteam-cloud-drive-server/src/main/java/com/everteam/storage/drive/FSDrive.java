@@ -165,6 +165,11 @@ public class FSDrive extends DriveImpl {
         }
     }
     
+    @Override
+    public boolean exists(String fileId) {
+        return Files.exists(buildPath(fileId));
+    }
+    
     
     
     
@@ -310,6 +315,8 @@ public class FSDrive extends DriveImpl {
         Files.copy(path, outputstream);
         return outputstream.toByteArray();
     }
+
+   
 
 
 }

@@ -22,6 +22,9 @@ public class RepositoryService {
 
     @Autowired 
     BeanFactory beanFactory;
+    
+    
+    
 
     public static Map<String, IDrive> drives = new HashMap<>();
 
@@ -36,9 +39,18 @@ public class RepositoryService {
 
     public List<ESRepository> getRepositoryList() throws Exception {
         List<ESRepository> repositories = new ArrayList<>();
-        List<IDrive> connectors = getDriveList();
-        for (IDrive connector : connectors) {
-            repositories.add(connector.getRepository());
+        List<IDrive> drives = getDriveList();
+        for (IDrive drive : drives) {
+            ESRepository repository =  drive.getRepository();
+            ESRepository cloneRepository =  new ESRepository()
+                    .id(repository.getId())
+                    .name(repository.getName())
+                    .rootDirectory(repository.getRootDirectory())
+                    .type(repository.getType())
+                    .clientSecrets(repository.getClientSecrets());
+            
+            // we need to clone repository, because they are static and their id are modified by serializer.
+            repositories.add(cloneRepository);
         }
         return repositories;
     }
