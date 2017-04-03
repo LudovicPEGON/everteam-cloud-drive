@@ -2,12 +2,16 @@ subprojects {
 
   apply plugin : "java"
   group = 'com.everteam.cloud'
-  version = '1.0.0'
+  version = '1.0.0-SNAPSHOT'
   
   repositories {
      mavenCentral()
      mavenLocal()
   }
+  
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+
 }
 
 

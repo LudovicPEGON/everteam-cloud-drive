@@ -11,20 +11,19 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'io.spring.dependency-management'
 
 
-repositories {
-    mavenCentral()
-    mavenLocal()
+
+
+dependencyManagement {
+     imports {
+          mavenBom "com.everteam.cloud:everteam-cloud-dependencies:2.0.0-SNAPSHOT"
+     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-
-
 dependencies {
-    compile("com.everteam.cloud:everteam-cloud-starter-client:1.0.0")
+    compile("com.everteam.cloud:everteam-cloud-starter-client")
     
     testCompile group: 'org.springframework', name: 'spring-test', version: '4.0.5.RELEASE'
     testCompile("junit:junit:4.12")
