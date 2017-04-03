@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -28,6 +29,17 @@ public interface RepositoriesApi {
     default ResponseEntity<List<ESRepository>> listRepositories() {
         // do some magic!
         return new ResponseEntity<List<ESRepository>>(HttpStatus.OK);
+    }
+    
+    @ApiOperation(value = "Generate token", notes = "", response = OAuth2AccessToken.class, tags={ "Repositories", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "generate token", response = OAuth2AccessToken.class) })
+    @RequestMapping(value = "/repositories/{id}/token",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    default ResponseEntity<OAuth2AccessToken> getRepositoryToken() {
+        // do some magic!
+        return new ResponseEntity<OAuth2AccessToken>(HttpStatus.OK);
     }
 
 }

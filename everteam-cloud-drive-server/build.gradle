@@ -35,6 +35,9 @@ dependencies {
     
     compile 'com.google.apis:google-api-services-drive:v3-rev64-1.22.0'
     
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.1.0.RELEASE'
+
+    
     //compile("com.everteam.cloud:everteam-cloud-starter-security:1.0.0")
    
 }
