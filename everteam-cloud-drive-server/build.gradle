@@ -1,6 +1,9 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+               url "http://bpms-build.cloud.everteam.com:8081/nexus/content/repositories/m2repo/"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
@@ -16,30 +19,30 @@ apply plugin: 'io.spring.dependency-management'
 
 
 
-repositories {
-    mavenCentral()
-    mavenLocal()
+dependencyManagement {
+     imports {
+          mavenBom "com.everteam.cloud:everteam-cloud-dependencies:2.0.0-SNAPSHOT"
+     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+
+
 
 dependencies {
-    compile("com.everteam.cloud:everteam-cloud-starter-server:2.0.0")
+    compile("com.everteam.cloud:everteam-cloud-starter-server")
     
-    compile 'com.google.api-client:google-api-client:1.22.0'
-    
-    compile ('com.google.oauth-client:google-oauth-client-jetty:1.22.0') {
+    compile 'com.google.api-client:google-api-client'
+    compile ('com.google.oauth-client:google-oauth-client-jetty') {
         exclude group: 'org.mortbay.jetty', module: 'servlet-api'
     }
-    
-    compile 'com.google.apis:google-api-services-drive:v3-rev64-1.22.0'
+    compile 'com.google.apis:google-api-services-drive'
     
     compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.1.0.RELEASE'
 
     //compile("com.everteam.cloud:everteam-cloud-starter-security:1.0.0")
    
 }
+
 
 
 jar {
