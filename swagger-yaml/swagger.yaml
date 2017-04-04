@@ -201,6 +201,10 @@ paths:
           description: "Successfully created"
           schema:
             $ref: "#/definitions/ESFile"
+          headers:
+            x-next:
+              type: "string"
+              description: "A link to the next page of responses"
   /files/{id}/move:
     post:
       tags:
