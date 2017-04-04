@@ -46,12 +46,11 @@ import com.everteam.storage.utils.FileInfo;
 public class OneDriveClientAPI {
 
     private final static Logger LOG = LoggerFactory.getLogger(OneDrive.class);
-
-    private final String ACCESS_TOKEN;
+    private String accessToken;
     private final String BASE_URL = "https://graph.microsoft.com/v1.0/me";
 
     public OneDriveClientAPI(String accessToken) {
-        ACCESS_TOKEN = accessToken;
+        this.accessToken = accessToken;
     }
     /*
      * Source https://dev.onedrive.com/resources/item.htm
@@ -388,9 +387,9 @@ public class OneDriveClientAPI {
     private ResponseEntity<String> exchangeUri(URI url, HttpMethod method, HttpHeaders headers, Object body) {
         if (headers == null) {
             headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + ACCESS_TOKEN);
+            headers.set("Authorization", "Bearer " + accessToken);
         } else if (!headers.containsKey("Authorization")) {
-            headers.set("Authorization", "Bearer " + ACCESS_TOKEN);
+            headers.set("Authorization", "Bearer " + accessToken);
         }
         HttpEntity<Object> entity = null;
         if (body != null) {

@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Consumer;
@@ -21,6 +22,7 @@ import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.drive.IDrive;
+import com.everteam.storage.drive.OAuth2DriveImpl;
 import com.everteam.storage.jackson.ESFileSerializer;
 import com.everteam.storage.utils.ESFileId;
 import com.everteam.storage.utils.FileInfo;
@@ -41,16 +43,24 @@ public class FileService {
     private ObjectMapper jacksonObjectMapper;
     
 
-    public ESFile getFile(ESFileId fileId, boolean addPermissions, Boolean addChecksum) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public ESFile getFile(ESFileId fileId, boolean addPermissions, Boolean addChecksum) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
         return drive.getFile(fileId.getPath(), addPermissions, addChecksum)
                 .repositoryId(fileId.getRepositoryId());
     }
 
-    public ESFileId copy(ESFileId sourceId, ESFileId targetId) throws IOException {
-        IDrive sourcedrive = driveManager.getDrive(sourceId.getRepositoryId());
+    private IDrive getDrive(ESFileId fileId) throws GeneralSecurityException, IOException {
+        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+        if (drive instanceof OAuth2DriveImpl) {
+            ((OAuth2DriveImpl) drive).authorize();
+        }
+        return drive;
+    }
 
-        IDrive targetDrive = driveManager.getDrive(targetId.getRepositoryId());
+    public ESFileId copy(ESFileId sourceId, ESFileId targetId) throws IOException, GeneralSecurityException {
+        IDrive sourcedrive = getDrive(sourceId);
+
+        IDrive targetDrive = getDrive(targetId);
         // TODO : Have to handle if we copy file or directory and its content, for now just handling file copy
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
         sourcedrive.downloadTo(sourceId.getPath(), baOS);
@@ -62,8 +72,8 @@ public class FileService {
         
     }
 
-    public ESFileList getChildren(ESFileId fileId, boolean addPermissions, Boolean addChecksum, int maxSize) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public ESFileList getChildren(ESFileId fileId, boolean addPermissions, Boolean addChecksum, int maxSize) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
         ESFileList files = drive.children(fileId.getPath(), addPermissions, addChecksum, maxSize);
         for (ESFile file : files.getItems()) {
             file.setRepositoryId(fileId.getRepositoryId());
@@ -73,26 +83,26 @@ public class FileService {
         
     }
 
-    public void delete(ESFileId fileId) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public void delete(ESFileId fileId) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
         drive.delete(fileId.getPath());
     }
 
-    public List<ESPermission> getPermissions(ESFileId fileId) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public List<ESPermission> getPermissions(ESFileId fileId) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
 
         return drive.getPermissions(fileId.getPath());
     }
 
-    public void downloadTo(ESFileId fileId, OutputStream outputStream) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public void downloadTo(ESFileId fileId, OutputStream outputStream) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
 
         drive.downloadTo(fileId.getPath(), outputStream);
 
     }
 
-    public byte[] getFileContent(ESFileId fileId) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public byte[] getFileContent(ESFileId fileId) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
 
         ByteArrayOutputStream baOS = new ByteArrayOutputStream();
         drive.downloadTo(fileId.getPath(), baOS);
@@ -100,13 +110,13 @@ public class FileService {
 
     }
 
-    public void update(ESFileId fileId, FileInfo info) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public void update(ESFileId fileId, FileInfo info) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
         drive.update(fileId.getPath(), info);
     }
     
-    public ESFileId createFolder(ESFileId parentId, String name, String description) throws IOException {
-        IDrive drive = driveManager.getDrive(parentId.getRepositoryId());
+    public ESFileId createFolder(ESFileId parentId, String name, String description) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(parentId);
         String newFileId = null;
         if (drive.isFolder(parentId.getPath())) {
             newFileId = drive.insertFolder(parentId.getPath(), name, description);
@@ -119,8 +129,8 @@ public class FileService {
     }
 
     public ESFileId createFile(ESFileId parentId, FileInfo info)
-            throws IOException {
-        IDrive drive = driveManager.getDrive(parentId.getRepositoryId());
+            throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(parentId);
         String newFileId = null;
         if (drive.isFolder(parentId.getPath())) {
             newFileId = drive.insertFile(parentId.getPath(), info);
@@ -131,8 +141,8 @@ public class FileService {
         return new ESFileId(parentId.getRepositoryId(), newFileId);
     }
 
-    public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate) throws IOException {
-        IDrive drive = driveManager.getDrive(fileId.getRepositoryId());
+    public void checkUpdates(ESFileId fileId, OffsetDateTime fromDate) throws IOException, GeneralSecurityException {
+        IDrive drive = getDrive(fileId);
         CheckUpdate cu = new CheckUpdate(this, drive, fileId.getPath(), fromDate);
         Thread thread = new Thread(cu);
         thread.start();

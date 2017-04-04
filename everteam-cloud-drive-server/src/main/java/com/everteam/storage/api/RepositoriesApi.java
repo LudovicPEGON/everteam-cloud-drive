@@ -4,14 +4,17 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.everteam.storage.common.model.ESRepository;
+import com.everteam.storage.utils.ESFileId;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -31,15 +34,28 @@ public interface RepositoriesApi {
         return new ResponseEntity<List<ESRepository>>(HttpStatus.OK);
     }
     
-    @ApiOperation(value = "Generate token", notes = "", response = OAuth2AccessToken.class, tags={ "Repositories", })
+    @ApiOperation(value = "Generate token", notes = "", response = String.class, tags={ "Repositories", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "generate token", response = OAuth2AccessToken.class) })
-    @RequestMapping(value = "/repositories/{id}/token",
+        @ApiResponse(code = 200, message = "generate token", response = String.class) })
+    @RequestMapping(value = "/repositories/{id}/oauth2/token",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<OAuth2AccessToken> getRepositoryToken() {
+    default ResponseEntity<String> getRepositoryToken(@ApiParam(value = "id",required=true ) @PathVariable("id") ESFileId id) {
         // do some magic!
-        return new ResponseEntity<OAuth2AccessToken>(HttpStatus.OK);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
+    
+    @ApiOperation(value = "Generate token", notes = "", response = String.class, tags={ "Repositories", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "generate token", response = String.class) })
+    @RequestMapping(value = "/repositories/oauth2/callback",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    default ResponseEntity<String> getRepositoryTokenCallback(@ApiParam(value = "Authorization code") @RequestParam("code") String authorizationCode,
+            @ApiParam(value = "State") @RequestParam("state") String state) {
+        // do some magic!
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+    
 }

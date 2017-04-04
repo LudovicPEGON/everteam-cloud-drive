@@ -2,11 +2,15 @@ package com.everteam.storage.drive;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.stereotype.Component;
 
 import com.everteam.storage.common.model.ESFile;
@@ -15,19 +19,38 @@ import com.everteam.storage.common.model.ESPermission;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.onedrive.OneDriveClientAPI;
 import com.everteam.storage.utils.FileInfo;
+import com.google.api.client.auth.oauth2.Credential;
 
-@Component
+@Component(value="onedrive")
 @Scope("prototype")
-public class OneDrive extends DriveImpl {
+@ConfigurationProperties(prefix = "onedrive")
+public class OneDrive extends OAuth2DriveImpl {
 
-    private final static String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKUVF2M0ZZZ0ZNWjFtOW9IRVFNdW5Bb3lGWFZud3BnTzBzT2w2OUdCUWp6R0VtLVV4Y05oc19iRDNDZzd3VllpZFRqSkNZd0o5N3M0TEFDRlN1aFRNY2lBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwNzA0MzEzLCJuYmYiOjE0OTA3MDQzMTMsImV4cCI6MTQ5MDcwODIxMywiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKMEN0VzJDZVlqRnJjeVFwNXhVYXUzMnREYlR1R0t5VEVZQmZ3bzFyZjlKMl9RRWdfOXdQdlJSZ3lYR05SRjhLRWRqcTY3aVNHY1lzNlFROVFjaGZ5NHd4d3VfYWdMM3NTYmJTcVVQTlF1a2NnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.DEuuZxCzFLZ40INIGDjEajeYnHFOYYCRKqGraURDKcg4Qd6usOlLMqtg0K0l50VHCRQUFX6hRqTLmwszD8JgTWAw9i69Zd3UdqaDZdzpg0_Ex0NIKh212AWhIPnccWY2DpCemSrKQ8NB8QreaGwHm16QcNy-Tl6E2i1OBsjVdBuxZ5yU5hLLL3Bdk4bTqvRRc4SPOpT2DZiXalCyPO9W6A7hpMn40kfoP2T4bQqLrPTdlFvncyY9QsuWvV9WUv5jbn0QH-e7_4or1yFo69vr2JBJ3jn08gB6UcIafpSmKsHx9GQykYOtn5exdr5tAAD0v89wxz59PcJt0zVZXq2-Lw";
     private OneDriveClientAPI         api;
-
+    
+    protected AuthorizationCodeResourceDetails client;
+    
+    protected ResourceServerProperties resource;
+    
     @Override
-    public void init(ESRepository repository) {
+    public void init(ESRepository repository) throws IOException, GeneralSecurityException {
         super.init(repository);
-        api = new OneDriveClientAPI(ACCESS_TOKEN);
     }
+    
+    public AuthorizationCodeResourceDetails getClient() {
+        return client;
+    }
+    public void setClient(AuthorizationCodeResourceDetails client) {
+        this.client = client;
+    }
+    public ResourceServerProperties getResource() {
+        return resource;
+    }
+    public void setResource(ResourceServerProperties resource) {
+        this.resource = resource;
+    }
+
+
 
     @Override
     public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
@@ -84,6 +107,11 @@ public class OneDrive extends DriveImpl {
     public boolean exists(String fileId) throws IOException {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    protected void consumeCredential(Credential credential) {
+        api = new OneDriveClientAPI(credential.getAccessToken());
     }
     
 }

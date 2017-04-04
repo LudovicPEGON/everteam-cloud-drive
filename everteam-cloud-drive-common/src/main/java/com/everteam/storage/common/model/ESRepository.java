@@ -59,8 +59,11 @@ public class ESRepository   {
   @JsonProperty("rootDirectory")
   private String rootDirectory = null;
 
-  @JsonProperty("clientSecrets")
-  private String clientSecrets = null;
+  @JsonProperty("clientSecret")
+  private String clientSecret = null;
+  
+  @JsonProperty("clientId")
+  private String clientId = null;
 
   public ESRepository id(String id) {
     this.id = id;
@@ -134,23 +137,41 @@ public class ESRepository   {
     this.rootDirectory = rootDirectory;
   }
 
-  public ESRepository clientSecrets(String clientSecrets) {
-    this.clientSecrets = clientSecrets;
+  public ESRepository clientSecret(String clientSecret) {
+    this.clientSecret = clientSecret;
     return this;
   }
 
    /**
-   * can be a reference to json file containing all client secrets
+   * can be a reference to json file containing all client secret
    * @return clientSecrets
   **/
-  @ApiModelProperty(value = "can be a reference to json file containing all client secrets")
-  public String getClientSecrets() {
-    return clientSecrets;
+  @ApiModelProperty(value = "can be a reference to json file containing all client secret")
+  public String getClientSecret() {
+    return clientSecret;
   }
 
-  public void setClientSecrets(String clientSecrets) {
-    this.clientSecrets = clientSecrets;
+  public void setClientSecret(String clientSecret) {
+    this.clientSecret = clientSecret;
   }
+  
+  public ESRepository clientId(String clientId) {
+      this.clientId = clientId;
+      return this;
+    }
+
+     /**
+     * can be a reference to json file containing all client id
+     * @return clientId
+    **/
+    @ApiModelProperty(value = "can be a reference to json file containing all client id")
+    public String getClientId() {
+      return clientId;
+    }
+
+    public void setClientId(String clientId) {
+      this.clientId = clientId;
+    }
 
 
   @Override
@@ -166,12 +187,13 @@ public class ESRepository   {
         Objects.equals(this.type, esRepository.type) &&
         Objects.equals(this.name, esRepository.name) &&
         Objects.equals(this.rootDirectory, esRepository.rootDirectory) &&
-        Objects.equals(this.clientSecrets, esRepository.clientSecrets);
+        Objects.equals(this.clientSecret, esRepository.clientSecret) &&
+        Objects.equals(this.clientId, esRepository.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, type, name, rootDirectory, clientSecrets);
+    return Objects.hash(id, type, name, rootDirectory, clientSecret, clientId);
   }
 
   @Override
@@ -183,7 +205,8 @@ public class ESRepository   {
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    rootDirectory: ").append(toIndentedString(rootDirectory)).append("\n");
-    sb.append("    clientSecrets: ").append(toIndentedString(clientSecrets)).append("\n");
+    sb.append("    clientSecret: ").append(toIndentedString(clientSecret)).append("\n");
+    sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

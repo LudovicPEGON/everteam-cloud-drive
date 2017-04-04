@@ -2,8 +2,8 @@ package com.everteam.storage.drive;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,10 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.stereotype.Component;
 
 import com.everteam.storage.common.model.ESFile;
@@ -27,20 +30,14 @@ import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.common.model.ESUser;
 import com.everteam.storage.utils.FileInfo;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
-import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
@@ -49,24 +46,21 @@ import com.google.api.services.drive.model.User;
 
 @Component(value = "google")
 @Scope("prototype")
-public class GoogleDrive extends DriveImpl {
+@ConfigurationProperties(prefix = "google")
+public class GoogleDrive extends OAuth2DriveImpl {
 
     private final static Logger LOG = LoggerFactory.getLogger(GoogleDrive.class);
     
     private final ConcurrentHashMap<String, File> cache = new ConcurrentHashMap<>();
 
-   
+    protected AuthorizationCodeResourceDetails client;
+    
+    protected ResourceServerProperties resource;
+    
+    private Drive drive;
 
     /** Application name. */
     private static final String APPLICATION_NAME = "everteam-ms-storage";
-
-    /** Directory to store user credentials for this application. */
-    private static final java.io.File DATA_STORE_DIR = new java.io.File(
-            //System.getProperty("user.home"),
-            ".credentials/drive-java-etms-storage");
-
-    /** Global instance of the {@link FileDataStoreFactory}. */
-    private FileDataStoreFactory DATA_STORE_FACTORY;
 
     /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -74,27 +68,12 @@ public class GoogleDrive extends DriveImpl {
     /** Global instance of the HTTP transport. */
     private static HttpTransport HTTP_TRANSPORT;
 
-    /**
-     * Global instance of the scopes required by this quickstart.
-     *
-     * If modifying these scopes, delete your previously saved credentials at
-     * ~/.credentials/drive-java-quickstart
-     */
-    private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE);
-
-   
-    
-    
-    
 
     @Override
-    public void init(ESRepository repository) {
+    public void init(ESRepository repository) throws IOException, GeneralSecurityException {
         super.init(repository);
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            java.io.File dataDirectory = new java.io.File(DATA_STORE_DIR, repository.getId());
-            dataDirectory.mkdirs();
-            DATA_STORE_FACTORY = new FileDataStoreFactory(dataDirectory);
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(1);
@@ -219,25 +198,6 @@ public class GoogleDrive extends DriveImpl {
     }
     
     
-    /**
-     * Creates an authorized Credential object.
-     * 
-     * @return an authorized Credential object.
-     * @throws IOException
-     */
-    private Credential authorize() throws IOException {
-        // Load client secrets.
-        InputStream in = GoogleDrive.class.getResourceAsStream(repository.getClientSecrets());
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-                clientSecrets, SCOPES).setDataStoreFactory(DATA_STORE_FACTORY).setAccessType("offline")
-                        .setApprovalPrompt("auto").build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
-        LOG.debug("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-        return credential;
-    }
 
     /**
      * Build and return an authorized Drive client service.
@@ -246,8 +206,7 @@ public class GoogleDrive extends DriveImpl {
      * @throws IOException
      */
     private Drive getDriveService() throws IOException {
-        Credential credential = authorize();
-        return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+        return drive;
     }
 
     
@@ -403,6 +362,29 @@ public class GoogleDrive extends DriveImpl {
         }
         return file;
         
+    }
+
+    @Override
+    public AuthorizationCodeResourceDetails getClient() {
+        return this.client;
+    }
+
+    @Override
+    public ResourceServerProperties getResource() {
+        return this.resource;
+    }
+
+    @Override
+    protected void consumeCredential(Credential credential) {
+        drive = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+    }
+
+    public void setClient(AuthorizationCodeResourceDetails client) {
+        this.client = client;
+    }
+
+    public void setResource(ResourceServerProperties resource) {
+        this.resource = resource;
     }
 
     

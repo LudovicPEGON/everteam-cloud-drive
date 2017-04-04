@@ -30,16 +30,15 @@ dependencyManagement {
 
 dependencies {
     compile("com.everteam.cloud:everteam-cloud-starter-server")
+    compile("com.everteam.cloud:everteam-cloud-starter-security")
     
     compile 'com.google.api-client:google-api-client'
     compile ('com.google.oauth-client:google-oauth-client-jetty') {
-        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+        exclude group: 'org.mortbay.jetty'
     }
     compile 'com.google.apis:google-api-services-drive'
+    //compile 'org.springframework.security.oauth:spring-security-oauth2'
     
-    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.1.0.RELEASE'
-
-    //compile("com.everteam.cloud:everteam-cloud-starter-security:1.0.0")
    
 }
 

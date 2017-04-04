@@ -1,6 +1,7 @@
 package com.everteam.storage.api;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class FilesApiController implements FilesApi {
         try {
             fileService.checkUpdates(fileId, fromDate);
             return new ResponseEntity<Void>(HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -50,7 +51,7 @@ public class FilesApiController implements FilesApi {
             ESFileId result = fileService.copy(fileId, targetId);
 
             return new ResponseEntity<ESFile>(fileService.getFile(result, false, false), HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
 
@@ -80,7 +81,7 @@ public class FilesApiController implements FilesApi {
                 newFileId = fileService.createFile(fileId, info);
             }
             return new ResponseEntity<ESFile>(fileService.getFile(newFileId, false, false), HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
     }
@@ -90,7 +91,7 @@ public class FilesApiController implements FilesApi {
         try {
             fileService.delete(fileId);
             return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-        } catch (WebApplicationException | IOException e) {
+        } catch (WebApplicationException | IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
     }
@@ -122,7 +123,7 @@ public class FilesApiController implements FilesApi {
 
             headers.add("content-disposition", "attachment; filename = " + file.getName());
             return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -134,7 +135,7 @@ public class FilesApiController implements FilesApi {
         try {
             ESFile file = fileService.getFile(fileId, getPermissions, getChecksum);
             return new ResponseEntity<ESFile>(file, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -144,7 +145,7 @@ public class FilesApiController implements FilesApi {
         try {
             List<ESPermission> permissions = fileService.getPermissions(fileId);
             return new ResponseEntity<List<ESPermission>>(permissions, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
 
@@ -160,7 +161,7 @@ public class FilesApiController implements FilesApi {
             fileService.delete(fileId);
             ESFile copiedFile = fileService.getFile(copiedFileId, false, false);
             return new ResponseEntity<ESFile>(copiedFile, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
     }
@@ -178,7 +179,7 @@ public class FilesApiController implements FilesApi {
             fileService.update(fileId, info);
             ESFile updatedFile = fileService.getFile(fileId, false, false);
             return new ResponseEntity<ESFile>(updatedFile, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.BAD_REQUEST);
         }
     }

@@ -1,6 +1,9 @@
 server:
     port: 8000
    
+security:
+    ignored:
+        - /**
 
 spring:
     application:
@@ -17,7 +20,6 @@ storage:
         - name: g1
           type: GOOGLE
           rootDirectory: 0B-pBfcA-dNNOdzgtVUhNSFJQU0k
-          clientSecrets: /client_secret.json
         - name: l1
           type: FS
           rootDirectory: /home/local/storage1
@@ -26,7 +28,8 @@ storage:
           rootDirectory: /home/local/storage2
         - name: od1
           type: ONEDRIVE
-          clientSecrets: /microsoft_secret.json
+          clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
+          clientSecret: MyGnyPdRuQe12RJSFRNobTe
     
 
 #remove this block in cloud environment    
@@ -42,17 +45,23 @@ eureka:
 #        listOfServers: localhost:7070
 #        ServerListRefreshInterval: 15000
 
-#security:
-#   oauth2:
-#    client:
-#      clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
-#      clientSecret: MyGnyPdRuQe12RJSFRNobTe
-#      accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
-#      userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
-#      tokenName: access_token
-#      authenticationScheme: header
-#      clientAuthenticationScheme: form
-#      scope: files.readwrite offline_access 
-#    resource:
-#       user-info-uri: https://graph.microsoft.com/v1.0/me
-
+onedrive:
+    client:
+      clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
+      clientSecret: MyGnyPdRuQe12RJSFRNobTe
+      scope: files.readwrite offline_access
+      accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
+      userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+    resource:
+       userInfoUri: https://graph.microsoft.com/v1.0/me
+       
+       
+google:
+    client:
+      clientId: 593265142070-igf5kb3ljcrf976mbfeqgf39pd4o85q1.apps.googleusercontent.com
+      clientSecret: SuSCiQn8Gj7pLdTovAo2lEln
+      scope: https://www.googleapis.com/auth/drive
+      accessTokenUri: https://accounts.google.com/o/oauth2/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+    resource:
+       userInfoUri: https://graph.microsoft.com/v1.0/me

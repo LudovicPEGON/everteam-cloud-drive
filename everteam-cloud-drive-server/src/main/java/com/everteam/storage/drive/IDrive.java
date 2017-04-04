@@ -2,6 +2,7 @@ package com.everteam.storage.drive;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Consumer;
@@ -39,9 +40,9 @@ public interface IDrive {
     
     boolean isFolder(String fileId) throws IOException;
 
-    void init(ESRepository repository) throws IOException;
+    void init(ESRepository repository) throws IOException, GeneralSecurityException;
 
-    ESRepository getRepository() throws IOException;
+    ESRepository getRepository();
 
     List<ESPermission> getPermissions(String fileId) throws IOException;
 
