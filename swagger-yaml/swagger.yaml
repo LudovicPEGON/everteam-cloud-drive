@@ -376,12 +376,12 @@ definitions:
         description: "can be a reference to json file containing all client secrets"
       clientId:
         type: "string"
-        description: "client id we have to use to get access token. <br> Can be setting\
+        description: "client id we have to use to get access token. Can be setting\
           \ in application.yml for each repository or for drive"
       clientSecret:
         type: "string"
-        description: "client secret we have to use to get access token. <br> Can be\
-          \ setting in application.yml for each repository or for drive"
+        description: "client secret we have to use to get access token. Can be setting\
+          \ in application.yml for each repository or for drive"
   ESFile:
     type: "object"
     properties:
