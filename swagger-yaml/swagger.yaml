@@ -12,6 +12,8 @@ info:
 host: "virtserver.swaggerhub.com"
 basePath: "/EVER_TEAM_SOFTWARE/Storage/1.0.0"
 tags:
+- name: "Administration"
+  description: "Operations available for admin"
 - name: "Repositories"
   description: "Operations available for repositories"
 - name: "Directories"
@@ -38,6 +40,27 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESRepository"
+  /repositories/{id}/oauth2/token:
+    get:
+      tags:
+      - "Administration"
+      summary: "Get or Generate access token"
+      description: "get a valid access token or generate a new one\n"
+      operationId: "getRepositoryToken"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "valid access token"
+        303:
+          description: "need to validate again permissions, so redirected to drive\
+            \ specific authentication page"
   /files/{id}:
     get:
       tags:
