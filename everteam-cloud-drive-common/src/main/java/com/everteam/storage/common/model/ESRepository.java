@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * ESRepository
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-27T09:11:31.184Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-04-05T09:06:32.399Z")
 
 public class ESRepository   {
   @JsonProperty("id")
@@ -59,11 +59,11 @@ public class ESRepository   {
   @JsonProperty("rootDirectory")
   private String rootDirectory = null;
 
-  @JsonProperty("clientSecret")
-  private String clientSecret = null;
-  
   @JsonProperty("clientId")
   private String clientId = null;
+
+  @JsonProperty("clientSecret")
+  private String clientSecret = null;
 
   public ESRepository id(String id) {
     this.id = id;
@@ -137,16 +137,34 @@ public class ESRepository   {
     this.rootDirectory = rootDirectory;
   }
 
+  public ESRepository clientId(String clientId) {
+    this.clientId = clientId;
+    return this;
+  }
+
+   /**
+   * client id we have to use to get access token. Can be setting in application.yml for each repository or for drive
+   * @return clientId
+  **/
+  @ApiModelProperty(value = "client id we have to use to get access token. Can be setting in application.yml for each repository or for drive")
+  public String getClientId() {
+    return clientId;
+  }
+
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
+  }
+
   public ESRepository clientSecret(String clientSecret) {
     this.clientSecret = clientSecret;
     return this;
   }
 
    /**
-   * can be a reference to json file containing all client secret
-   * @return clientSecrets
+   * client secret we have to use to get access token. Can be setting in application.yml for each repository or for drive
+   * @return clientSecret
   **/
-  @ApiModelProperty(value = "can be a reference to json file containing all client secret")
+  @ApiModelProperty(value = "client secret we have to use to get access token. Can be setting in application.yml for each repository or for drive")
   public String getClientSecret() {
     return clientSecret;
   }
@@ -154,24 +172,6 @@ public class ESRepository   {
   public void setClientSecret(String clientSecret) {
     this.clientSecret = clientSecret;
   }
-  
-  public ESRepository clientId(String clientId) {
-      this.clientId = clientId;
-      return this;
-    }
-
-     /**
-     * can be a reference to json file containing all client id
-     * @return clientId
-    **/
-    @ApiModelProperty(value = "can be a reference to json file containing all client id")
-    public String getClientId() {
-      return clientId;
-    }
-
-    public void setClientId(String clientId) {
-      this.clientId = clientId;
-    }
 
 
   @Override
@@ -187,13 +187,13 @@ public class ESRepository   {
         Objects.equals(this.type, esRepository.type) &&
         Objects.equals(this.name, esRepository.name) &&
         Objects.equals(this.rootDirectory, esRepository.rootDirectory) &&
-        Objects.equals(this.clientSecret, esRepository.clientSecret) &&
-        Objects.equals(this.clientId, esRepository.clientId);
+        Objects.equals(this.clientId, esRepository.clientId) &&
+        Objects.equals(this.clientSecret, esRepository.clientSecret);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, type, name, rootDirectory, clientSecret, clientId);
+    return Objects.hash(id, type, name, rootDirectory, clientId, clientSecret);
   }
 
   @Override
@@ -205,8 +205,8 @@ public class ESRepository   {
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    rootDirectory: ").append(toIndentedString(rootDirectory)).append("\n");
-    sb.append("    clientSecret: ").append(toIndentedString(clientSecret)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
+    sb.append("    clientSecret: ").append(toIndentedString(clientSecret)).append("\n");
     sb.append("}");
     return sb.toString();
   }

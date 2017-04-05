@@ -2,6 +2,7 @@ package com.everteam.storage.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 
 import org.springframework.beans.TypeMismatchException;
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.drive.IDrive;
 import com.everteam.storage.drive.OAuth2DriveImpl;
+import com.everteam.storage.jackson.Encryptor;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow.Builder;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
@@ -80,11 +82,12 @@ public class OAuth2Utils {
         return authorizationCodeFlow.loadCredential(authDetails.getClientId());
     }
     
-    public HttpHeaders newAuthorization() {
+    public HttpHeaders newAuthorization() throws URISyntaxException, IOException {
         AuthorizationCodeRequestUrl url = authorizationCodeFlow.newAuthorizationUrl();
         url.setScopes(authDetails.getScope());
         url.setRedirectUri(CALLBACK_URL);
-        url.setState(drive.getRepository().getId());
+        String state = Encryptor.encrypt(drive.getRepository().getId());
+        url.setState(state);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(url.toURI());
         return headers;

@@ -44,7 +44,8 @@ public class RepositoryService {
                     .name(repository.getName())
                     .rootDirectory(repository.getRootDirectory())
                     .type(repository.getType())
-                    .clientSecret(repository.getClientSecret());
+                    .clientSecret(repository.getClientSecret())
+                    .clientId(repository.getClientId());
             
             // we need to clone repository, because they are static and their id are modified by serializer.
             repositories.add(cloneRepository);

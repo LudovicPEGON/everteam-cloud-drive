@@ -1,6 +1,7 @@
 package com.everteam.storage.api;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.everteam.storage.common.model.ESRepository;
 import com.everteam.storage.drive.IDrive;
+import com.everteam.storage.jackson.Encryptor;
 import com.everteam.storage.services.RepositoryService;
 import com.everteam.storage.utils.ESFileId;
 import com.everteam.storage.utils.OAuth2Utils;
@@ -48,28 +50,25 @@ public class RepositoriesApiController implements RepositoriesApi {
             if (credential == null || credential.getAccessToken() == null) {
                 return new ResponseEntity<>(oauth2.newAuthorization(), HttpStatus.SEE_OTHER);
             }
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
+            return new ResponseEntity<String>(credential.getAccessToken(), HttpStatus.OK);
+        } catch (IOException | GeneralSecurityException  | URISyntaxException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<String>(credential.getAccessToken(), HttpStatus.OK);
     }
     
     @Override
     public ResponseEntity<String> getRepositoryTokenCallback( @RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
         Credential credential = null;
-        IDrive drive = repositoryService.getDrive(state);
         try {
+            String repositoryId = Encryptor.decrypt(state);
+            IDrive drive = repositoryService.getDrive(repositoryId);
             OAuth2Utils oauth2 = new OAuth2Utils(drive);
             credential = oauth2.createAndStoreCredential(authorizationCode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
+            return new ResponseEntity<String>(credential.getAccessToken(), HttpStatus.OK);
+        } catch (IOException | GeneralSecurityException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<String>(credential.getAccessToken(), HttpStatus.OK);
+        
     }
 
     
