@@ -12,6 +12,8 @@ info:
 host: "virtserver.swaggerhub.com"
 basePath: "/EVER_TEAM_SOFTWARE/Storage/1.0.0"
 tags:
+- name: "Administration"
+  description: "Operations available for admin"
 - name: "Repositories"
   description: "Operations available for repositories"
 - name: "Directories"
@@ -38,6 +40,61 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESRepository"
+  /repositories/{id}/oauth2/token:
+    get:
+      tags:
+      - "Administration"
+      summary: "Get or Generate access token"
+      description: "get a valid access token or generate a new one\n"
+      operationId: "getRepositoryToken"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "valid access token"
+          schema:
+            type: "string"
+            example: "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKRHJkZ0NVcnlZUG5yZkU4bXlINW1KenlvM0ZpYWdlb053bkVIY1pQTUNMbmh1TDkxdWh6LXc5cnRwVThqclBiaHRSTVBUbFhsZ05VYl94MXVqbnNpTFNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwNzEzMjQyLCJuYmYiOjE0OTA3MTMyNDIsImV4cCI6MTQ5MDcxNzE0MiwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKeU1jRmx1N090c3l4NUIzLUJPRWs2Y0xydnhheEdJRmVtMUVLa291UksyNFRiUGtzWVRtMHJzOVFkbWtVd1J0WlV3OFB2MmtyZEpXcjJLS1NCWlc0eHJKUnFtN0Y1RDk4a0JWajJyNmwycjBnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.Uvyk36Q6F14zRxUldbHvVMPJhn9mzEMI795YmzDk7veFUoOsgmDinKQWqNGAakV-K_O16xyoDvSCcaxh50WMJHbuvE5bMWxTDZJw1hFjqX-_C_aIoL2raK_FBeNyq8sqgJ1Tn-3JfuodMCXlaR09KMiViPPLUXwZ1OOEMiAPwPfhoorz4rnigEC0QPT2ofJzm4lMn21Y0HqZBJBndCJY_u_vgObfvPBBRm4MP6mgI5njYp82QytxWr9kQQGPZmhtSLy7__0OaIBQU7WzQzLrJAs5uhAQbgW29wmdDKwfmgZP3pQ2dU-kVmSVzjY6GjECFp9ORhXNAok170zPxUcm9A\n"
+        303:
+          description: "need to validate again permissions, so redirected to drive\
+            \ specific authentication page"
+        500:
+          description: "if error happend on server side"
+  /repositories/oauth2/callback:
+    get:
+      tags:
+      - "Administration"
+      summary: "Callback called only by Drive authentication server"
+      description: "<b> Don't called this one manually.</b> It's only callback called\
+        \ by Drive authentication server. \n"
+      operationId: "getRepositoryTokenCallback"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "authorizationCode"
+        in: "query"
+        description: "authorization code returned by drive authentication server"
+        required: false
+        type: "string"
+      - name: "state"
+        in: "query"
+        description: "state returned by drive authentication server wich contains\
+          \ repositoryId"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "valid access token"
+          schema:
+            type: "string"
+        500:
+          description: "if error happend on server side"
   /files/{id}:
     get:
       tags:
@@ -201,6 +258,10 @@ paths:
           description: "Successfully created"
           schema:
             $ref: "#/definitions/ESFile"
+          headers:
+            x-next:
+              type: "string"
+              description: "A link to the next page of responses"
   /files/{id}/move:
     post:
       tags:
@@ -313,7 +374,11 @@ definitions:
     type: "object"
     properties:
       id:
-        $ref: "#/definitions/ESFileId"
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The repository's id"
+        readOnly: true
       type:
         type: "string"
         enum:
@@ -325,14 +390,29 @@ definitions:
       rootDirectory:
         type: "string"
         description: "can be a reference to json file containing all client secrets"
-      clientSecrets:
+      clientId:
         type: "string"
-        description: "can be a reference to json file containing all client secrets"
+        description: "client id we have to use to get access token. Can be setting\
+          \ in application.yml for each repository or for drive"
+      clientSecret:
+        type: "string"
+        description: "client secret we have to use to get access token. Can be setting\
+          \ in application.yml for each repository or for drive"
   ESFile:
     type: "object"
     properties:
       id:
-        $ref: "#/definitions/ESFileId"
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The file's id."
+        readOnly: true
+      repositoryId:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The repository's id."
+        readOnly: true
       parents:
         type: "array"
         description: "The files parent list. Some drives juste manage one parent"
@@ -389,23 +469,9 @@ definitions:
         type: "string"
         example: "2B693E6A1483B70BF5CD7C511035879E"
         description: "The file's content  MD5 checksum"
-  ESFileId:
-    type: "object"
-    properties:
-      repositoryName:
-        type: "string"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The repository's ID"
-      path:
-        type: "string"
-        description: "The file path in the repository"
-    example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESFileList:
     type: "object"
     properties:
-      path:
-        type: "string"
-        description: "The list of files"
       items:
         type: "array"
         description: "The list of files"
@@ -449,7 +515,11 @@ definitions:
     type: "object"
     properties:
       id:
-        $ref: "#/definitions/ESFileId"
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "Parent folders which contain this file"
+        readOnly: true
       paths:
         type: "array"
         description: "The list of parent names in order from root to direct parent\
