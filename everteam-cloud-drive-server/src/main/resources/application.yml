@@ -31,8 +31,7 @@ storage:
           rootDirectory: /home/local/storage2
         - name: od1
           type: ONEDRIVE
-          clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
-          clientSecret: MyGnyPdRuQe12RJSFRNobTe
+        
     
 
 #remove this block in cloud environment    
@@ -50,8 +49,8 @@ eureka:
 
 onedrive:
     client:
-      clientId: e4880281-7bc6-48c4-9a95-4b0ee9fb0cba
-      clientSecret: MyGnyPdRuQe12RJSFRNobTe
+      clientId: 52f5422b-07c0-46e1-a30f-b7f0867346d3
+      clientSecret: nJiXnKFgRt5EtmWFcBYM8w5
       scope: files.readwrite offline_access
       accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
       userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
