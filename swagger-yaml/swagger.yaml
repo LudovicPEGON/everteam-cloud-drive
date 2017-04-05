@@ -67,7 +67,7 @@ paths:
     get:
       tags:
       - "Administration"
-      summary: "Callback called by Drive Authentication server"
+      summary: "Callback called only by Drive Authentication server"
       description: "<b> Don't called this one manually.</b> It's only callback called\
         \ by Drive Authentication server. \n"
       operationId: "getRepositoryTokenCallback"
