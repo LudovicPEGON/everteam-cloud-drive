@@ -76,7 +76,15 @@ paths:
       operationId: "getRepositoryTokenCallback"
       produces:
       - "text/plain"
-      parameters: []
+      parameters:
+      - name: "authorizationCode"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "state"
+        in: "query"
+        required: false
+        type: "string"
       responses:
         200:
           description: "valid access token"
