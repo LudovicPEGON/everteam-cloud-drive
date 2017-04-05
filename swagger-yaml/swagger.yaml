@@ -374,9 +374,14 @@ definitions:
       rootDirectory:
         type: "string"
         description: "can be a reference to json file containing all client secrets"
-      clientSecrets:
+      clientId:
         type: "string"
-        description: "can be a reference to json file containing all client secrets"
+        description: "client id we have to use to get access token. <br> Can be setting\
+          \ in application.yml for each repository or for drive"
+      clientSecret:
+        type: "string"
+        description: "client secret we have to use to get access token. <br> Can be\
+          \ setting in application.yml for each repository or for drive"
   ESFile:
     type: "object"
     properties:
