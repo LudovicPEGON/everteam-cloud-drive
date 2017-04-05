@@ -17,9 +17,9 @@ import java.util.function.Consumer;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
@@ -156,10 +156,8 @@ public class OneDriveClientAPI {
          */
         ESFile newfolder = null;
         try {
-            JSONObject obj = new JSONObject();
-            obj.put(Item.NAME, name);
-            obj.put(Item.FOLDER, new JSONObject());
-            String response = exchangeUri(uri, HttpMethod.POST, null, obj).getBody();
+            Folder folder = new Folder(name, new FolderFacet());
+            String response = exchangeUri(uri, HttpMethod.POST, null, folder).getBody();
             newfolder = getESFileFromJSONObject(new JSONObject(response));
         } catch (JSONException e) {
             LOG.error(e.getMessage(), e);
@@ -168,6 +166,37 @@ public class OneDriveClientAPI {
             throw new IOException("ErrorOccursWhenCreatingFolder");
         }
         return newfolder.getId();
+    }
+    
+    protected static class Folder {
+        String name;
+        FolderFacet folder;
+        public Folder(String name, FolderFacet folder) {
+            this.name = name;
+            this.folder = folder;
+        }
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public FolderFacet getFolder() {
+            return folder;
+        }
+        public void setFolder(FolderFacet folder) {
+            this.folder = folder;
+        }
+    }
+    protected class FolderFacet {
+        int childCount;
+        public int getChildCount() {
+            return childCount;
+        }
+        public void setChildCount(int childCount) {
+            this.childCount = childCount;
+        }
+        
     }
 
     public String insertFile(String parentId, FileInfo info) throws IOException {
@@ -229,7 +258,7 @@ public class OneDriveClientAPI {
         return getFile(fileId, false, false);
     }
 
-    public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException {
+    public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId);
         ResponseEntity<String> response = exchangeUri(uri);
         ESFile file = null;
@@ -252,9 +281,6 @@ public class OneDriveClientAPI {
             }
         }
         
-        if (file == null) {
-            throw new IOException("NoFileWithThisFileId");
-        }
         return file;
     }
 

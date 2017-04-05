@@ -18,6 +18,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileOwnerAttributeView;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.UserPrincipal;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -61,8 +62,13 @@ public class FSDrive extends DriveImpl {
     @Value("${storage.fs.uri.depth:#{4}}")
     private int fileDepth;
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void init(ESRepository repository) throws IOException, GeneralSecurityException {
+        super.init(repository);
+        Path rootDirectory = Paths.get(getRepository().getRootDirectory());
+//        if (Files.notExists(rootDirectory)){
+            Files.createDirectories(rootDirectory);
+//        }
     }
 
     @Override

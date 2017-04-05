@@ -59,7 +59,7 @@ public class FilesApiController implements FilesApi {
 
     @Override
     public ResponseEntity<ESFile> createFile(@PathVariable("id") ESFileId fileId,
-            @RequestParam("content") MultipartFile content, @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "content", required = false) MultipartFile content, @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "description", required = false) String description) {
         try {
             ESFileId newFileId = null;

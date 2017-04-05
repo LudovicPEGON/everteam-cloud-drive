@@ -33,12 +33,11 @@ dependencies {
     compile("com.everteam.cloud:everteam-cloud-starter-security")
     
     compile 'com.google.api-client:google-api-client'
+    // when removing this library have to add json dependency
     compile ('com.google.oauth-client:google-oauth-client-jetty') {
-        exclude group: 'org.mortbay.jetty'
+        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
     }
     compile 'com.google.apis:google-api-services-drive'
-    //compile 'org.springframework.security.oauth:spring-security-oauth2'
-    
    
 }
 

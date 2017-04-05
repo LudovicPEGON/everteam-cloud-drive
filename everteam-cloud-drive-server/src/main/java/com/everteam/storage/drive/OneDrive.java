@@ -10,8 +10,10 @@ import java.util.function.Consumer;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
@@ -105,8 +107,17 @@ public class OneDrive extends OAuth2DriveImpl {
 
     @Override
     public boolean exists(String fileId) throws IOException {
-        // TODO Auto-generated method stub
-        return false;
+        boolean exist = false;
+        try {
+            getFile(fileId, false, false);
+            exist = true;
+        }
+        catch (HttpClientErrorException e) {
+            if (!HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+               throw e; 
+            }
+        }
+        return exist;
     }
 
     @Override
