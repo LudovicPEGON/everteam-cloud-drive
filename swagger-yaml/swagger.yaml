@@ -58,6 +58,9 @@ paths:
       responses:
         200:
           description: "valid access token"
+          schema:
+            type: "string"
+            example: "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKRHJkZ0NVcnlZUG5yZkU4bXlINW1KenlvM0ZpYWdlb053bkVIY1pQTUNMbmh1TDkxdWh6LXc5cnRwVThqclBiaHRSTVBUbFhsZ05VYl94MXVqbnNpTFNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwNzEzMjQyLCJuYmYiOjE0OTA3MTMyNDIsImV4cCI6MTQ5MDcxNzE0MiwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKeU1jRmx1N090c3l4NUIzLUJPRWs2Y0xydnhheEdJRmVtMUVLa291UksyNFRiUGtzWVRtMHJzOVFkbWtVd1J0WlV3OFB2MmtyZEpXcjJLS1NCWlc0eHJKUnFtN0Y1RDk4a0JWajJyNmwycjBnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.Uvyk36Q6F14zRxUldbHvVMPJhn9mzEMI795YmzDk7veFUoOsgmDinKQWqNGAakV-K_O16xyoDvSCcaxh50WMJHbuvE5bMWxTDZJw1hFjqX-_C_aIoL2raK_FBeNyq8sqgJ1Tn-3JfuodMCXlaR09KMiViPPLUXwZ1OOEMiAPwPfhoorz4rnigEC0QPT2ofJzm4lMn21Y0HqZBJBndCJY_u_vgObfvPBBRm4MP6mgI5njYp82QytxWr9kQQGPZmhtSLy7__0OaIBQU7WzQzLrJAs5uhAQbgW29wmdDKwfmgZP3pQ2dU-kVmSVzjY6GjECFp9ORhXNAok170zPxUcm9A\n"
         303:
           description: "need to validate again permissions, so redirected to drive\
             \ specific authentication page"
@@ -77,6 +80,8 @@ paths:
       responses:
         200:
           description: "valid access token"
+          schema:
+            type: "string"
         500:
           description: "if error happend on server side"
   /files/{id}:
