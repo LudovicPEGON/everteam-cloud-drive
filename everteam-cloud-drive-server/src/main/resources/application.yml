@@ -8,6 +8,9 @@ security:
 spring:
     application:
         name: storage-v1-0
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
   
 
 logging:

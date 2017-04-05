@@ -26,6 +26,7 @@ import com.everteam.storage.drive.OAuth2DriveImpl;
 import com.everteam.storage.jackson.ESFileSerializer;
 import com.everteam.storage.utils.ESFileId;
 import com.everteam.storage.utils.FileInfo;
+import com.everteam.storage.utils.Messages;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -41,6 +42,9 @@ public class FileService {
     
     @Autowired
     private ObjectMapper jacksonObjectMapper;
+    
+    @Autowired
+    private Messages messages;
     
 
     public ESFile getFile(ESFileId fileId, boolean addPermissions, Boolean addChecksum) throws IOException, GeneralSecurityException {
@@ -122,7 +126,7 @@ public class FileService {
             newFileId = drive.insertFolder(parentId.getPath(), name, description);
         }
         else {
-            throw new IOException("CannotCreateItemInAFile");
+            throw new IOException(messages.get("error.cannotcreateiteminfile"));
         }
           
         return new ESFileId(parentId.getRepositoryId(), newFileId);
@@ -136,7 +140,7 @@ public class FileService {
             newFileId = drive.insertFile(parentId.getPath(), info);
         }
         else {
-            throw new IOException("CannotCreateItemInAFile");
+            throw new IOException(messages.get("error.cannotcreateiteminfile"));
         }
         return new ESFileId(parentId.getRepositoryId(), newFileId);
     }
