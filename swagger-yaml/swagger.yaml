@@ -40,6 +40,45 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESRepository"
+  /repositories/{id}/oauth2/token:
+    get:
+      tags:
+      - "Administration"
+      summary: "Get or Generate access token"
+      description: "get a valid access token or generate a new one\n"
+      operationId: "getRepositoryToken"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "valid access token"
+        303:
+          description: "need to validate again permissions, so redirected to drive\
+            \ specific authentication page"
+        500:
+          description: "if error happend on server side"
+  /repositories/oauth2/callback:
+    get:
+      tags:
+      - "Administration"
+      summary: "Callback called by Drive Authentication server"
+      description: "<b> Don't called this one manually.</b> It's only callback called\
+        \ by Drive Authentication server. \n"
+      operationId: "getRepositoryTokenCallback"
+      produces:
+      - "text/plain"
+      parameters: []
+      responses:
+        200:
+          description: "valid access token"
+        500:
+          description: "if error happend on server side"
   /files/{id}:
     get:
       tags:
