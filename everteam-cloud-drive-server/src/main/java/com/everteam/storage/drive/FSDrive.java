@@ -64,9 +64,7 @@ public class FSDrive extends DriveImpl {
     public void init(ESRepository repository) throws IOException, GeneralSecurityException {
         super.init(repository);
         Path rootDirectory = Paths.get(getRepository().getRootDirectory());
-//        if (Files.notExists(rootDirectory)){
-            Files.createDirectories(rootDirectory);
-//        }
+        Files.createDirectories(rootDirectory);
     }
 
     @Override

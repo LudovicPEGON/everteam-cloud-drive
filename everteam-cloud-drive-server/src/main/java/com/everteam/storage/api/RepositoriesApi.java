@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.everteam.storage.common.model.ESRepository;
-import com.everteam.storage.utils.ESFileId;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +30,7 @@ public interface RepositoriesApi {
     @RequestMapping(value = "/repositories/{id}/oauth2/token",
         produces = { "text/plain" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<String> getRepositoryToken(@ApiParam(value = "Repository Id",required=true ) @PathVariable("id") ESFileId id) {
+    default ResponseEntity<String> getRepositoryToken(@ApiParam(value = "Repository Id",required=true ) @PathVariable("id") String id) {
         // do some magic!
         return new ResponseEntity<String>(HttpStatus.OK);
     }

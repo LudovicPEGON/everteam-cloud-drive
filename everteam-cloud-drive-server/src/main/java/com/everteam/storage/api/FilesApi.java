@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
-import com.everteam.storage.utils.ESFileId;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +22,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-03-27T09:13:00.959Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-04-05T09:21:35.850Z")
 
 @Api(value = "files", description = "the files API")
 public interface FilesApi {
@@ -34,7 +33,7 @@ public interface FilesApi {
     @RequestMapping(value = "/files/{id}/checkUpdates",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    default ResponseEntity<Void> checkUpdates(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
+    default ResponseEntity<Void> checkUpdates(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
         @ApiParam(value = "Return only files modified after this date", required = true) @RequestParam(value = "fromDate", required = true) OffsetDateTime fromDate) {
         // do some magic!
         return new ResponseEntity<Void>(HttpStatus.OK);
@@ -46,8 +45,8 @@ public interface FilesApi {
         @ApiResponse(code = 201, message = "Successfully created", response = ESFile.class) })
     @RequestMapping(value = "/files/{id}/copy",
         method = RequestMethod.POST)
-    default ResponseEntity<ESFile> copyFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
-        @ApiParam(value = "Target file's ID", required = true) @RequestParam(value = "targetId", required = true) ESFileId targetId) {
+    default ResponseEntity<ESFile> copyFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
+        @ApiParam(value = "Target file's ID", required = true) @RequestParam(value = "targetId", required = true) String targetId) {
         // do some magic!
         return new ResponseEntity<ESFile>(HttpStatus.OK);
     }
@@ -60,7 +59,7 @@ public interface FilesApi {
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    default ResponseEntity<ESFile> createFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
+    default ResponseEntity<ESFile> createFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
         @ApiParam(value = "file detail") @RequestPart("file") MultipartFile content,
         @ApiParam(value = "if content exists, we takes file name by default") @RequestParam(value = "name", required = false) String name,
         @ApiParam(value = "") @RequestParam(value = "description", required = false) String description) {
@@ -74,7 +73,7 @@ public interface FilesApi {
         @ApiResponse(code = 204, message = "Successfully deleted", response = Void.class) })
     @RequestMapping(value = "/files/{id}",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id) {
+    default ResponseEntity<Void> deleteFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id) {
         // do some magic!
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -86,7 +85,7 @@ public interface FilesApi {
     @RequestMapping(value = "/files/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<ESFile> getFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
+    default ResponseEntity<ESFile> getFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
         @ApiParam(value = "set true if you want to get permissions at the same time you get files", defaultValue = "false") @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions,
         @ApiParam(value = "set true if you want to get checksum at the same time you get files", defaultValue = "false") @RequestParam(value = "getChecksum", required = false, defaultValue="false") Boolean getChecksum) {
         // do some magic!
@@ -100,7 +99,7 @@ public interface FilesApi {
     @RequestMapping(value = "/files/{id}/children",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<ESFileList> getFileChildren(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
+    default ResponseEntity<ESFileList> getFileChildren(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
         @ApiParam(value = "set true if you want to get permissions at the same time you get files", defaultValue = "false") @RequestParam(value = "getPermissions", required = false, defaultValue="false") Boolean getPermissions,
         @ApiParam(value = "set true if you want to get checksum at the same time you get files", defaultValue = "false") @RequestParam(value = "getChecksum", required = false, defaultValue="false") Boolean getChecksum,
         @ApiParam(value = "Maximum number of files to return. Acceptable values are 0 to 1000. Use -1 for no limit", defaultValue = "100") @RequestParam(value = "maxResult", required = false, defaultValue="100") Integer maxResult) {
@@ -115,7 +114,7 @@ public interface FilesApi {
     @RequestMapping(value = "/files/{id}/content",
         produces = { "application/octet-stream" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<byte[]> getFileContent(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id) {
+    default ResponseEntity<byte[]> getFileContent(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id) {
         // do some magic!
         return new ResponseEntity<byte[]>(HttpStatus.OK);
     }
@@ -126,7 +125,7 @@ public interface FilesApi {
         @ApiResponse(code = 200, message = "search results matching criteria", response = ESPermission.class) })
     @RequestMapping(value = "/files/{id}/permissions",
         method = RequestMethod.GET)
-    default ResponseEntity<List<ESPermission>> getFilePermissions(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id) {
+    default ResponseEntity<List<ESPermission>> getFilePermissions(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id) {
         // do some magic!
         return new ResponseEntity<List<ESPermission>>(HttpStatus.OK);
     }
@@ -138,8 +137,8 @@ public interface FilesApi {
     @RequestMapping(value = "/files/{id}/move",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    default ResponseEntity<ESFile> moveFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
-        @ApiParam(value = "Target file's ID", required = true) @RequestParam(value = "targetId", required = true) ESFileId targetId) {
+    default ResponseEntity<ESFile> moveFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
+        @ApiParam(value = "Target file's ID", required = true) @RequestParam(value = "targetId", required = true) String targetId) {
         // do some magic!
         return new ResponseEntity<ESFile>(HttpStatus.OK);
     }
@@ -152,7 +151,7 @@ public interface FilesApi {
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.PUT)
-    default ResponseEntity<ESFile> updateFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") ESFileId id,
+    default ResponseEntity<ESFile> updateFile(@ApiParam(value = "The file's ID",required=true ) @PathVariable("id") String id,
         @ApiParam(value = "file detail") @RequestPart("file") MultipartFile content,
         @ApiParam(value = "") @RequestParam(value = "description", required = false) String description) {
         // do some magic!

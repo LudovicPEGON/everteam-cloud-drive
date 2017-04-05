@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.everteam.storage.common.model.ESRepository;
+import com.everteam.storage.converters.FileIdConverter;
 import com.everteam.storage.drive.IDrive;
 import com.everteam.storage.jackson.Encryptor;
 import com.everteam.storage.services.RepositoryService;
@@ -41,7 +42,8 @@ public class RepositoriesApiController implements RepositoriesApi {
     
     
     @Override
-    public ResponseEntity<String> getRepositoryToken(@PathVariable("id") ESFileId id) {
+    public ResponseEntity<String> getRepositoryToken(@PathVariable("id") String encryptedId) {
+        ESFileId id = new FileIdConverter().convert(encryptedId);
         IDrive drive = repositoryService.getDrive(id.getRepositoryId());
         Credential credential = null;
         try {
