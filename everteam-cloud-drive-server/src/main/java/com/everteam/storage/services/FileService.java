@@ -34,7 +34,7 @@ public class FileService {
 
     private final static Logger LOG = LoggerFactory.getLogger(FileService.class);
 
-    @Value("${storage.watcherDirectory:#{'d:/temp2'}}")
+    @Value("${storage.watcherDirectory:#{'/home/local/temp'}}")
     private String watcherDirectory;
 
     @Autowired
