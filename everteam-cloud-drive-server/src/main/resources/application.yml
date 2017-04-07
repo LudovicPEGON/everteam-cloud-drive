@@ -25,10 +25,10 @@ storage:
           rootDirectory: 0B-pBfcA-dNNOdzgtVUhNSFJQU0k
         - name: l1
           type: FS
-          rootDirectory: /home/local/storage1
+          rootDirectory: ./storage1
         - name: l2
           type: FS
-          rootDirectory: /home/local/storage2
+          rootDirectory: ./storage2
         - name: od1
           type: ONEDRIVE
         
