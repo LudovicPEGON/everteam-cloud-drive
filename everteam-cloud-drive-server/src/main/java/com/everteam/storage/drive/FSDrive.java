@@ -274,39 +274,43 @@ public class FSDrive extends DriveImpl {
 
     private List<ESPermission> getPermissions(Path p) throws IOException {
         List<ESPermission> permissions = new ArrayList<>();
-        AclFileAttributeView aclView = Files.getFileAttributeView(p, AclFileAttributeView.class);
-        for (AclEntry entry : aclView.getAcl()) {
-
-            TypeEnum type = null;
-            switch (entry.type()) {
-            case ALLOW:
-                type = TypeEnum.ALLOW;
-                break;
-            case DENY:
-                type = TypeEnum.DENY;
-                break;
-            default:
-                break;
-            }
-            if (type != null) {
-                TypeEnum f_type = type;
-                List<RolesEnum> roles = new ArrayList<>();
-                if (entry.permissions().contains(AclEntryPermission.READ_DATA)) {
-                    roles.add(RolesEnum.READER);
+        
+        if (Files.getFileStore(p).supportsFileAttributeView(AclFileAttributeView.class)) {
+        
+            AclFileAttributeView aclView = Files.getFileAttributeView(p, AclFileAttributeView.class);
+            for (AclEntry entry : aclView.getAcl()) {
+    
+                TypeEnum type = null;
+                switch (entry.type()) {
+                case ALLOW:
+                    type = TypeEnum.ALLOW;
+                    break;
+                case DENY:
+                    type = TypeEnum.DENY;
+                    break;
+                default:
+                    break;
                 }
-                if (entry.permissions().contains(AclEntryPermission.WRITE_DATA)) {
-                    roles.add(RolesEnum.WRITER);
+                if (type != null) {
+                    TypeEnum f_type = type;
+                    List<RolesEnum> roles = new ArrayList<>();
+                    if (entry.permissions().contains(AclEntryPermission.READ_DATA)) {
+                        roles.add(RolesEnum.READER);
+                    }
+                    if (entry.permissions().contains(AclEntryPermission.WRITE_DATA)) {
+                        roles.add(RolesEnum.WRITER);
+                    }
+                    if (entry.permissions().contains(AclEntryPermission.WRITE_OWNER)) {
+                        roles.add(RolesEnum.OWNER);
+                    }
+    
+                    if (roles.size() > 0) {
+                        ESPermission permission = new ESPermission().type(f_type).userId(entry.principal().getName())
+                                .accountType(AccountTypeEnum.USER).roles(roles);
+                        permissions.add(permission);
+                    }
+    
                 }
-                if (entry.permissions().contains(AclEntryPermission.WRITE_OWNER)) {
-                    roles.add(RolesEnum.OWNER);
-                }
-
-                if (roles.size() > 0) {
-                    ESPermission permission = new ESPermission().type(f_type).userId(entry.principal().getName())
-                            .accountType(AccountTypeEnum.USER).roles(roles);
-                    permissions.add(permission);
-                }
-
             }
         }
         return permissions;
