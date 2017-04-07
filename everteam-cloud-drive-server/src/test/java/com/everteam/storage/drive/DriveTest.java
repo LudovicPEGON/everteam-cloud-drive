@@ -135,7 +135,7 @@ public abstract class DriveTest {
     
     @Test
     public void testGetFile() throws IOException {
-        //OffsetDateTime beforeCreate = OffsetDateTime.now();
+        OffsetDateTime beforeCreate = OffsetDateTime.now();
         
         String fileId = createFile();
         ESFile file = testingDrive.getFile(fileId, true, true);
@@ -147,10 +147,10 @@ public abstract class DriveTest {
         
         assertEquals(DigestUtils.md5DigestAsHex(Files.newInputStream(getPath())), file.getChecksum());
         
-        System.out.println("FileCreationTime :"  + file.getCreationTime().toString());
-        System.out.println("Now :"  + OffsetDateTime.now().toString());
-        assertTrue(file.getCreationTime().isBefore(OffsetDateTime.now()));
-        //assertTrue(file.getCreationTime().isAfter(beforeCreate) || file.getCreationTime().isEqual(beforeCreate));
+        //System.out.println("FileCreationTime :"  + file.getCreationTime().toString());
+        //System.out.println("Now :"  + OffsetDateTime.now().toString());
+        assertTrue(file.getCreationTime().isBefore(beforeCreate.plusSeconds(5)));
+        assertTrue(file.getCreationTime().plusSeconds(5).isAfter(beforeCreate));
                 
         assertEquals(folderId, file.getParents().get(0).getId());
         assertTrue(file.getPermissions().size()>=0);        
