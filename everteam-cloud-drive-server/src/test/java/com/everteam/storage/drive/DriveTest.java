@@ -42,7 +42,7 @@ public abstract class DriveTest {
     private static Path PATH;
     private static FileInfo FILEINFO;
     
-    private static IDrive testingDrive;
+    private IDrive testingDrive;
     
     public String folderId;
         
