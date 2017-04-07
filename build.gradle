@@ -1,17 +1,55 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+    }
+}
+
+
 subprojects {
 
-  apply plugin : "java"
   group = 'com.everteam.cloud'
   version = '1.0.0-SNAPSHOT'
+  
+  apply plugin : "java"
+  apply plugin : "maven"
+  apply plugin: 'eclipse'
+  apply plugin: 'io.spring.dependency-management'
+  
+  
+  
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
   
   repositories {
      mavenCentral()
      mavenLocal()
+     maven {
+            url "${nexusUrl}/repository/maven-snapshots/"
+     }
   }
   
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
-
+  dependencyManagement {
+     imports {
+          mavenBom "com.everteam.cloud:everteam-cloud-dependencies:2.0.0-SNAPSHOT"
+     }
+   }
+  
+  uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "${nexusUrl}/repository/maven-releases/") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+            snapshotRepository(url: "${nexusUrl}/repository/maven-snapshots") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+        }
+    }
+  }
 }
 
 
