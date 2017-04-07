@@ -146,6 +146,9 @@ public abstract class DriveTest {
         assertEquals(folderId, file.getParents().get(0).getId());
         
         assertEquals(DigestUtils.md5DigestAsHex(Files.newInputStream(getPath())), file.getChecksum());
+        
+        System.out.println("FileCreationTime :"  + file.getCreationTime().toString());
+        System.out.println("Now :"  + OffsetDateTime.now().toString());
         assertTrue(file.getCreationTime().isBefore(OffsetDateTime.now()));
         //assertTrue(file.getCreationTime().isAfter(beforeCreate) || file.getCreationTime().isEqual(beforeCreate));
                 
