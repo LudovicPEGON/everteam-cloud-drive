@@ -59,7 +59,7 @@ public class FSDrive extends DriveImpl {
 
     @Value("${storage.fs.uri.depth:#{4}}")
     private int fileDepth;
-
+    
     @Override
     public void init(ESRepository repository) throws IOException, GeneralSecurityException {
         super.init(repository);
@@ -181,7 +181,7 @@ public class FSDrive extends DriveImpl {
         File file = path.toFile();
 
         if (!file.exists()) {
-            throw new IOException("FileDoesNotExists");
+            throw new IOException(messages.get("error.file.donotexist"));
         }
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String type = fileNameMap.getContentTypeFor(file.getName());

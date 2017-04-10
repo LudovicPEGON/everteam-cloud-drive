@@ -24,7 +24,7 @@ public abstract class OAuth2DriveImpl extends DriveImpl {
             consumeCredential(credential);
         }
         else {
-            throw new CredentialsExpiredException("Credentials expired");
+            throw new CredentialsExpiredException(messages.get("error.credentials.expired"));
         }
     }
     
