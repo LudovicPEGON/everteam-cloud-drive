@@ -3,6 +3,7 @@ package com.everteam.storage.drive;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
@@ -16,8 +17,11 @@ public abstract class OAuth2DriveImpl extends DriveImpl {
     public abstract ResourceServerProperties getResource();
     protected abstract void consumeCredential(Credential credential);
     
+    @Autowired
+    OAuth2Utils oauth2;
+    
     public final void authorize() throws GeneralSecurityException, IOException {
-        OAuth2Utils oauth2 = new OAuth2Utils(this);
+        oauth2.init(this);
         Credential credential = oauth2.loadCredential();
         if ( ( credential != null && credential.getAccessToken()!=null && credential.getExpiresInSeconds()>0 ) 
                 || ( credential != null && credential.refreshToken() ) ) {

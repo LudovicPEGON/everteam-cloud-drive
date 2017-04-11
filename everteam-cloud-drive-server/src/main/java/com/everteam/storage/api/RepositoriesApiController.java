@@ -30,7 +30,10 @@ import com.google.api.client.auth.oauth2.Credential;
 public class RepositoriesApiController implements RepositoriesApi {
     @Autowired
     RepositoryService repositoryService;
-
+    
+    @Autowired
+    OAuth2Utils oauth2;
+    
     @Override
     public ResponseEntity<List<ESRepository>> listRepositories() {
         try {
@@ -47,7 +50,7 @@ public class RepositoriesApiController implements RepositoriesApi {
         IDrive drive = repositoryService.getDrive(id.getRepositoryId());
         Credential credential = null;
         try {
-            OAuth2Utils oauth2 = new OAuth2Utils(drive);
+            oauth2.init(drive);
             credential = oauth2.loadCredential();
             if (credential == null || credential.getAccessToken() == null) {
                 return new ResponseEntity<>(oauth2.newAuthorization(), HttpStatus.SEE_OTHER);
@@ -64,7 +67,7 @@ public class RepositoriesApiController implements RepositoriesApi {
         try {
             String repositoryId = Encryptor.decrypt(state);
             IDrive drive = repositoryService.getDrive(repositoryId);
-            OAuth2Utils oauth2 = new OAuth2Utils(drive);
+            oauth2.init(drive);
             credential = oauth2.createAndStoreCredential(authorizationCode);
             return new ResponseEntity<String>(credential.getAccessToken(), HttpStatus.OK);
         } catch (IOException | GeneralSecurityException e) {
