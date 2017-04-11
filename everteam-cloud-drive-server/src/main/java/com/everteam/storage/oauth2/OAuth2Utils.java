@@ -1,4 +1,4 @@
-package com.everteam.storage.utils;
+package com.everteam.storage.oauth2;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class OAuth2Utils {
     @Value("${server.front}")
     private String front;
     
-    private final static String CALLBACK_URL = "repositories/oauth2/callback";
+    private final static String CALLBACK_URL = "oauth2/callback";
     private final static String CREDENTIAL_REPOSITORY = ".credentials/drive-java-etms-storage";
     private AuthorizationCodeFlow authorizationCodeFlow;
     private AuthorizationCodeResourceDetails authDetails;

@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceS
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
-import com.everteam.storage.utils.OAuth2Utils;
+import com.everteam.storage.oauth2.OAuth2Utils;
 import com.google.api.client.auth.oauth2.Credential;
 
 public abstract class OAuth2DriveImpl extends DriveImpl {

@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.everteam.storage.common.model.ESRepository;
 
@@ -31,20 +30,6 @@ public interface RepositoriesApi {
         produces = { "text/plain" }, 
         method = RequestMethod.GET)
     default ResponseEntity<String> getRepositoryToken(@ApiParam(value = "Repository Id",required=true ) @PathVariable("id") String id) {
-        // do some magic!
-        return new ResponseEntity<String>(HttpStatus.OK);
-    }
-
-
-    @ApiOperation(value = "Callback called only by Drive authentication server", notes = "<b> Don't called this one manually.</b> It's only callback called by Drive authentication server.  ", response = String.class, tags={ "Administration", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "valid access token", response = String.class),
-        @ApiResponse(code = 500, message = "if error happend on server side", response = String.class) })
-    @RequestMapping(value = "/repositories/oauth2/callback",
-        produces = { "text/plain" }, 
-        method = RequestMethod.GET)
-    default ResponseEntity<String> getRepositoryTokenCallback(@ApiParam(value = "authorization code returned by drive authentication server") @RequestParam(value = "authorizationCode", required = false) String authorizationCode,
-        @ApiParam(value = "state returned by drive authentication server wich contains repositoryId") @RequestParam(value = "state", required = false) String state) {
         // do some magic!
         return new ResponseEntity<String>(HttpStatus.OK);
     }
