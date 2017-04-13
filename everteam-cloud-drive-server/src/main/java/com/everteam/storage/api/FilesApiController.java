@@ -1,5 +1,6 @@
 package com.everteam.storage.api;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
@@ -63,7 +64,7 @@ public class FilesApiController implements FilesApi {
 
     @Override
     public ResponseEntity<ESFile> createFile(@PathVariable("id") String encryptedFileId,
-            @RequestParam(value = "content", required = false) MultipartFile content, @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "file", required = false) MultipartFile content, @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "description", required = false) String description) {
         try {
             ESFileId fileId = new FileIdConverter().convert(encryptedFileId);
@@ -144,7 +145,11 @@ public class FilesApiController implements FilesApi {
             ESFileId fileId = new FileIdConverter().convert(encryptedFileId);
             ESFile file = fileService.getFile(fileId, getPermissions, getChecksum);
             return new ResponseEntity<ESFile>(file, HttpStatus.OK);
-        } catch (IOException | GeneralSecurityException e) {
+        }
+        catch (FileNotFoundException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        } 
+        catch (IOException | GeneralSecurityException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }

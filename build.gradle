@@ -23,10 +23,13 @@ subprojects {
   
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
-  
+
   repositories {
      mavenCentral()
      mavenLocal()
+     maven {
+            url "${nexusUrl}/repository/maven-releases/"
+     }
      maven {
             url "${nexusUrl}/repository/maven-snapshots/"
      }
