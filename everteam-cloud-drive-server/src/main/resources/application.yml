@@ -40,12 +40,9 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
-#storage-v1-0:
-#    ribbon:
-#        eureka:
-#            enabled: false
-#        listOfServers: localhost:7070
-#        ServerListRefreshInterval: 15000
+storage-v1-0:
+    ribbon:
+        listOfServers: localhost:8000
 
 onedrive:
     client:
