@@ -162,6 +162,9 @@ public class GoogleDrive extends OAuth2DriveImpl {
     
     @Override
     public boolean isFolder(String fileId) throws IOException {
+        if (fileId == null ||fileId.isEmpty()) {
+            fileId = repository.getRootDirectory(); 
+        }
         Files.Get request = getDriveService().files().get(fileId);
         request.setFields("mimeType");
         File file = request.execute();
