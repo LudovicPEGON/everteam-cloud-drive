@@ -2,6 +2,7 @@ package com.everteam.storage.drive;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.FileNameMap;
@@ -179,9 +180,11 @@ public class FSDrive extends DriveImpl {
     private ESFile getFile(Path path, boolean addPermissions) throws IOException {
         // get mime_type
         File file = path.toFile();
-
+        
+        
+        
         if (!file.exists()) {
-            throw new IOException("FileDoesNotExists");
+            throw new FileNotFoundException();
         }
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String type = fileNameMap.getContentTypeFor(file.getName());
