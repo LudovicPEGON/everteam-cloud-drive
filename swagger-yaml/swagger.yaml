@@ -66,35 +66,6 @@ paths:
             \ specific authentication page"
         500:
           description: "if error happend on server side"
-  /repositories/oauth2/callback:
-    get:
-      tags:
-      - "Administration"
-      summary: "Callback called only by Drive authentication server"
-      description: "<b> Don't called this one manually.</b> It's only callback called\
-        \ by Drive authentication server. \n"
-      operationId: "getRepositoryTokenCallback"
-      produces:
-      - "text/plain"
-      parameters:
-      - name: "authorizationCode"
-        in: "query"
-        description: "authorization code returned by drive authentication server"
-        required: false
-        type: "string"
-      - name: "state"
-        in: "query"
-        description: "state returned by drive authentication server wich contains\
-          \ repositoryId"
-        required: false
-        type: "string"
-      responses:
-        200:
-          description: "valid access token"
-          schema:
-            type: "string"
-        500:
-          description: "if error happend on server side"
   /files/{id}:
     get:
       tags:

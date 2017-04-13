@@ -1,13 +1,18 @@
-package com.everteam.storage.utils;
+package com.everteam.storage.oauth2;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 
+import javax.ws.rs.core.UriBuilder;
+
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.everteam.storage.common.model.ESRepository;
@@ -38,16 +43,23 @@ import com.google.api.client.util.store.FileDataStoreFactory;
  *
  *
  */
+
+@Component
+@Scope("prototype")
 public class OAuth2Utils {
 
-    private final static String CALLBACK_URL = "http://localhost:8000/repositories/oauth2/callback";
+    @Value("${server.front}")
+    private String front;
+    
+    private final static String CALLBACK_URL = "oauth2/callback";
     private final static String CREDENTIAL_REPOSITORY = ".credentials/drive-java-etms-storage";
     private AuthorizationCodeFlow authorizationCodeFlow;
     private AuthorizationCodeResourceDetails authDetails;
     private IDrive drive = null;
     
+    public OAuth2Utils() {}
     
-    public OAuth2Utils(IDrive drive) throws GeneralSecurityException, IOException {
+    public void init(IDrive drive) throws GeneralSecurityException, IOException {
         Builder codeflowBuilder = null;
         
         if (drive instanceof OAuth2DriveImpl) {
@@ -69,7 +81,7 @@ public class OAuth2Utils {
             throw new TypeMismatchException(drive, OAuth2DriveImpl.class);
         }
     }
-
+    
     private AuthorizationCodeFlow.Builder getAuthorizationCodeFlowBuilder(IDrive drive) throws GeneralSecurityException, IOException {
         Builder builder = new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(), GoogleNetHttpTransport.newTrustedTransport(), 
                 JacksonFactory.getDefaultInstance(), new GenericUrl(authDetails.getAccessTokenUri()), new ClientParametersAuthentication(
@@ -85,7 +97,7 @@ public class OAuth2Utils {
     public HttpHeaders newAuthorization() throws URISyntaxException, IOException {
         AuthorizationCodeRequestUrl url = authorizationCodeFlow.newAuthorizationUrl();
         url.setScopes(authDetails.getScope());
-        url.setRedirectUri(CALLBACK_URL);
+        url.setRedirectUri(getCallbackURL());
         String state = Encryptor.encrypt(drive.getRepository().getId());
         url.setState(state);
         HttpHeaders headers = new HttpHeaders();
@@ -93,8 +105,14 @@ public class OAuth2Utils {
         return headers;
     }
 
+    private String getCallbackURL() {
+        return UriBuilder.fromPath(front)
+            .path(CALLBACK_URL)
+            .build().toString();
+    }
+
     public Credential createAndStoreCredential(String authorizationCode) throws IOException {
-        TokenResponse tokenResponse = authorizationCodeFlow.newTokenRequest(authorizationCode).setRedirectUri(CALLBACK_URL).execute();
+        TokenResponse tokenResponse = authorizationCodeFlow.newTokenRequest(authorizationCode).setRedirectUri(getCallbackURL()).execute();
         return authorizationCodeFlow.createAndStoreCredential(tokenResponse, authDetails.getClientId());
     }
 

@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,6 +43,7 @@ import com.everteam.storage.common.model.ESPermission.TypeEnum;
 import com.everteam.storage.common.model.ESUser;
 import com.everteam.storage.drive.OneDrive;
 import com.everteam.storage.utils.FileInfo;
+import com.everteam.storage.utils.Messages;
 
 public class OneDriveClientAPI {
 
@@ -49,6 +51,9 @@ public class OneDriveClientAPI {
     private String accessToken;
     private final String BASE_URL = "https://graph.microsoft.com/v1.0/me";
 
+    @Autowired
+    Messages messages;
+    
     public OneDriveClientAPI(String accessToken) {
         this.accessToken = accessToken;
     }
@@ -163,7 +168,7 @@ public class OneDriveClientAPI {
             LOG.error(e.getMessage(), e);
         }
         if (newfolder == null) {
-            throw new IOException("ErrorOccursWhenCreatingFolder");
+            throw new IOException(messages.get("error.folder.oncreation"));
         }
         return newfolder.getId();
     }
@@ -211,7 +216,7 @@ public class OneDriveClientAPI {
             fileId = resumableItemUpload(parentId, info);
         }
         if (fileId == null) {
-            throw new IOException("ErrorOccursWhenCreatingFile");
+            throw new IOException(messages.get("error.file.oncreation"));
         }
         return fileId;
         // we're inserting a file
@@ -250,7 +255,7 @@ public class OneDriveClientAPI {
         URI uri = UriBuilder.fromPath(BASE_URL).path(ITEM_URL).build(fileId);
         ResponseEntity<String> response = exchangeUri(uri, HttpMethod.DELETE);
         if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
-            throw new IOException("CannotDeleteThisFile");
+            throw new IOException(messages.get("error.file.delete"));
         }
     }
 
@@ -363,7 +368,7 @@ public class OneDriveClientAPI {
     }
 
     private String resumableItemUpload(String parentId, FileInfo info) throws IOException {
-        throw new IOException("UploadFileBiggerThan4MBNotImplementedYet");
+        throw new IOException("error.file.upload.notmorethan4mb");
     }
 
     private String simpleItemUpload(String parentId, FileInfo info) {

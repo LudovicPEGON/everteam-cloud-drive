@@ -1,5 +1,6 @@
 server:
     port: 8000
+    front: http://localhost:8000
    
 security:
     ignored:
@@ -43,8 +44,10 @@ eureka:
 
 onedrive:
     client:
-      clientId: 52f5422b-07c0-46e1-a30f-b7f0867346d3
-      clientSecret: nJiXnKFgRt5EtmWFcBYM8w5
+#      clientId: 52f5422b-07c0-46e1-a30f-b7f0867346d3
+      clientId: 9d917e4b-39b2-4c75-b226-da68ce21686b
+#      clientSecret: nJiXnKFgRt5EtmWFcBYM8w5
+      clientSecret: gcuoatzrz7HVgrnzjdZXAiB
       scope: files.readwrite offline_access
       accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
       userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize

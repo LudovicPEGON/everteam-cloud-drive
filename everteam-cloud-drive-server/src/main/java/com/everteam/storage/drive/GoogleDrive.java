@@ -242,7 +242,7 @@ public class GoogleDrive extends OAuth2DriveImpl {
         }
         
         if (file==null) {
-            throw new IOException("CannotBeAbleToCreateItem");
+            throw new IOException(messages.get("error.item.cannotcreate"));
         }
         
         return file.getId();
