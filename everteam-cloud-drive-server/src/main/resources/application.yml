@@ -40,9 +40,6 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
-storage-v1-0:
-    ribbon:
-        listOfServers: localhost:8000
 
 onedrive:
     client:
