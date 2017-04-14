@@ -1,4 +1,4 @@
-package com.everteam.storage.client;
+package com.everteam.storage.drive;
 
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -25,10 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 
+import com.everteam.storage.client.FilesApi;
+import com.everteam.storage.client.RepositoriesApi;
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
 import com.everteam.storage.common.model.ESPermission;
@@ -38,11 +40,12 @@ import com.everteam.storage.common.model.ESRepository.TypeEnum;
 import feign.FeignException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-         })
-@DirtiesContext
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
 
 public class DriveClientTest {
+    
+    
     private static final String CODE = "Drive_Test";
     private static final MockMultipartFile FILE = new MockMultipartFile("FName_"+  CODE + ".txt", "file.txt", "text/plain", "test".getBytes(UTF_8));
     

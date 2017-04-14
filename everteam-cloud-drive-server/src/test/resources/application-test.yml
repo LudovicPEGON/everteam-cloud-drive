@@ -2,10 +2,10 @@ server:
     port: 8000
     front: http://localhost:8000
     
+
 security:
     ignored:
         - /**
-
 
 spring:
     application:
@@ -41,6 +41,20 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
+    
+#to check feign client    
+ribbon:
+    eureka:
+        enabled: false
+feign:
+    hystrix:
+        enabled: false
+
+storage-v1-0:
+    ribbon:
+        listOfServers: localhost:8000
+   
+
   
 
 onedrive:
