@@ -1,7 +1,3 @@
 dependencies {
     compile("com.everteam.cloud:everteam-cloud-starter-client")
-    
-    testCompile("com.everteam.cloud:everteam-cloud-starter-server")
-    testCompile ("org.springframework.boot:spring-boot-starter-test")
-    
 }
