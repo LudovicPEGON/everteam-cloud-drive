@@ -1,10 +1,11 @@
 server:
     port: 8000
     front: http://localhost:8000
-   
+    
 security:
     ignored:
         - /**
+
 
 spring:
     application:
@@ -15,7 +16,7 @@ spring:
   
 
 logging:
-    file: storage-service/logs/skeleton.log
+    file: storage-service/logs/storage.log
     
 
   
