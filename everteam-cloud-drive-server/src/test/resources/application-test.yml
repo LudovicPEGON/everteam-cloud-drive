@@ -1,0 +1,81 @@
+server:
+    port: 8000
+    front: http://localhost:8000
+    
+
+security:
+    ignored:
+        - /**
+
+spring:
+    application:
+        name: storage-v1-0
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+  
+
+logging:
+    file: storage-service/logs/storage.log
+    
+
+  
+storage:
+    repositories:
+        - name: g1
+          type: GOOGLE
+          rootDirectory: 0B-pBfcA-dNNOdzgtVUhNSFJQU0k
+        - name: l1
+          type: FS
+          rootDirectory: ./storage1
+        - name: l2
+          type: FS
+          rootDirectory: ./storage2
+        - name: od1
+          type: ONEDRIVE
+        
+    
+
+#remove this block in cloud environment    
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    
+#to check feign client    
+ribbon:
+    eureka:
+        enabled: false
+feign:
+    hystrix:
+        enabled: false
+
+storage-v1-0:
+    ribbon:
+        listOfServers: localhost:8000
+   
+
+  
+
+onedrive:
+    client:
+#      clientId: 52f5422b-07c0-46e1-a30f-b7f0867346d3
+      clientId: 9d917e4b-39b2-4c75-b226-da68ce21686b
+#      clientSecret: nJiXnKFgRt5EtmWFcBYM8w5
+      clientSecret: gcuoatzrz7HVgrnzjdZXAiB
+      scope: files.readwrite offline_access
+      accessTokenUri: https://login.microsoftonline.com/common/oauth2/v2.0/token
+      userAuthorizationUri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+    resource:
+       userInfoUri: https://graph.microsoft.com/v1.0/me
+       
+       
+google:
+    client:
+      clientId: 593265142070-igf5kb3ljcrf976mbfeqgf39pd4o85q1.apps.googleusercontent.com
+      clientSecret: SuSCiQn8Gj7pLdTovAo2lEln
+      scope: https://www.googleapis.com/auth/drive
+      accessTokenUri: https://accounts.google.com/o/oauth2/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+    resource:
+       userInfoUri: https://graph.microsoft.com/v1.0/me
