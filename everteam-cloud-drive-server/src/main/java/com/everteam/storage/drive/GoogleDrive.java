@@ -18,6 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.everteam.storage.common.model.ESFile;
 import com.everteam.storage.common.model.ESFileList;
@@ -128,7 +129,14 @@ public class GoogleDrive extends OAuth2DriveImpl {
     @Override
     public ESFile getFile(String fileId, boolean addPermissions, boolean addChecksum) throws IOException {
         Drive drive = getDriveService();
-        
+        if (StringUtils.isEmpty(fileId)) {
+            if (!StringUtils.isEmpty(this.getRepository().getRootDirectory())){
+                fileId = getRepository().getRootDirectory();
+            }
+            else {
+                fileId = "root";
+            }
+        }
         Files.Get request = drive.files().get(fileId);
         request.setFields("*");
         return buildFile(drive, request.execute(), addPermissions, addChecksum);
