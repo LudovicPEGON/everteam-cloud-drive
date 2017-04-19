@@ -79,7 +79,7 @@ public class FSDrive extends DriveImpl {
                 @Override
                 public void accept(Path t) {
                     try {
-                        items.add(getFile(t, addPermissions));
+                        items.add(getFile(t, addPermissions, addChecksum));
                     } catch (IOException e) {
                         LOG.error(e.getMessage(), e);
                     }
@@ -136,7 +136,7 @@ public class FSDrive extends DriveImpl {
     @Override
     public ESFile getFile(String fileId, boolean addPermissions,  boolean addChecksum) throws IOException {
         Path path = buildPath(fileId);
-        return getFile(path, addPermissions);
+        return getFile(path, addPermissions, addChecksum);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class FSDrive extends DriveImpl {
     
     
     
-    private ESFile getFile(Path path, boolean addPermissions) throws IOException {
+    private ESFile getFile(Path path, boolean addPermissions, boolean addChecksum) throws IOException {
         // get mime_type
         File file = path.toFile();
         
@@ -196,9 +196,10 @@ public class FSDrive extends DriveImpl {
 
         if (!file.isDirectory()) {
             esfile.fileSize(file.length());
-
-            String md5 = DigestUtils.md5DigestAsHex(getFileContent(path));
-            esfile.setChecksum(md5);
+            if (addChecksum) {
+                String md5 = DigestUtils.md5DigestAsHex(getFileContent(path));
+                esfile.setChecksum(md5);
+            }
         }
 
         // fill date-time properties from attributes.
