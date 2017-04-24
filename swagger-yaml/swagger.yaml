@@ -100,6 +100,9 @@ paths:
           description: "search results"
           schema:
             $ref: "#/definitions/ESFile"
+      security:
+      - storage_auth:
+        - "read:files"
     post:
       tags:
       - "Files"
