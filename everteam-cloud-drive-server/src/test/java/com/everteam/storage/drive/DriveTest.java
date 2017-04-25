@@ -151,7 +151,7 @@ public abstract class DriveTest {
         
         System.out.println("FileCreationTime :"  + file.getCreationTime().toString());
         System.out.println("Now :"  + afterCreate.toString());
-        assertTrue(file.getCreationTime().isBefore(afterCreate.plusSeconds(5)));
+        assertTrue(file.getCreationTime().isBefore(afterCreate.plusSeconds(10)));
         assertTrue(file.getCreationTime().plusSeconds(5).isAfter(beforeCreate));
                 
         assertEquals(folderId, file.getParents().get(0).getId());
