@@ -70,7 +70,7 @@ public class OneDriveClientAPI {
     private static final String ITEM_CHILDREN_URL      = "/drive/items/{item-id}/children";
     private static final String ITEM_SIMPLE_UPLOAD_URL = "/drive/items/{parent-id}/children/{filename}/content";
 
-    public ESFileList children(String parentId, boolean addPermissions, int maxSize) {
+    public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) {
         ResponseEntity<String> response = null;
         UriBuilder builder = UriBuilder.fromPath(BASE_URL);
         if (maxSize != -1) {
@@ -90,7 +90,7 @@ public class OneDriveClientAPI {
                 obj = new JSONObject(result);
                 JSONArray array = obj.getJSONArray("value");
                 for (int i = 0; i < array.length(); i++) {
-                    ESFile file = getESFileFromJSONObject(array.getJSONObject(i));
+                    ESFile file = getESFileFromJSONObject(array.getJSONObject(i), addChecksum);
                     if (addPermissions) {
                         try {
                             file.permissions(getPermissions(file.getId()));

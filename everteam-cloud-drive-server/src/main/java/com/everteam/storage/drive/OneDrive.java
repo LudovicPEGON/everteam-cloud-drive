@@ -56,7 +56,7 @@ public class OneDrive extends OAuth2DriveImpl {
 
     @Override
     public ESFileList children(String parentId, boolean addPermissions, boolean addChecksum, int maxSize) throws IOException {
-        return api.children(parentId, addPermissions, maxSize);
+        return api.children(parentId, addPermissions, addChecksum, maxSize);
     }
 
     @Override
