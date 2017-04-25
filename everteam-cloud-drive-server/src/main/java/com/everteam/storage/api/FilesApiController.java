@@ -81,7 +81,7 @@ public class FilesApiController implements FilesApi {
             // else we're trying to insert a file
             else {
                 if (name == null || name.length() == 0) {
-                    name = content.getName();
+                    name = content.getOriginalFilename();
                 }
                 FileInfo info = new FileInfo(name, description, content.getContentType(), content.getSize(), content.getInputStream());
                 newFileId = fileService.createFile(fileId, info);
