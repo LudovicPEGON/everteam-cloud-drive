@@ -28,10 +28,10 @@ subprojects {
      mavenCentral()
      mavenLocal()
      maven {
-            url "${nexusUrl}/repository/maven-releases/"
+            url "${nexusUrl}/maven-releases/"
      }
      maven {
-            url "${nexusUrl}/repository/maven-snapshots/"
+            url "${nexusUrl}/maven-snapshots/"
      }
   }
   
@@ -44,10 +44,10 @@ subprojects {
   uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "${nexusUrl}/repository/maven-releases/") {
+            repository(url: "${nexusUrl}/maven-releases/") {
                 authentication(userName: nexusUsername, password: nexusPassword)
             }
-            snapshotRepository(url: "${nexusUrl}/repository/maven-snapshots") {
+            snapshotRepository(url: "${nexusUrl}/maven-snapshots") {
                 authentication(userName: nexusUsername, password: nexusPassword)
             }
         }
