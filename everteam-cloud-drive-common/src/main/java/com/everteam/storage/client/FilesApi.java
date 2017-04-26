@@ -55,8 +55,8 @@ public interface FilesApi {
         method = RequestMethod.POST)
     ESFile createFile(@PathVariable("id") String id,
             @PathVariable("file") MultipartFile content,
-            @PathVariable(value = "name", required = false) String name,
-            @PathVariable(value = "description", required = false) String description) ;
+            @PathVariable(value = "name") String name,
+            @PathVariable(value = "description") String description) ;
 
 
     @RequestMapping(value = "/files/{id}",
@@ -102,6 +102,6 @@ public interface FilesApi {
         method = RequestMethod.PUT)
     ESFile updateFile(@PathVariable("id") String id,
             @PathVariable("file") MultipartFile content,
-            @PathVariable(value = "description", required = false) String description);
+            @PathVariable(value = "description") String description);
   
 }
