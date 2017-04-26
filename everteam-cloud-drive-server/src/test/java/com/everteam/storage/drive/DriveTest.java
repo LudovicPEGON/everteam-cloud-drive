@@ -149,8 +149,8 @@ public abstract class DriveTest {
         
         assertEquals(DigestUtils.md5DigestAsHex(Files.newInputStream(getPath())), file.getChecksum());
         
-        assertTrue(file.getCreationTime().toString() + " isAfter " + afterCreate.plusSeconds(10).toString(), file.getCreationTime().isBefore(afterCreate.plusSeconds(10)));
-        assertTrue(file.getCreationTime().toString() + " isBefore " + beforeCreate.minusSeconds(10).toString(),  file.getCreationTime().isAfter(beforeCreate.minusSeconds(10)));
+        assertTrue(file.getCreationTime().toString() + " isAfter " + afterCreate.plusSeconds(60).toString(), file.getCreationTime().isBefore(afterCreate.plusSeconds(60)));
+        assertTrue(file.getCreationTime().toString() + " isBefore " + beforeCreate.minusSeconds(60).toString(),  file.getCreationTime().isAfter(beforeCreate.minusSeconds(60)));
                 
         assertEquals(folderId, file.getParents().get(0).getId());
         assertTrue(file.getPermissions().size()>=0);        
