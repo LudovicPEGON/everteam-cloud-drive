@@ -375,6 +375,9 @@ definitions:
       watcher:
         type: "boolean"
         description: "to define if a watcher is needed"
+      changeServiceId:
+        type: "string"
+        description: "change service Id"
       clientId:
         type: "string"
         description: "client id we have to use to get access token. Can be setting\
