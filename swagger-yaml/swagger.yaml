@@ -392,9 +392,8 @@ definitions:
       type:
         type: "string"
         description: "The change service type"
-      params:
-        type: "object"
-        properties: {}
+    additionalProperties:
+      type: "string"
   ESFile:
     type: "object"
     properties:
