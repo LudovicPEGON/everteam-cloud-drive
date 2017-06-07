@@ -375,9 +375,9 @@ definitions:
       watcher:
         type: "boolean"
         description: "to define if a watcher is needed"
-      changeServiceId:
-        type: "string"
-        description: "change service Id"
+      changeService:
+        description: "change service"
+        $ref: "#/definitions/ESChangeService"
       clientId:
         type: "string"
         description: "client id we have to use to get access token. Can be setting\
@@ -386,6 +386,15 @@ definitions:
         type: "string"
         description: "client secret we have to use to get access token. Can be setting\
           \ in application.yml for each repository or for drive"
+  ESChangeService:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        description: "The change service type"
+      params:
+        type: "object"
+        properties: {}
   ESFile:
     type: "object"
     properties:
