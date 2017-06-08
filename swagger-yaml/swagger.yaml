@@ -386,6 +386,9 @@ definitions:
         type: "string"
         description: "client secret we have to use to get access token. Can be setting\
           \ in application.yml for each repository or for drive"
+    additionalProperties:
+      type: "string"
+      description: "The repository parameters"
   ESChangeService:
     type: "object"
     properties:
