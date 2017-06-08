@@ -372,11 +372,7 @@ definitions:
       rootDirectory:
         type: "string"
         description: "can be a reference to json file containing all client secrets"
-      watcher:
-        type: "boolean"
-        description: "to define if a watcher is needed"
       changeService:
-        description: "change service"
         $ref: "#/definitions/ESChangeService"
       clientId:
         type: "string"
