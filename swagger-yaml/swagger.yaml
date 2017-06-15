@@ -396,6 +396,9 @@ definitions:
       maxrows:
         type: "integer"
         description: "The maximum items treated in one time"
+      scheduler:
+        type: "integer"
+        description: "The scheduler delay in seconds. 0 signifify no scheduler"
       params:
         type: "object"
         description: "The change service parameters"
