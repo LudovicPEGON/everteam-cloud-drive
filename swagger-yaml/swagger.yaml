@@ -393,6 +393,9 @@ definitions:
       type:
         type: "string"
         description: "The change service type"
+      maxrows:
+        type: "integer"
+        description: "The maximum items treated in one time"
       params:
         type: "object"
         description: "The change service parameters"
