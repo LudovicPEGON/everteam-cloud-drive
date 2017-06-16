@@ -367,6 +367,9 @@ definitions:
         - "FS"
         - "GOOGLE"
         - "ONEDRIVE"
+      patterns:
+        type: "string"
+        description: "File name patterns separated by comma"
       name:
         type: "string"
       rootDirectory:
@@ -393,9 +396,6 @@ definitions:
       type:
         type: "string"
         description: "The change service type"
-      patterns:
-        type: "string"
-        description: "File name patterns separated by comma"
       maxrows:
         type: "integer"
         description: "The maximum items treated in one time"
