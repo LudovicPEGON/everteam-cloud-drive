@@ -16,10 +16,10 @@ tags:
   description: "Operations available for admin"
 - name: "Repositories"
   description: "Operations available for repositories"
-- name: "Directories"
-  description: "Operations available for directories"
 - name: "Files"
   description: "Operations available for files"
+- name: "Changes"
+  description: "Operations available for changes"
 schemes:
 - "https"
 paths:
@@ -344,6 +344,97 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESPermission"
+  /changes/{repositoryId}:
+    get:
+      tags:
+      - "Changes"
+      summary: "Get change informations"
+      description: "Get change informations"
+      operationId: "getChange"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "search results"
+          schema:
+            $ref: "#/definitions/ESChange"
+    post:
+      tags:
+      - "Changes"
+      summary: "Insert a new Change"
+      description: "Create a new Change using file content and required parameters"
+      operationId: "createChange"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The change's ID"
+        required: true
+        type: "string"
+      - name: "content"
+        in: "formData"
+        required: false
+        type: "#/definitions/ESChange"
+      responses:
+        200:
+          description: "If successful, this method returns the created File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
+    put:
+      tags:
+      - "Changes"
+      summary: "Updates a file"
+      description: "Updates a specified file metadata and/or content"
+      operationId: "updateFile"
+      consumes:
+      - "multipart/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The change's ID"
+        required: true
+        type: "string"
+      - name: "content"
+        in: "formData"
+        required: false
+        type: "file"
+      - name: "description"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "If successful, this method returns the updated File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
+    delete:
+      tags:
+      - "Changes"
+      summary: "Delete a Change"
+      description: "Delete a Change its id"
+      operationId: "deleteChange"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The change's ID"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Successfully deleted"
 securityDefinitions:
   storage_auth:
     type: "oauth2"
@@ -582,6 +673,12 @@ definitions:
         type: "string"
         description: "The email address of the owner"
 parameters:
+  changeId:
+    name: "id"
+    in: "path"
+    description: "The change's ID"
+    required: true
+    type: "string"
   fileId:
     name: "id"
     in: "path"
