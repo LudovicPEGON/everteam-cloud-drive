@@ -431,7 +431,7 @@ definitions:
         readOnly: true
       modificationDate:
         type: "string"
-        format: "date-time"
+        format: "date"
         description: "Creation time for this file"
         readOnly: true
       fileId:
