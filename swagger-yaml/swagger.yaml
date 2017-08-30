@@ -344,7 +344,7 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESPermission"
-  /changes/{repositoryId}:
+  /changes/{id}:
     get:
       tags:
       - "Changes"
