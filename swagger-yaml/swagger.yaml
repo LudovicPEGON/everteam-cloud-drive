@@ -344,97 +344,22 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESPermission"
-  /changes/{id}:
-    get:
-      tags:
-      - "Changes"
-      summary: "Get change informations"
-      description: "Get change informations"
-      operationId: "getChange"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "Repository Id"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "search results"
-          schema:
-            $ref: "#/definitions/ESChange"
+  /files/actions/delete:
     post:
       tags:
-      - "Changes"
-      summary: "Insert a new Change"
-      description: "Create a new Change using file content and required parameters"
-      operationId: "createChange"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
+      - "Files"
+      summary: "Delete Multiple Files"
+      description: "Delete multiple Files or directories using their id's"
+      operationId: "deleteMultipleFiles"
       parameters:
-      - name: "id"
+      - name: "id's"
         in: "path"
-        description: "The change's ID"
-        required: true
-        type: "string"
-      - name: "content"
-        in: "formData"
-        required: false
-        type: "#/definitions/ESChange"
-      responses:
-        200:
-          description: "If successful, this method returns the created File in the\
-            \ response body"
-          schema:
-            $ref: "#/definitions/ESFile"
-    put:
-      tags:
-      - "Changes"
-      summary: "Updates a file"
-      description: "Updates a specified file metadata and/or content"
-      operationId: "updateFile"
-      consumes:
-      - "multipart/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "The change's ID"
-        required: true
-        type: "string"
-      - name: "content"
-        in: "formData"
-        required: false
-        type: "file"
-      - name: "description"
-        in: "query"
-        required: false
-        type: "string"
-      responses:
-        200:
-          description: "If successful, this method returns the updated File in the\
-            \ response body"
-          schema:
-            $ref: "#/definitions/ESFile"
-    delete:
-      tags:
-      - "Changes"
-      summary: "Delete a Change"
-      description: "Delete a Change its id"
-      operationId: "deleteChange"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "The change's ID"
+        description: "The files's ID's"
         required: true
         type: "string"
       responses:
         204:
-          description: "Successfully deleted"
+          description: "Successfully deleted files"
 securityDefinitions:
   storage_auth:
     type: "oauth2"
@@ -683,6 +608,12 @@ parameters:
     name: "id"
     in: "path"
     description: "The file's ID"
+    required: true
+    type: "string"
+  filesIds:
+    name: "id's"
+    in: "path"
+    description: "The files's ID's"
     required: true
     type: "string"
   targetId:
