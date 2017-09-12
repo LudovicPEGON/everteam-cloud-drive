@@ -351,7 +351,12 @@ paths:
       summary: "Delete Multiple Files"
       description: "Delete multiple Files or directories using their id's"
       operationId: "deleteMultipleFiles"
-      parameters: []
+      parameters:
+      - name: "List of IDs"
+        in: "query"
+        description: "List of IDs"
+        required: true
+        type: "string"
       responses:
         204:
           description: "Successfully deleted files"
