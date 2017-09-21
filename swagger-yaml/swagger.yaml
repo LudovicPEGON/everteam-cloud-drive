@@ -40,6 +40,26 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESRepository"
+  /repositories/{id}:
+    get:
+      tags:
+      - "Repositories"
+      summary: "get Repository information"
+      description: "Get repository informations\n"
+      operationId: "getRepository"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "repository information"
+          schema:
+            $ref: "#/definitions/ESRepository"
   /repositories/{id}/oauth2/token:
     get:
       tags:
