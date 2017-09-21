@@ -40,6 +40,29 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESRepository"
+    post:
+      tags:
+      - "Repositories"
+      summary: "Insert a new Repository"
+      description: "Create a new Repository using file content and required parameters"
+      operationId: "createRepository"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "change"
+        description: "Document type object"
+        required: false
+        schema:
+          $ref: "#/definitions/ESRepository"
+      responses:
+        200:
+          description: "If successful, this method returns the created Repository\
+            \ in the response body"
+          schema:
+            $ref: "#/definitions/ESRepository"
   /repositories/{id}:
     get:
       tags:
@@ -54,6 +77,45 @@ paths:
         in: "path"
         description: "Repository Id"
         required: true
+        type: "string"
+      responses:
+        200:
+          description: "repository information"
+          schema:
+            $ref: "#/definitions/ESRepository"
+    delete:
+      tags:
+      - "Repositories"
+      summary: "delete one repository from its id"
+      description: "Delete a repository\n"
+      operationId: "deleteRepository"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Successfully deleted"
+  /repositories/{id}/rename:
+    put:
+      tags:
+      - "Repositories"
+      summary: "rename a repository"
+      description: "Rename a repository\n"
+      operationId: "renameRepository"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "query"
+        required: false
         type: "string"
       responses:
         200:
