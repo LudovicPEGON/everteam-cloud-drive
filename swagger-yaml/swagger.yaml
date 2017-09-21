@@ -215,6 +215,10 @@ paths:
         in: "query"
         required: false
         type: "string"
+      - name: "useTree"
+        in: "query"
+        required: false
+        type: "boolean"
       responses:
         200:
           description: "If successful, this method returns the created File in the\
