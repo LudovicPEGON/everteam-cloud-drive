@@ -245,6 +245,10 @@ paths:
         in: "formData"
         required: false
         type: "file"
+      - name: "name"
+        in: "query"
+        required: false
+        type: "string"
       - name: "description"
         in: "query"
         required: false
@@ -313,6 +317,10 @@ paths:
         description: "Target file's ID"
         required: true
         type: "string"
+      - name: "useTree"
+        in: "query"
+        required: false
+        type: "boolean"
       responses:
         201:
           description: "Successfully created"
@@ -410,6 +418,29 @@ paths:
             type: "string"
             format: "byte"
             pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+  /files/{id}/append:
+    put:
+      tags:
+      - "Files"
+      summary: "Append text to an existing file"
+      description: "Append text to a specified file"
+      operationId: "appendTo"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "If successful, this method returns the updated File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
   /files/{id}/permissions:
     get:
       tags:
