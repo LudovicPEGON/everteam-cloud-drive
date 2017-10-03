@@ -232,8 +232,6 @@ paths:
       summary: "Updates a file"
       description: "Updates a specified file metadata"
       operationId: "updateFile"
-      consumes:
-      - "multipart/form-data"
       produces:
       - "application/json"
       parameters:
