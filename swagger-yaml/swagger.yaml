@@ -219,6 +219,7 @@ paths:
         in: "query"
         required: false
         type: "boolean"
+        default: "false;"
       responses:
         200:
           description: "If successful, this method returns the created File in the\
