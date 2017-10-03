@@ -321,6 +321,7 @@ paths:
         in: "query"
         required: false
         type: "boolean"
+        default: false
       responses:
         201:
           description: "Successfully created"
