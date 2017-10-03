@@ -298,31 +298,6 @@ paths:
             \ response body"
           schema:
             $ref: "#/definitions/ESFile"
-  /files/{id}/checkUpdates:
-    post:
-      tags:
-      - "Files"
-      summary: "Search updated files."
-      description: "Launch a batch which is going to search files which have been\
-        \ updated after a specified date.\n"
-      operationId: "checkUpdates"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
-        required: true
-        type: "string"
-      - name: "fromDate"
-        in: "query"
-        description: "Return only files modified after this date"
-        required: true
-        type: "string"
-        format: "date-time"
-      responses:
-        200:
-          description: "successfully started"
   /files/{id}/copy:
     post:
       tags:
