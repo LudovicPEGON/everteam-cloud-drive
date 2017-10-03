@@ -442,6 +442,10 @@ paths:
         description: "The file's ID"
         required: true
         type: "string"
+      - name: "content"
+        in: "formData"
+        required: false
+        type: "file"
       responses:
         200:
           description: "If successful, this method returns the updated File in the\
