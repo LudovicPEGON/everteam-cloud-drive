@@ -226,6 +226,36 @@ paths:
             \ response body"
           schema:
             $ref: "#/definitions/ESFile"
+    put:
+      tags:
+      - "Files"
+      summary: "Updates a file"
+      description: "Updates a specified file metadata"
+      operationId: "updateFile"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "description"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "If successful, this method returns the updated File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
     delete:
       tags:
       - "Files"
@@ -241,13 +271,13 @@ paths:
       responses:
         204:
           description: "Successfully deleted"
-  /files/{id}/update:
+  /files/{id}/replace:
     post:
       tags:
       - "Files"
-      summary: "Updates a file"
-      description: "Updates a specified file metadata and/or content"
-      operationId: "updateFile"
+      summary: "Updates a file content"
+      description: "Updates a specified file  content"
+      operationId: "updateContentFile"
       consumes:
       - "multipart/form-data"
       produces:
@@ -262,14 +292,6 @@ paths:
         in: "formData"
         required: false
         type: "file"
-      - name: "name"
-        in: "query"
-        required: false
-        type: "string"
-      - name: "description"
-        in: "query"
-        required: false
-        type: "string"
       responses:
         200:
           description: "If successful, this method returns the updated File in the\
