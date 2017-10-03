@@ -219,7 +219,7 @@ paths:
         in: "query"
         required: false
         type: "boolean"
-        default: "false;"
+        default: false
       responses:
         200:
           description: "If successful, this method returns the created File in the\
@@ -352,6 +352,11 @@ paths:
         description: "Target file's ID"
         required: true
         type: "string"
+      - name: "useTree"
+        in: "query"
+        required: false
+        type: "boolean"
+        default: false
       responses:
         201:
           description: "Successfully moved"
@@ -741,6 +746,12 @@ parameters:
     description: "Target file's ID"
     required: true
     type: "string"
+  useTree:
+    name: "useTree"
+    in: "query"
+    required: false
+    type: "boolean"
+    default: false
   file:
     in: "body"
     name: "file"
