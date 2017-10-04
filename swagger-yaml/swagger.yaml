@@ -247,8 +247,7 @@ paths:
         type: "string"
       - name: "content"
         in: "formData"
-        description: "Not required in case directory creation"
-        required: false
+        required: true
         type: "file"
       - name: "name"
         in: "query"
