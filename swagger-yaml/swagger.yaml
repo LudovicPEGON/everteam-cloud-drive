@@ -185,47 +185,6 @@ paths:
       security:
       - storage_auth:
         - "read:files"
-    post:
-      tags:
-      - "Files"
-      summary: "Insert a new File"
-      description: "Create a new File using file content and required parameters"
-      operationId: "createFile"
-      consumes:
-      - "multipart/form-data"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
-        required: true
-        type: "string"
-      - name: "content"
-        in: "formData"
-        description: "Not required in case directory creation"
-        required: false
-        type: "file"
-      - name: "name"
-        in: "query"
-        description: "if content exists, we takes file name by default"
-        required: false
-        type: "string"
-      - name: "description"
-        in: "query"
-        required: false
-        type: "string"
-      - name: "useTree"
-        in: "query"
-        required: false
-        type: "boolean"
-        default: false
-      responses:
-        200:
-          description: "If successful, this method returns the created File in the\
-            \ response body"
-          schema:
-            $ref: "#/definitions/ESFile"
     put:
       tags:
       - "Files"
@@ -269,6 +228,83 @@ paths:
       responses:
         204:
           description: "Successfully deleted"
+  /files/{id}/createFile:
+    post:
+      tags:
+      - "Files"
+      summary: "Insert a new File"
+      description: "Create a new File using file content and required parameters"
+      operationId: "createFile"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "content"
+        in: "formData"
+        description: "Not required in case directory creation"
+        required: false
+        type: "file"
+      - name: "name"
+        in: "query"
+        description: "if content exists, we takes file name by default"
+        required: false
+        type: "string"
+      - name: "description"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "useTree"
+        in: "query"
+        required: false
+        type: "boolean"
+        default: false
+      responses:
+        200:
+          description: "If successful, this method returns the created File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
+  /files/{id}/createDirectory:
+    post:
+      tags:
+      - "Files"
+      summary: "Insert a new Directory"
+      description: "Create a new Directory using required parameters"
+      operationId: "createDirectory"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The file's ID"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "query"
+        description: "if content exists, we takes file name by default"
+        required: false
+        type: "string"
+      - name: "description"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "useTree"
+        in: "query"
+        required: false
+        type: "boolean"
+        default: false
+      responses:
+        200:
+          description: "If successful, this method returns the updated File in the\
+            \ response body"
+          schema:
+            $ref: "#/definitions/ESFile"
   /files/{id}/replace:
     post:
       tags:
@@ -468,7 +504,7 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/ESPermission"
-  /files/actions/delete:
+  /files/delete:
     post:
       tags:
       - "Files"
