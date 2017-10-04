@@ -292,11 +292,6 @@ paths:
         in: "query"
         required: false
         type: "string"
-      - name: "useTree"
-        in: "query"
-        required: false
-        type: "boolean"
-        default: false
       responses:
         200:
           description: "If successful, this method returns the updated File in the\
