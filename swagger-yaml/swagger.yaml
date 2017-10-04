@@ -286,8 +286,7 @@ paths:
         type: "string"
       - name: "name"
         in: "query"
-        description: "if content exists, we takes file name by default"
-        required: false
+        required: true
         type: "string"
       - name: "description"
         in: "query"
