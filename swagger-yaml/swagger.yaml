@@ -395,7 +395,7 @@ paths:
       description: "Move a list of files to a specified parent"
       operationId: "moveFiles"
       parameters:
-      - name: "List of IDs"
+      - name: "IDs"
         in: "query"
         description: "List of IDs"
         required: true
