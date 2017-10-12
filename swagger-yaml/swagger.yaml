@@ -387,6 +387,27 @@ paths:
           description: "Successfully moved"
           schema:
             $ref: "#/definitions/ESFile"
+  /files/move:
+    post:
+      tags:
+      - "Files"
+      summary: "Move multiple files"
+      description: "Move a list of files to a specified parent"
+      operationId: "moveFiles"
+      parameters:
+      - name: "List of IDs"
+        in: "query"
+        description: "List of IDs"
+        required: true
+        type: "string"
+      - name: "targetId"
+        in: "query"
+        description: "Target file's ID"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "Successfully moved files"
   /files/{id}/children:
     get:
       tags:
