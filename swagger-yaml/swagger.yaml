@@ -406,8 +406,10 @@ paths:
         required: true
         type: "string"
       responses:
-        204:
+        201:
           description: "Successfully moved files"
+          schema:
+            $ref: "#/definitions/ESFileList"
   /files/{id}/children:
     get:
       tags:
