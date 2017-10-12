@@ -528,9 +528,9 @@ paths:
       description: "Delete multiple Files or directories using their id's"
       operationId: "deleteMultipleFiles"
       parameters:
-      - name: "List of IDs"
+      - name: "IDs"
         in: "query"
-        description: "List of IDs"
+        description: "The files's ID's"
         required: true
         type: "string"
       responses:
