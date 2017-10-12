@@ -397,7 +397,7 @@ paths:
       parameters:
       - name: "IDs"
         in: "query"
-        description: "List of IDs"
+        description: "The files's ID's"
         required: true
         type: "string"
       - name: "targetId"
@@ -787,8 +787,8 @@ parameters:
     required: true
     type: "string"
   filesIds:
-    name: "id's"
-    in: "path"
+    name: "IDs"
+    in: "query"
     description: "The files's ID's"
     required: true
     type: "string"
