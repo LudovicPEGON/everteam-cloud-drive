@@ -626,15 +626,19 @@ definitions:
         format: "date-time"
         description: "Creation time for this file"
         readOnly: true
-      fileId:
+      file:
+        $ref: "#/definitions/ESFile"
+      type:
         type: "string"
-        format: "uuid"
-        description: "The change file Id"
-        readOnly: true
-      fileName:
+        enum:
+        - "ADD"
+        - "UPDATE"
+        - "DELETE"
+        - "RENAME"
+      repository:
+        $ref: "#/definitions/ESRepository"
+      oldName:
         type: "string"
-        description: "The change file name"
-        readOnly: true
   ESFile:
     type: "object"
     properties:
