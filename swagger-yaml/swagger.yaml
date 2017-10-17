@@ -654,6 +654,11 @@ definitions:
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         description: "The repository's id."
         readOnly: true
+      uri:
+        type: "string"
+        example: "http://, file://"
+        description: "The file uri."
+        readOnly: true
       parents:
         type: "array"
         description: "The files parent list. Some drives juste manage one parent"
