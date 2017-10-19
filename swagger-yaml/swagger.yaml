@@ -642,7 +642,8 @@ definitions:
       oldName:
         type: "string"
       timestamp:
-        type: "number"
+        type: "integer"
+        format: "int64"
   ESFile:
     type: "object"
     properties:
