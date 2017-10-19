@@ -641,6 +641,8 @@ definitions:
         $ref: "#/definitions/ESRepository"
       oldName:
         type: "string"
+      timestamp:
+        type: "number"
   ESFile:
     type: "object"
     properties:
