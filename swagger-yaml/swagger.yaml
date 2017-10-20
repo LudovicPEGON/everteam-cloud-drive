@@ -568,8 +568,6 @@ definitions:
       rootDirectory:
         type: "string"
         description: "can be a reference to json file containing all client secrets"
-      changeService:
-        $ref: "#/definitions/ESChangeService"
       clientId:
         type: "string"
         description: "client id we have to use to get access token. Can be setting\
@@ -583,23 +581,9 @@ definitions:
         description: "The change service parameters"
         additionalProperties:
           type: "string"
-  ESChangeService:
-    type: "object"
-    properties:
-      type:
-        type: "string"
-        description: "The change service type"
-      maxrows:
-        type: "integer"
-        description: "The maximum items treated in one time"
       scheduler:
         type: "integer"
         description: "The scheduler delay in seconds. 0 signifify no scheduler"
-      params:
-        type: "object"
-        description: "The change service parameters"
-        additionalProperties:
-          type: "string"
   ESChanges:
     properties:
       repository:
