@@ -621,8 +621,6 @@ definitions:
         - "UPDATE"
         - "DELETE"
         - "RENAME"
-      repository:
-        $ref: "#/definitions/ESRepository"
       oldName:
         type: "string"
       timestamp:
