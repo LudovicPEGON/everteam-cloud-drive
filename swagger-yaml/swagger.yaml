@@ -470,7 +470,8 @@ paths:
         200:
           description: "Successfully retrieved"
           schema:
-            type: "file"
+            type: "string"
+            format: "binary"
   /files/{id}/append:
     post:
       tags:
