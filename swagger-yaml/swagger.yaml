@@ -562,6 +562,7 @@ definitions:
         - "FS"
         - "GOOGLE"
         - "ONEDRIVE"
+        - "HTTPC"
       patterns:
         type: "string"
         description: "File name patterns separated by comma"
