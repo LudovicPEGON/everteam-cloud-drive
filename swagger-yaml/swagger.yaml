@@ -548,9 +548,13 @@ definitions:
     properties:
       id:
         type: "string"
-        format: "uuid"
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         description: "The repository's id"
+        readOnly: true
+      fileId:
+        type: "string"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The repository's file id. Can be used by files list for example."
         readOnly: true
       type:
         type: "string"
@@ -562,6 +566,8 @@ definitions:
         type: "string"
         description: "File name patterns separated by comma"
       name:
+        type: "string"
+      description:
         type: "string"
       rootDirectory:
         type: "string"
@@ -582,6 +588,19 @@ definitions:
       scheduler:
         type: "integer"
         description: "The scheduler delay in seconds. 0 signifify no scheduler"
+    example:
+      scheduler: 0
+      clientId: "clientId"
+      patterns: "patterns"
+      name: "name"
+      description: "description"
+      rootDirectory: "rootDirectory"
+      clientSecret: "clientSecret"
+      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      type: "FS"
+      params:
+        key: "params"
+      fileId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESChanges:
     properties:
       repository:
@@ -700,6 +719,51 @@ definitions:
         type: "string"
         example: "2B693E6A1483B70BF5CD7C511035879E"
         description: "The file's content  MD5 checksum"
+    example:
+      lastModifiedTime: "2000-01-23T04:56:07.000+00:00"
+      lastAccessTime: "2000-01-23T04:56:07.000+00:00"
+      creationTime: "2000-01-23T04:56:07.000+00:00"
+      description: "My first file"
+      owners:
+      - displayName: "displayName"
+        id: "id"
+      - displayName: "displayName"
+        id: "id"
+      mimeType: "text-plain"
+      uri: "http://, file://"
+      directory: true
+      fileSize: 0
+      permissions:
+      - accountType: "user"
+        domain: "domain"
+        roles:
+        - "owner"
+        - "owner"
+        type: "allow"
+        userId: "userId"
+      - accountType: "user"
+        domain: "domain"
+        roles:
+        - "owner"
+        - "owner"
+        type: "allow"
+        userId: "userId"
+      repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      name: "My file.txt"
+      checksum: "2B693E6A1483B70BF5CD7C511035879E"
+      lastModifiedUser:
+        displayName: "displayName"
+        id: "id"
+      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      parents:
+      - paths:
+        - "rootFolder"
+        - "rootFolder"
+        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      - paths:
+        - "rootFolder"
+        - "rootFolder"
+        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESFileList:
     type: "object"
     properties:
@@ -708,6 +772,96 @@ definitions:
         description: "The list of files"
         items:
           $ref: "#/definitions/ESFile"
+    example:
+      items:
+      - lastModifiedTime: "2000-01-23T04:56:07.000+00:00"
+        lastAccessTime: "2000-01-23T04:56:07.000+00:00"
+        creationTime: "2000-01-23T04:56:07.000+00:00"
+        description: "My first file"
+        owners:
+        - displayName: "displayName"
+          id: "id"
+        - displayName: "displayName"
+          id: "id"
+        mimeType: "text-plain"
+        uri: "http://, file://"
+        directory: true
+        fileSize: 0
+        permissions:
+        - accountType: "user"
+          domain: "domain"
+          roles:
+          - "owner"
+          - "owner"
+          type: "allow"
+          userId: "userId"
+        - accountType: "user"
+          domain: "domain"
+          roles:
+          - "owner"
+          - "owner"
+          type: "allow"
+          userId: "userId"
+        repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        name: "My file.txt"
+        checksum: "2B693E6A1483B70BF5CD7C511035879E"
+        lastModifiedUser:
+          displayName: "displayName"
+          id: "id"
+        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        parents:
+        - paths:
+          - "rootFolder"
+          - "rootFolder"
+          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        - paths:
+          - "rootFolder"
+          - "rootFolder"
+          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      - lastModifiedTime: "2000-01-23T04:56:07.000+00:00"
+        lastAccessTime: "2000-01-23T04:56:07.000+00:00"
+        creationTime: "2000-01-23T04:56:07.000+00:00"
+        description: "My first file"
+        owners:
+        - displayName: "displayName"
+          id: "id"
+        - displayName: "displayName"
+          id: "id"
+        mimeType: "text-plain"
+        uri: "http://, file://"
+        directory: true
+        fileSize: 0
+        permissions:
+        - accountType: "user"
+          domain: "domain"
+          roles:
+          - "owner"
+          - "owner"
+          type: "allow"
+          userId: "userId"
+        - accountType: "user"
+          domain: "domain"
+          roles:
+          - "owner"
+          - "owner"
+          type: "allow"
+          userId: "userId"
+        repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        name: "My file.txt"
+        checksum: "2B693E6A1483B70BF5CD7C511035879E"
+        lastModifiedUser:
+          displayName: "displayName"
+          id: "id"
+        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        parents:
+        - paths:
+          - "rootFolder"
+          - "rootFolder"
+          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        - paths:
+          - "rootFolder"
+          - "rootFolder"
+          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESPermission:
     type: "object"
     properties:
@@ -742,6 +896,14 @@ definitions:
           - "owner"
           - "reader"
           - "writer"
+    example:
+      accountType: "user"
+      domain: "domain"
+      roles:
+      - "owner"
+      - "owner"
+      type: "allow"
+      userId: "userId"
   ESParent:
     type: "object"
     properties:
@@ -758,6 +920,11 @@ definitions:
         items:
           type: "string"
           example: "rootFolder"
+    example:
+      paths:
+      - "rootFolder"
+      - "rootFolder"
+      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
   ESUser:
     type: "object"
     properties:
@@ -767,6 +934,9 @@ definitions:
       id:
         type: "string"
         description: "The email address of the owner"
+    example:
+      displayName: "displayName"
+      id: "id"
 parameters:
   changeId:
     name: "id"
