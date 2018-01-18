@@ -617,6 +617,11 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/ESChange"
+      parameters:
+        type: "object"
+        description: "The change service parameters"
+        additionalProperties:
+          type: "string"
   ESChange:
     type: "object"
     properties:
