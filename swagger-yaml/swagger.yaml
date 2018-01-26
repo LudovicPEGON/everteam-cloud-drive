@@ -620,7 +620,9 @@ definitions:
       parameters:
         type: "object"
         description: "The change service parameters"
-        properties: {}
+        additionalProperties:
+          type: "object"
+          properties: {}
   ESChange:
     type: "object"
     properties:
