@@ -650,6 +650,23 @@ definitions:
       timestamp:
         type: "integer"
         format: "int64"
+  ESChangesProducer:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        description: "The change producer id"
+        readOnly: true
+      token:
+        type: "string"
+        description: "Producer token"
+      repositoryId:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        description: "The repository's id."
+        readOnly: true
   ESFile:
     type: "object"
     properties:
