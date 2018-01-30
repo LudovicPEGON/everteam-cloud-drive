@@ -18,8 +18,8 @@ tags:
   description: "Operations available for repositories"
 - name: "Files"
   description: "Operations available for files"
-- name: "Changes"
-  description: "Operations available for changes"
+- name: "Producers"
+  description: "Operations available for producers"
 schemes:
 - "https"
 paths:
@@ -78,6 +78,33 @@ paths:
         description: "Repository Id"
         required: true
         type: "string"
+      responses:
+        200:
+          description: "repository information"
+          schema:
+            $ref: "#/definitions/ESRepository"
+    put:
+      tags:
+      - "Repositories"
+      summary: "update a repository"
+      description: "Update a repository\n"
+      operationId: "updateRepository"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Repository Id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "change"
+        description: "Document type object"
+        required: false
+        schema:
+          $ref: "#/definitions/ESRepository"
       responses:
         200:
           description: "repository information"
@@ -534,6 +561,160 @@ paths:
       responses:
         204:
           description: "Successfully deleted files"
+  /producers:
+    get:
+      tags:
+      - "Producers"
+      summary: "Returns producers"
+      description: "Returns a list of producers"
+      operationId: "getProducers"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ESChangesProducer"
+    post:
+      tags:
+      - "Producers"
+      summary: "Add a producer to a repository"
+      operationId: "createProducer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "producer"
+        description: "Producer object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/ESChangesProducer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ESChangesProducer"
+        405:
+          description: "Invalid input"
+  /producers/{id}:
+    get:
+      tags:
+      - "Producers"
+      summary: "Find producer by ID"
+      description: "Returns a producer"
+      operationId: "getProducerById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The producer's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ESChangesProducer"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Producer not found"
+    delete:
+      tags:
+      - "Producers"
+      summary: "Deletes a source"
+      operationId: "deleteSource"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The producer's ID"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Producer not found"
+  /producers/{id}/stop:
+    post:
+      tags:
+      - "Producers"
+      summary: "Stop producer using its ID"
+      description: "Stop a producer"
+      operationId: "stopProducer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The producer's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ESChangesProducer"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Producer not found"
+  /producers/{id}/start:
+    post:
+      tags:
+      - "Producers"
+      summary: "Start producer using its ID"
+      description: "Start a producer"
+      operationId: "startProducer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The producer's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ESChangesProducer"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Producer not found"
+  /producers/{id}/reset:
+    post:
+      tags:
+      - "Producers"
+      summary: "Reset a producer using its ID"
+      description: "Reset a producer"
+      operationId: "resetProducer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The producer's ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ESChangesProducer"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Producer not found"
 securityDefinitions:
   storage_auth:
     type: "oauth2"
@@ -667,6 +848,18 @@ definitions:
         example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         description: "The repository's id."
         readOnly: true
+      status:
+        type: "string"
+        description: "The change producer status."
+        readOnly: true
+        enum:
+        - "started"
+        - "stopped"
+    example:
+      repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      token: "token"
+      status: "started"
   ESFile:
     type: "object"
     properties:
@@ -962,6 +1155,12 @@ definitions:
       displayName: "displayName"
       id: "id"
 parameters:
+  producerId:
+    name: "id"
+    in: "path"
+    description: "The producer's ID"
+    required: true
+    type: "string"
   changeId:
     name: "id"
     in: "path"
