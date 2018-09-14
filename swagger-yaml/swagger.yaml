@@ -1,1242 +1,1258 @@
 ---
 swagger: "2.0"
 info:
-  description: "This is a storage API"
-  version: "1.0.0"
-  title: "Storage API"
+  description: This is a storage API
+  version: 1.0.0
+  title: Storage API
   contact:
-    email: "you@your-company.com"
+    email: you@your-company.com
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/EVER_TEAM_SOFTWARE/Storage/1.0.0"
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /EVER_TEAM_SOFTWARE/Storage/1.0.0
 tags:
-- name: "Administration"
-  description: "Operations available for admin"
-- name: "Repositories"
-  description: "Operations available for repositories"
-- name: "Files"
-  description: "Operations available for files"
-- name: "Producers"
-  description: "Operations available for producers"
+- name: Administration
+  description: Operations available for admin
+- name: Repositories
+  description: Operations available for repositories
+- name: Files
+  description: Operations available for files
+- name: Producers
+  description: Operations available for producers
 schemes:
-- "https"
+- https
 paths:
   /repositories:
     get:
       tags:
-      - "Repositories"
-      summary: "Search repositories"
-      description: "you can search for available repositories in the storage service\n"
-      operationId: "listRepositories"
+      - Repositories
+      summary: Search repositories
+      description: |
+        you can search for available repositories in the storage service
+      operationId: listRepositories
       produces:
-      - "application/json"
+      - application/json
       parameters: []
       responses:
         200:
-          description: "search results matching criteria"
+          description: search results matching criteria
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/ESRepository"
+              $ref: '#/definitions/ESRepository'
     post:
       tags:
-      - "Repositories"
-      summary: "Insert a new Repository"
-      description: "Create a new Repository using file content and required parameters"
-      operationId: "createRepository"
+      - Repositories
+      summary: Insert a new Repository
+      description: Create a new Repository using file content and required parameters
+      operationId: createRepository
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - in: "body"
-        name: "change"
-        description: "Document type object"
+      - in: body
+        name: change
+        description: Document type object
         required: false
         schema:
-          $ref: "#/definitions/ESRepository"
+          $ref: '#/definitions/ESRepository'
       responses:
         200:
-          description: "If successful, this method returns the created Repository\
-            \ in the response body"
+          description: If successful, this method returns the created Repository in the response body
           schema:
-            $ref: "#/definitions/ESRepository"
+            $ref: '#/definitions/ESRepository'
   /repositories/{id}:
     get:
       tags:
-      - "Repositories"
-      summary: "get Repository information"
-      description: "Get repository informations\n"
-      operationId: "getRepository"
+      - Repositories
+      summary: get Repository information
+      description: |
+        Get repository informations
+      operationId: getRepository
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Repository Id"
+      - name: id
+        in: path
+        description: Repository Id
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "repository information"
+          description: repository information
           schema:
-            $ref: "#/definitions/ESRepository"
+            $ref: '#/definitions/ESRepository'
     put:
       tags:
-      - "Repositories"
-      summary: "update a repository"
-      description: "Update a repository\n"
-      operationId: "updateRepository"
+      - Repositories
+      summary: update a repository
+      description: |
+        Update a repository
+      operationId: updateRepository
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Repository Id"
+      - name: id
+        in: path
+        description: Repository Id
         required: true
-        type: "string"
-      - in: "body"
-        name: "change"
-        description: "Document type object"
+        type: string
+      - in: body
+        name: change
+        description: Document type object
         required: false
         schema:
-          $ref: "#/definitions/ESRepository"
+          $ref: '#/definitions/ESRepository'
       responses:
         200:
-          description: "repository information"
+          description: repository information
           schema:
-            $ref: "#/definitions/ESRepository"
+            $ref: '#/definitions/ESRepository'
     delete:
       tags:
-      - "Repositories"
-      summary: "delete one repository from its id"
-      description: "Delete a repository\n"
-      operationId: "deleteRepository"
+      - Repositories
+      summary: delete one repository from its id
+      description: |
+        Delete a repository
+      operationId: deleteRepository
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Repository Id"
+      - name: id
+        in: path
+        description: Repository Id
         required: true
-        type: "string"
+        type: string
       responses:
         204:
-          description: "Successfully deleted"
+          description: Successfully deleted
   /repositories/{id}/rename:
     put:
       tags:
-      - "Repositories"
-      summary: "rename a repository"
-      description: "Rename a repository\n"
-      operationId: "renameRepository"
+      - Repositories
+      summary: rename a repository
+      description: |
+        Rename a repository
+      operationId: renameRepository
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Repository Id"
+      - name: id
+        in: path
+        description: Repository Id
         required: true
-        type: "string"
-      - name: "name"
-        in: "query"
+        type: string
+      - name: name
+        in: query
         required: false
-        type: "string"
+        type: string
       responses:
         200:
-          description: "repository information"
+          description: repository information
           schema:
-            $ref: "#/definitions/ESRepository"
+            $ref: '#/definitions/ESRepository'
   /repositories/{id}/oauth2/token:
     get:
       tags:
-      - "Administration"
-      summary: "Get or Generate access token"
-      description: "get a valid access token or generate a new one\n"
-      operationId: "getRepositoryToken"
+      - Administration
+      summary: Get or Generate access token
+      description: |
+        get a valid access token or generate a new one
+      operationId: getRepositoryToken
       produces:
-      - "text/plain"
+      - text/plain
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Repository Id"
+      - name: id
+        in: path
+        description: Repository Id
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "valid access token"
+          description: valid access token
           schema:
-            type: "string"
-            example: "eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKRHJkZ0NVcnlZUG5yZkU4bXlINW1KenlvM0ZpYWdlb053bkVIY1pQTUNMbmh1TDkxdWh6LXc5cnRwVThqclBiaHRSTVBUbFhsZ05VYl94MXVqbnNpTFNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwNzEzMjQyLCJuYmYiOjE0OTA3MTMyNDIsImV4cCI6MTQ5MDcxNzE0MiwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKeU1jRmx1N090c3l4NUIzLUJPRWs2Y0xydnhheEdJRmVtMUVLa291UksyNFRiUGtzWVRtMHJzOVFkbWtVd1J0WlV3OFB2MmtyZEpXcjJLS1NCWlc0eHJKUnFtN0Y1RDk4a0JWajJyNmwycjBnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.Uvyk36Q6F14zRxUldbHvVMPJhn9mzEMI795YmzDk7veFUoOsgmDinKQWqNGAakV-K_O16xyoDvSCcaxh50WMJHbuvE5bMWxTDZJw1hFjqX-_C_aIoL2raK_FBeNyq8sqgJ1Tn-3JfuodMCXlaR09KMiViPPLUXwZ1OOEMiAPwPfhoorz4rnigEC0QPT2ofJzm4lMn21Y0HqZBJBndCJY_u_vgObfvPBBRm4MP6mgI5njYp82QytxWr9kQQGPZmhtSLy7__0OaIBQU7WzQzLrJAs5uhAQbgW29wmdDKwfmgZP3pQ2dU-kVmSVzjY6GjECFp9ORhXNAok170zPxUcm9A\n"
+            type: string
+            example: |
+              eyJ0eXAiOiJKV1QiLCJub25jZSI6IkFRQUJBQUFBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKRHJkZ0NVcnlZUG5yZkU4bXlINW1KenlvM0ZpYWdlb053bkVIY1pQTUNMbmh1TDkxdWh6LXc5cnRwVThqclBiaHRSTVBUbFhsZ05VYl94MXVqbnNpTFNBQSIsImFsZyI6IlJTMjU2IiwieDV0IjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIiwia2lkIjoiYTNRTjBCWlM3czRuTi1CZHJqYkYwWV9MZE1NIn0.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hYmNhMGRlMy0yMGJmLTQwODEtYmRkMS1hYjY2YjA3NWMxNTQvIiwiaWF0IjoxNDkwNzEzMjQyLCJuYmYiOjE0OTA3MTMyNDIsImV4cCI6MTQ5MDcxNzE0MiwiYWNyIjoiMSIsImFpbyI6IkFRQUJBQUVBQUFEUk5ZUlEzZGhSU3JtLTRLLWFkcENKeU1jRmx1N090c3l4NUIzLUJPRWs2Y0xydnhheEdJRmVtMUVLa291UksyNFRiUGtzWVRtMHJzOVFkbWtVd1J0WlV3OFB2MmtyZEpXcjJLS1NCWlc0eHJKUnFtN0Y1RDk4a0JWajJyNmwycjBnQUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6Ik9uZURyaXZlU3RvcmFnZSIsImFwcGlkIjoiZTQ4ODAyODEtN2JjNi00OGM0LTlhOTUtNGIwZWU5ZmIwY2JhIiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJCZW5uYXQiLCJnaXZlbl9uYW1lIjoiS2FkZXIiLCJpcGFkZHIiOiI5MC44NS4yMDMuMTc3IiwibmFtZSI6IkthZGVyIEJlbm5hdCIsIm9pZCI6IjhkZDVjNzI0LTcwMzUtNDhhNS05NDgxLTBjYTQwY2JlNzMxOCIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzN0ZGRTlGREYxQTJCIiwic2NwIjoiRmlsZXMuUmVhZFdyaXRlIEZpbGVzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwic3ViIjoiRTBBOGtLYWZ2MXFCUE51bjNCOTNJckctbXMweHFLc0EyNC02NlNzaVZlYyIsInRpZCI6ImFiY2EwZGUzLTIwYmYtNDA4MS1iZGQxLWFiNjZiMDc1YzE1NCIsInVuaXF1ZV9uYW1lIjoiay5iZW5uYXRAZXZlcnRlYW1zb2Z0d2FyZTM2NS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJrLmJlbm5hdEBldmVydGVhbXNvZnR3YXJlMzY1Lm9ubWljcm9zb2Z0LmNvbSIsInZlciI6IjEuMCJ9.Uvyk36Q6F14zRxUldbHvVMPJhn9mzEMI795YmzDk7veFUoOsgmDinKQWqNGAakV-K_O16xyoDvSCcaxh50WMJHbuvE5bMWxTDZJw1hFjqX-_C_aIoL2raK_FBeNyq8sqgJ1Tn-3JfuodMCXlaR09KMiViPPLUXwZ1OOEMiAPwPfhoorz4rnigEC0QPT2ofJzm4lMn21Y0HqZBJBndCJY_u_vgObfvPBBRm4MP6mgI5njYp82QytxWr9kQQGPZmhtSLy7__0OaIBQU7WzQzLrJAs5uhAQbgW29wmdDKwfmgZP3pQ2dU-kVmSVzjY6GjECFp9ORhXNAok170zPxUcm9A
         303:
-          description: "need to validate again permissions, so redirected to drive\
-            \ specific authentication page"
+          description: need to validate again permissions, so redirected to drive specific authentication page
         500:
-          description: "if error happend on server side"
+          description: if error happend on server side
   /files/{id}:
     get:
       tags:
-      - "Files"
-      summary: "Get file informations"
-      description: "Get file informations"
-      operationId: "getFile"
+      - Files
+      summary: Get file informations
+      description: Get file informations
+      operationId: getFile
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "getPermissions"
-        in: "query"
-        description: "set true if you want to get permissions at the same time you\
-          \ get files"
+        type: string
+      - name: getPermissions
+        in: query
+        description: set true if you want to get permissions at the same time you get files
         required: false
-        type: "boolean"
+        type: boolean
         default: false
-      - name: "getChecksum"
-        in: "query"
-        description: "set true if you want to get checksum at the same time you get\
-          \ files"
+      - name: getChecksum
+        in: query
+        description: set true if you want to get checksum at the same time you get files
         required: false
-        type: "boolean"
+        type: boolean
         default: false
       responses:
         200:
-          description: "search results"
+          description: search results
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
       security:
       - storage_auth:
-        - "read:files"
+        - read:files
     put:
       tags:
-      - "Files"
-      summary: "Updates a file"
-      description: "Updates a specified file metadata"
-      operationId: "updateFile"
+      - Files
+      summary: Updates a file
+      description: Updates a specified file metadata
+      operationId: updateFile
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "name"
-        in: "query"
+        type: string
+      - name: name
+        in: query
         required: false
-        type: "string"
-      - name: "description"
-        in: "query"
+        type: string
+      - name: description
+        in: query
         required: false
-        type: "string"
+        type: string
       responses:
         200:
-          description: "If successful, this method returns the updated File in the\
-            \ response body"
+          description: If successful, this method returns the updated File in the response body
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
     delete:
       tags:
-      - "Files"
-      summary: "Delete a File"
-      description: "Delete a File or a directory using its id"
-      operationId: "deleteFile"
+      - Files
+      summary: Delete a File
+      description: Delete a File or a directory using its id
+      operationId: deleteFile
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
+        type: string
       responses:
         204:
-          description: "Successfully deleted"
+          description: Successfully deleted
   /files/{id}/createFile:
     post:
       tags:
-      - "Files"
-      summary: "Insert a new File"
-      description: "Create a new File using file content and required parameters"
-      operationId: "createFile"
+      - Files
+      summary: Insert a new File
+      description: Create a new File using file content and required parameters
+      operationId: createFile
       consumes:
-      - "multipart/form-data"
+      - multipart/form-data
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "content"
-        in: "formData"
+        type: string
+      - name: content
+        in: formData
         required: true
-        type: "file"
-      - name: "name"
-        in: "query"
-        description: "if content exists, we takes file name by default"
+        type: file
+      - name: name
+        in: query
+        description: if content exists, we takes file name by default
         required: false
-        type: "string"
-      - name: "description"
-        in: "query"
+        type: string
+      - name: description
+        in: query
         required: false
-        type: "string"
-      - name: "useTree"
-        in: "query"
+        type: string
+      - name: useTree
+        in: query
         required: false
-        type: "boolean"
+        type: boolean
         default: false
       responses:
         200:
-          description: "If successful, this method returns the created File in the\
-            \ response body"
+          description: If successful, this method returns the created File in the response body
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
   /files/{id}/createDirectory:
     post:
       tags:
-      - "Files"
-      summary: "Insert a new Directory"
-      description: "Create a new Directory using required parameters"
-      operationId: "createDirectory"
+      - Files
+      summary: Insert a new Directory
+      description: Create a new Directory using required parameters
+      operationId: createDirectory
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "name"
-        in: "query"
+        type: string
+      - name: name
+        in: query
         required: true
-        type: "string"
-      - name: "description"
-        in: "query"
+        type: string
+      - name: description
+        in: query
         required: false
-        type: "string"
+        type: string
       responses:
         200:
-          description: "If successful, this method returns the updated File in the\
-            \ response body"
+          description: If successful, this method returns the updated File in the response body
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
   /files/{id}/replace:
     post:
       tags:
-      - "Files"
-      summary: "Updates a file content"
-      description: "Updates a specified file  content"
-      operationId: "updateContentFile"
+      - Files
+      summary: Updates a file content
+      description: Updates a specified file  content
+      operationId: updateContentFile
       consumes:
-      - "multipart/form-data"
+      - multipart/form-data
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "content"
-        in: "formData"
+        type: string
+      - name: content
+        in: formData
         required: false
-        type: "file"
+        type: file
       responses:
         200:
-          description: "If successful, this method returns the updated File in the\
-            \ response body"
+          description: If successful, this method returns the updated File in the response body
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
   /files/{id}/copy:
     post:
       tags:
-      - "Files"
-      summary: "Create a copy"
-      description: "Copy a file of the specified file"
-      operationId: "copyFile"
+      - Files
+      summary: Create a copy
+      description: Copy a file of the specified file
+      operationId: copyFile
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "targetId"
-        in: "query"
-        description: "Target file's ID"
+        type: string
+      - name: targetId
+        in: query
+        description: Target file's ID
         required: true
-        type: "string"
-      - name: "useTree"
-        in: "query"
+        type: string
+      - name: useTree
+        in: query
         required: false
-        type: "boolean"
+        type: boolean
         default: false
       responses:
         201:
-          description: "Successfully created"
-          schema:
-            $ref: "#/definitions/ESFile"
+          description: Successfully created
           headers:
             x-next:
-              type: "string"
-              description: "A link to the next page of responses"
+              type: string
+              description: A link to the next page of responses
+          schema:
+            $ref: '#/definitions/ESFile'
   /files/{id}/move:
     post:
       tags:
-      - "Files"
-      summary: "Move a file"
-      description: "Move a file to a specified parent"
-      operationId: "moveFile"
+      - Files
+      summary: Move a file
+      description: Move a file to a specified parent
+      operationId: moveFile
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "targetId"
-        in: "query"
-        description: "Target file's ID"
+        type: string
+      - name: targetId
+        in: query
+        description: Target file's ID
         required: true
-        type: "string"
-      - name: "useTree"
-        in: "query"
+        type: string
+      - name: useTree
+        in: query
         required: false
-        type: "boolean"
+        type: boolean
         default: false
       responses:
         201:
-          description: "Successfully moved"
+          description: Successfully moved
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
   /files/move:
     post:
       tags:
-      - "Files"
-      summary: "Move multiple files"
-      description: "Move a list of files to a specified parent"
-      operationId: "moveFiles"
+      - Files
+      summary: Move multiple files
+      description: Move a list of files to a specified parent
+      operationId: moveFiles
       parameters:
-      - name: "IDs"
-        in: "query"
-        description: "The files's ID's"
+      - name: IDs
+        in: query
+        description: The files's ID's
         required: true
-        type: "string"
-      - name: "targetId"
-        in: "query"
-        description: "Target file's ID"
+        type: string
+      - name: targetId
+        in: query
+        description: Target file's ID
         required: true
-        type: "string"
+        type: string
       responses:
         201:
-          description: "Successfully moved files"
+          description: Successfully moved files
           schema:
-            $ref: "#/definitions/ESFileList"
+            $ref: '#/definitions/ESFileList'
   /files/{id}/children:
     get:
       tags:
-      - "Files"
-      summary: "Get the file children"
-      description: "Get the specified file's direct children"
-      operationId: "getFileChildren"
+      - Files
+      summary: Get the file children
+      description: Get the specified file's direct children
+      operationId: getFileChildren
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "getPermissions"
-        in: "query"
-        description: "set true if you want to get permissions at the same time you\
-          \ get files"
+        type: string
+      - name: getPermissions
+        in: query
+        description: set true if you want to get permissions at the same time you get files
         required: false
-        type: "boolean"
+        type: boolean
         default: false
-      - name: "getChecksum"
-        in: "query"
-        description: "set true if you want to get checksum at the same time you get\
-          \ files"
+      - name: getChecksum
+        in: query
+        description: set true if you want to get checksum at the same time you get files
         required: false
-        type: "boolean"
+        type: boolean
         default: false
-      - name: "maxResult"
-        in: "query"
-        description: "Maximum number of files to return. Acceptable values are 0 to\
-          \ 1000. Use -1 for no limit"
+      - name: maxResult
+        in: query
+        description: Maximum number of files to return. Acceptable values are 0 to 1000. Use -1 for no limit
         required: false
-        type: "integer"
+        type: integer
         default: 100
       responses:
         200:
-          description: "search results matching criteria"
+          description: search results matching criteria
           schema:
-            $ref: "#/definitions/ESFileList"
+            $ref: '#/definitions/ESFileList'
   /files/{id}/content:
     get:
       tags:
-      - "Files"
-      summary: "Get the content file"
-      description: "Get the specified file's content"
-      operationId: "getFileContent"
+      - Files
+      summary: Get the content file
+      description: Get the specified file's content
+      operationId: getFileContent
       produces:
-      - "application/octet-stream"
+      - application/octet-stream
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "Successfully retrieved"
+          description: Successfully retrieved
           schema:
-            type: "file"
+            type: file
   /files/{id}/append:
     post:
       tags:
-      - "Files"
-      summary: "Append text to an existing file"
-      description: "Append text to a specified file"
-      operationId: "appendTo"
+      - Files
+      summary: Append text to an existing file
+      description: Append text to a specified file
+      operationId: appendTo
       consumes:
-      - "multipart/form-data"
+      - multipart/form-data
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
-      - name: "content"
-        in: "formData"
+        type: string
+      - name: content
+        in: formData
         required: false
-        type: "file"
+        type: file
       responses:
         200:
-          description: "If successful, this method returns the updated File in the\
-            \ response body"
+          description: If successful, this method returns the updated File in the response body
           schema:
-            $ref: "#/definitions/ESFile"
+            $ref: '#/definitions/ESFile'
   /files/{id}/permissions:
     get:
       tags:
-      - "Files"
-      summary: "Get File's Permsissions"
-      description: "Lists a file's permissions"
-      operationId: "getFilePermissions"
+      - Files
+      summary: Get File's Permsissions
+      description: Lists a file's permissions
+      operationId: getFilePermissions
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The file's ID"
+      - name: id
+        in: path
+        description: The file's ID
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "search results matching criteria"
+          description: search results matching criteria
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/ESPermission"
+              $ref: '#/definitions/ESPermission'
   /files/delete:
     post:
       tags:
-      - "Files"
-      summary: "Delete Multiple Files"
-      description: "Delete multiple Files or directories using their id's"
-      operationId: "deleteMultipleFiles"
+      - Files
+      summary: Delete Multiple Files
+      description: Delete multiple Files or directories using their id's
+      operationId: deleteMultipleFiles
       parameters:
-      - name: "IDs"
-        in: "query"
-        description: "The files's ID's"
+      - name: IDs
+        in: query
+        description: The files's ID's
         required: true
-        type: "string"
+        type: string
       responses:
         204:
-          description: "Successfully deleted files"
+          description: Successfully deleted files
   /producers:
     get:
       tags:
-      - "Producers"
-      summary: "Returns producers"
-      description: "Returns a list of producers"
-      operationId: "getProducers"
+      - Producers
+      summary: Returns producers
+      description: Returns a list of producers
+      operationId: getProducers
       produces:
-      - "application/json"
+      - application/json
       parameters: []
       responses:
         200:
-          description: "search results matching criteria"
+          description: search results matching criteria
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/ESChangesProducer"
+              $ref: '#/definitions/ESChangesProducer'
     post:
       tags:
-      - "Producers"
-      summary: "Add a producer to a repository"
-      operationId: "createProducer"
+      - Producers
+      summary: Add a producer to a repository
+      operationId: createProducer
       consumes:
-      - "application/json"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - in: "body"
-        name: "producer"
-        description: "Producer object that needs to be added"
+      - in: body
+        name: producer
+        description: Producer object that needs to be added
         required: true
         schema:
-          $ref: "#/definitions/ESChangesProducer"
+          $ref: '#/definitions/ESChangesProducer'
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
-            $ref: "#/definitions/ESChangesProducer"
+            $ref: '#/definitions/ESChangesProducer'
         405:
-          description: "Invalid input"
+          description: Invalid input
   /producers/{id}:
     get:
       tags:
-      - "Producers"
-      summary: "Find producer by ID"
-      description: "Returns a producer"
-      operationId: "getProducerById"
+      - Producers
+      summary: Find producer by ID
+      description: Returns a producer
+      operationId: getProducerById
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The producer's ID"
+      - name: id
+        in: path
+        description: The producer's ID
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
-            $ref: "#/definitions/ESChangesProducer"
+            $ref: '#/definitions/ESChangesProducer'
         400:
-          description: "Invalid ID supplied"
+          description: Invalid ID supplied
         404:
-          description: "Producer not found"
+          description: Producer not found
     delete:
       tags:
-      - "Producers"
-      summary: "Deletes a source"
-      operationId: "deleteSource"
+      - Producers
+      summary: Deletes a source
+      operationId: deleteSource
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The producer's ID"
+      - name: id
+        in: path
+        description: The producer's ID
         required: true
-        type: "string"
+        type: string
       responses:
         400:
-          description: "Invalid ID supplied"
+          description: Invalid ID supplied
         404:
-          description: "Producer not found"
+          description: Producer not found
   /producers/{id}/stop:
     post:
       tags:
-      - "Producers"
-      summary: "Stop producer using its ID"
-      description: "Stop a producer"
-      operationId: "stopProducer"
+      - Producers
+      summary: Stop producer using its ID
+      description: Stop a producer
+      operationId: stopProducer
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The producer's ID"
+      - name: id
+        in: path
+        description: The producer's ID
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
-            $ref: "#/definitions/ESChangesProducer"
+            $ref: '#/definitions/ESChangesProducer'
         400:
-          description: "Invalid ID supplied"
+          description: Invalid ID supplied
         404:
-          description: "Producer not found"
+          description: Producer not found
   /producers/{id}/start:
     post:
       tags:
-      - "Producers"
-      summary: "Start producer using its ID"
-      description: "Start a producer"
-      operationId: "startProducer"
+      - Producers
+      summary: Start producer using its ID
+      description: Start a producer
+      operationId: startProducer
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The producer's ID"
+      - name: id
+        in: path
+        description: The producer's ID
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
-            $ref: "#/definitions/ESChangesProducer"
+            $ref: '#/definitions/ESChangesProducer'
         400:
-          description: "Invalid ID supplied"
+          description: Invalid ID supplied
         404:
-          description: "Producer not found"
+          description: Producer not found
   /producers/{id}/reset:
     post:
       tags:
-      - "Producers"
-      summary: "Reset a producer using its ID"
-      description: "Reset a producer"
-      operationId: "resetProducer"
+      - Producers
+      summary: Reset a producer using its ID
+      description: Reset a producer
+      operationId: resetProducer
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "id"
-        in: "path"
-        description: "The producer's ID"
+      - name: id
+        in: path
+        description: The producer's ID
         required: true
-        type: "string"
+        type: string
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
-            $ref: "#/definitions/ESChangesProducer"
+            $ref: '#/definitions/ESChangesProducer'
         400:
-          description: "Invalid ID supplied"
+          description: Invalid ID supplied
         404:
-          description: "Producer not found"
+          description: Producer not found
 securityDefinitions:
   storage_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/api/oauth/dialog"
-    flow: "implicit"
+    type: oauth2
+    authorizationUrl: http://petstore.swagger.io/api/oauth/dialog
+    flow: implicit
     scopes:
-      write:files: "modify files"
-      read:files: "read files"
+      write:files: modify files
+      read:files: read files
 definitions:
   ESRepository:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "string"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The repository's id"
+        type: string
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        description: The repository's id
         readOnly: true
       fileId:
-        type: "string"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The repository's file id. Can be used by files list for example."
+        type: string
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        description: The repository's file id. Can be used by files list for example.
         readOnly: true
       type:
-        type: "string"
+        type: string
         enum:
-        - "FS"
-        - "GOOGLE"
-        - "ONEDRIVE"
-        - "HTTPC"
+        - FS
+        - GOOGLE
+        - ONEDRIVE
+        - HTTPC
       patterns:
-        type: "string"
-        description: "File name patterns separated by comma"
+        type: string
+        description: File name patterns separated by comma
       name:
-        type: "string"
+        type: string
       description:
-        type: "string"
+        type: string
       rootDirectory:
-        type: "string"
-        description: "can be a reference to json file containing all client secrets"
+        type: string
+        description: can be a reference to json file containing all client secrets
       clientId:
-        type: "string"
-        description: "client id we have to use to get access token. Can be setting\
-          \ in application.yml for each repository or for drive"
+        type: string
+        description: client id we have to use to get access token. Can be setting in application.yml for each repository or for drive
       clientSecret:
-        type: "string"
-        description: "client secret we have to use to get access token. Can be setting\
-          \ in application.yml for each repository or for drive"
+        type: string
+        description: client secret we have to use to get access token. Can be setting in application.yml for each repository or for drive
       params:
-        type: "object"
-        description: "The change service parameters"
+        type: object
+        description: The change service parameters
         additionalProperties:
-          type: "string"
+          type: string
       scheduler:
-        type: "integer"
-        description: "The scheduler delay in seconds. 0 signifify no scheduler"
+        type: integer
+        description: The scheduler delay in seconds. 0 signifify no scheduler
     example:
       scheduler: 0
-      clientId: "clientId"
-      patterns: "patterns"
-      name: "name"
-      description: "description"
-      rootDirectory: "rootDirectory"
-      clientSecret: "clientSecret"
-      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      type: "FS"
+      clientId: clientId
+      patterns: patterns
+      name: name
+      description: description
+      rootDirectory: rootDirectory
+      clientSecret: clientSecret
+      id: d290f1ee-6c54-4b01-90e6-d701748f0851
+      type: FS
       params:
-        key: "params"
-      fileId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        key: params
+      fileId: d290f1ee-6c54-4b01-90e6-d701748f0851
   ESChanges:
     properties:
       repository:
-        $ref: "#/definitions/ESRepository"
+        $ref: '#/definitions/ESRepository'
       nextPageToken:
-        type: "string"
-        description: "The page token for the next page of changes. This will be absent\
-          \ if the end of the changes list has been reached. If the token is rejected\
-          \ for any reason, it should be discarded, and pagination should be restarted\
-          \ from the first page of results."
+        type: string
+        description: The page token for the next page of changes. This will be absent if the end of the changes list has been reached. If the token is rejected for any reason, it should be discarded, and pagination should be restarted from the first page of results.
         readOnly: true
       items:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/ESChange"
+          $ref: '#/definitions/ESChange'
       parameters:
-        type: "object"
-        description: "The change service parameters"
+        type: object
+        description: The change service parameters
         additionalProperties:
-          type: "object"
+          type: object
           properties: {}
   ESChange:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "string"
-        format: "uuid"
-        description: "The change id"
+        type: string
+        format: uuid
+        description: The change id
         readOnly: true
       modificationDate:
-        type: "string"
-        format: "date-time"
-        description: "Creation time for this file"
+        type: string
+        format: date-time
+        description: Creation time for this file
         readOnly: true
       file:
-        $ref: "#/definitions/ESFile"
+        $ref: '#/definitions/ESFile'
       type:
-        type: "string"
+        type: string
         enum:
-        - "ADD"
-        - "UPDATE"
-        - "DELETE"
-        - "RENAME"
+        - ADD
+        - UPDATE
+        - DELETE
+        - RENAME
       oldName:
-        type: "string"
+        type: string
       timestamp:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
   ESChangesProducer:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "string"
-        format: "uuid"
-        description: "The change producer id"
+        type: string
+        format: uuid
+        description: The change producer id
         readOnly: true
       token:
-        type: "string"
-        description: "Producer token"
+        type: string
+        description: Producer token
       repositoryId:
-        type: "string"
-        format: "uuid"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The repository's id."
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        description: The repository's id.
         readOnly: true
       status:
-        type: "string"
-        description: "The change producer status."
+        type: string
+        description: The change producer status.
         readOnly: true
         enum:
-        - "started"
-        - "stopped"
+        - started
+        - stopped
     example:
-      repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-      token: "token"
-      status: "started"
+      repositoryId: d290f1ee-6c54-4b01-90e6-d701748f0851
+      id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      token: token
+      status: started
   ESFile:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "string"
-        format: "uuid"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The file's id."
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        description: The file's id.
         readOnly: true
       repositoryId:
-        type: "string"
-        format: "uuid"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "The repository's id."
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        description: The repository's id.
         readOnly: true
       uri:
-        type: "string"
-        example: "http://, file://"
-        description: "The file uri."
+        type: string
+        example: http://, file://
+        description: The file uri.
         readOnly: true
       parents:
-        type: "array"
-        description: "The files parent list. Some drives juste manage one parent"
+        type: array
+        description: The files parent list. Some drives juste manage one parent
         items:
-          $ref: "#/definitions/ESParent"
+          $ref: '#/definitions/ESParent'
       name:
-        type: "string"
-        example: "My file.txt"
-        description: "The title of the file"
+        type: string
+        example: My file.txt
+        description: The title of the file
       fileSize:
-        type: "integer"
-        format: "int64"
-        description: "The size of the file in bytes."
+        type: integer
+        format: int64
+        description: The size of the file in bytes.
         readOnly: true
       directory:
-        type: "boolean"
-        description: "true if file is a directory, false otherwise"
+        type: boolean
+        description: true if file is a directory, false otherwise
         readOnly: true
       description:
-        type: "string"
-        example: "My first file"
-        description: "A short description of the file"
+        type: string
+        example: My first file
+        description: A short description of the file
       mimeType:
-        type: "string"
-        example: "text-plain"
-        description: "The MIME type of the file"
+        type: string
+        example: text-plain
+        description: The MIME type of the file
         readOnly: true
       creationTime:
-        type: "string"
-        format: "date-time"
-        description: "Creation time for this file"
+        type: string
+        format: date-time
+        description: Creation time for this file
         readOnly: true
       lastModifiedTime:
-        type: "string"
-        format: "date-time"
-        description: "Last time this file was modified by anyone"
+        type: string
+        format: date-time
+        description: Last time this file was modified by anyone
         readOnly: true
       lastAccessTime:
-        type: "string"
-        format: "date-time"
-        description: "Last time this file was acceded by anyone"
+        type: string
+        format: date-time
+        description: Last time this file was acceded by anyone
         readOnly: true
       lastModifiedUser:
-        $ref: "#/definitions/ESUser"
+        $ref: '#/definitions/ESUser'
       owners:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/ESUser"
+          $ref: '#/definitions/ESUser'
       permissions:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/ESPermission"
+          $ref: '#/definitions/ESPermission'
       checksum:
-        type: "string"
-        example: "2B693E6A1483B70BF5CD7C511035879E"
-        description: "The file's content  MD5 checksum"
+        type: string
+        example: 2B693E6A1483B70BF5CD7C511035879E
+        description: The file's content  MD5 checksum
+      fields:
+        type: array
+        items:
+          $ref: '#/definitions/ESField'
     example:
-      lastModifiedTime: "2000-01-23T04:56:07.000+00:00"
-      lastAccessTime: "2000-01-23T04:56:07.000+00:00"
-      creationTime: "2000-01-23T04:56:07.000+00:00"
-      description: "My first file"
+      lastModifiedTime: 2000-01-23T04:56:07.000+00:00
+      lastAccessTime: 2000-01-23T04:56:07.000+00:00
+      creationTime: 2000-01-23T04:56:07.000+00:00
+      description: My first file
       owners:
-      - displayName: "displayName"
-        id: "id"
-      - displayName: "displayName"
-        id: "id"
-      mimeType: "text-plain"
-      uri: "http://, file://"
+      - displayName: displayName
+        id: id
+      - displayName: displayName
+        id: id
+      mimeType: text-plain
+      uri: http://, file://
       directory: true
       fileSize: 0
       permissions:
-      - accountType: "user"
-        domain: "domain"
+      - accountType: user
+        domain: domain
         roles:
-        - "owner"
-        - "owner"
-        type: "allow"
-        userId: "userId"
-      - accountType: "user"
-        domain: "domain"
+        - owner
+        - owner
+        type: allow
+        userId: userId
+      - accountType: user
+        domain: domain
         roles:
-        - "owner"
-        - "owner"
-        type: "allow"
-        userId: "userId"
-      repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      name: "My file.txt"
-      checksum: "2B693E6A1483B70BF5CD7C511035879E"
+        - owner
+        - owner
+        type: allow
+        userId: userId
+      repositoryId: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name: My file.txt
+      checksum: 2B693E6A1483B70BF5CD7C511035879E
       lastModifiedUser:
-        displayName: "displayName"
-        id: "id"
-      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        displayName: displayName
+        id: id
+      id: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fields:
+      - name: name
+        value: value
+      - name: name
+        value: value
       parents:
       - paths:
-        - "rootFolder"
-        - "rootFolder"
-        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        - rootFolder
+        - rootFolder
+        id: d290f1ee-6c54-4b01-90e6-d701748f0851
       - paths:
-        - "rootFolder"
-        - "rootFolder"
-        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        - rootFolder
+        - rootFolder
+        id: d290f1ee-6c54-4b01-90e6-d701748f0851
+  ESField:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Field name
+      value:
+        type: string
+        description: Field value
+    example:
+      name: name
+      value: value
   ESFileList:
-    type: "object"
+    type: object
     properties:
       items:
-        type: "array"
-        description: "The list of files"
+        type: array
+        description: The list of files
         items:
-          $ref: "#/definitions/ESFile"
+          $ref: '#/definitions/ESFile'
     example:
       items:
-      - lastModifiedTime: "2000-01-23T04:56:07.000+00:00"
-        lastAccessTime: "2000-01-23T04:56:07.000+00:00"
-        creationTime: "2000-01-23T04:56:07.000+00:00"
-        description: "My first file"
+      - lastModifiedTime: 2000-01-23T04:56:07.000+00:00
+        lastAccessTime: 2000-01-23T04:56:07.000+00:00
+        creationTime: 2000-01-23T04:56:07.000+00:00
+        description: My first file
         owners:
-        - displayName: "displayName"
-          id: "id"
-        - displayName: "displayName"
-          id: "id"
-        mimeType: "text-plain"
-        uri: "http://, file://"
+        - displayName: displayName
+          id: id
+        - displayName: displayName
+          id: id
+        mimeType: text-plain
+        uri: http://, file://
         directory: true
         fileSize: 0
         permissions:
-        - accountType: "user"
-          domain: "domain"
+        - accountType: user
+          domain: domain
           roles:
-          - "owner"
-          - "owner"
-          type: "allow"
-          userId: "userId"
-        - accountType: "user"
-          domain: "domain"
+          - owner
+          - owner
+          type: allow
+          userId: userId
+        - accountType: user
+          domain: domain
           roles:
-          - "owner"
-          - "owner"
-          type: "allow"
-          userId: "userId"
-        repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        name: "My file.txt"
-        checksum: "2B693E6A1483B70BF5CD7C511035879E"
+          - owner
+          - owner
+          type: allow
+          userId: userId
+        repositoryId: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name: My file.txt
+        checksum: 2B693E6A1483B70BF5CD7C511035879E
         lastModifiedUser:
-          displayName: "displayName"
-          id: "id"
-        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          displayName: displayName
+          id: id
+        id: d290f1ee-6c54-4b01-90e6-d701748f0851
+        fields:
+        - name: name
+          value: value
+        - name: name
+          value: value
         parents:
         - paths:
-          - "rootFolder"
-          - "rootFolder"
-          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          - rootFolder
+          - rootFolder
+          id: d290f1ee-6c54-4b01-90e6-d701748f0851
         - paths:
-          - "rootFolder"
-          - "rootFolder"
-          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      - lastModifiedTime: "2000-01-23T04:56:07.000+00:00"
-        lastAccessTime: "2000-01-23T04:56:07.000+00:00"
-        creationTime: "2000-01-23T04:56:07.000+00:00"
-        description: "My first file"
+          - rootFolder
+          - rootFolder
+          id: d290f1ee-6c54-4b01-90e6-d701748f0851
+      - lastModifiedTime: 2000-01-23T04:56:07.000+00:00
+        lastAccessTime: 2000-01-23T04:56:07.000+00:00
+        creationTime: 2000-01-23T04:56:07.000+00:00
+        description: My first file
         owners:
-        - displayName: "displayName"
-          id: "id"
-        - displayName: "displayName"
-          id: "id"
-        mimeType: "text-plain"
-        uri: "http://, file://"
+        - displayName: displayName
+          id: id
+        - displayName: displayName
+          id: id
+        mimeType: text-plain
+        uri: http://, file://
         directory: true
         fileSize: 0
         permissions:
-        - accountType: "user"
-          domain: "domain"
+        - accountType: user
+          domain: domain
           roles:
-          - "owner"
-          - "owner"
-          type: "allow"
-          userId: "userId"
-        - accountType: "user"
-          domain: "domain"
+          - owner
+          - owner
+          type: allow
+          userId: userId
+        - accountType: user
+          domain: domain
           roles:
-          - "owner"
-          - "owner"
-          type: "allow"
-          userId: "userId"
-        repositoryId: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        name: "My file.txt"
-        checksum: "2B693E6A1483B70BF5CD7C511035879E"
+          - owner
+          - owner
+          type: allow
+          userId: userId
+        repositoryId: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name: My file.txt
+        checksum: 2B693E6A1483B70BF5CD7C511035879E
         lastModifiedUser:
-          displayName: "displayName"
-          id: "id"
-        id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          displayName: displayName
+          id: id
+        id: d290f1ee-6c54-4b01-90e6-d701748f0851
+        fields:
+        - name: name
+          value: value
+        - name: name
+          value: value
         parents:
         - paths:
-          - "rootFolder"
-          - "rootFolder"
-          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          - rootFolder
+          - rootFolder
+          id: d290f1ee-6c54-4b01-90e6-d701748f0851
         - paths:
-          - "rootFolder"
-          - "rootFolder"
-          id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          - rootFolder
+          - rootFolder
+          id: d290f1ee-6c54-4b01-90e6-d701748f0851
   ESPermission:
-    type: "object"
+    type: object
     properties:
       type:
-        type: "string"
-        description: "The permission type. Allow or deny"
+        type: string
+        description: The permission type. Allow or deny
         enum:
-        - "allow"
-        - "deny"
+        - allow
+        - deny
       accountType:
-        type: "string"
-        description: "The account type."
+        type: string
+        description: The account type.
         enum:
-        - "user"
-        - "group"
-        - "domain"
-        - "anyone"
+        - user
+        - group
+        - domain
+        - anyone
       userId:
-        type: "string"
-        description: "The id (can be its email or user code) of the user or group\
-          \ this permission refers to"
+        type: string
+        description: The id (can be its email or user code) of the user or group this permission refers to
       domain:
-        type: "string"
-        description: "The domain name of the entity this permission refers to. It\
-          \ is present when the permission type is user, group or domain"
+        type: string
+        description: The domain name of the entity this permission refers to. It is present when the permission type is user, group or domain
       roles:
-        type: "array"
+        type: array
         items:
-          type: "string"
-          description: "The persmision role for this user"
+          type: string
+          description: The persmision role for this user
           enum:
-          - "owner"
-          - "reader"
-          - "writer"
+          - owner
+          - reader
+          - writer
     example:
-      accountType: "user"
-      domain: "domain"
+      accountType: user
+      domain: domain
       roles:
-      - "owner"
-      - "owner"
-      type: "allow"
-      userId: "userId"
+      - owner
+      - owner
+      type: allow
+      userId: userId
   ESParent:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "string"
-        format: "uuid"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        description: "Parent folders which contain this file"
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        description: Parent folders which contain this file
         readOnly: true
       paths:
-        type: "array"
-        description: "The list of parent names in order from root to direct parent\
-          \ file"
+        type: array
+        description: The list of parent names in order from root to direct parent file
         items:
-          type: "string"
-          example: "rootFolder"
+          type: string
+          example: rootFolder
     example:
       paths:
-      - "rootFolder"
-      - "rootFolder"
-      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      - rootFolder
+      - rootFolder
+      id: d290f1ee-6c54-4b01-90e6-d701748f0851
   ESUser:
-    type: "object"
+    type: object
     properties:
       displayName:
-        type: "string"
-        description: "The owner's display name"
+        type: string
+        description: The owner's display name
       id:
-        type: "string"
-        description: "The email address of the owner"
+        type: string
+        description: The email address of the owner
     example:
-      displayName: "displayName"
-      id: "id"
+      displayName: displayName
+      id: id
 parameters:
   producerId:
-    name: "id"
-    in: "path"
-    description: "The producer's ID"
+    name: id
+    in: path
+    description: The producer's ID
     required: true
-    type: "string"
+    type: string
   changeId:
-    name: "id"
-    in: "path"
-    description: "The change's ID"
+    name: id
+    in: path
+    description: The change's ID
     required: true
-    type: "string"
+    type: string
   fileId:
-    name: "id"
-    in: "path"
-    description: "The file's ID"
+    name: id
+    in: path
+    description: The file's ID
     required: true
-    type: "string"
+    type: string
   filesIds:
-    name: "IDs"
-    in: "query"
-    description: "The files's ID's"
+    name: IDs
+    in: query
+    description: The files's ID's
     required: true
-    type: "string"
+    type: string
   targetId:
-    name: "targetId"
-    in: "query"
-    description: "Target file's ID"
+    name: targetId
+    in: query
+    description: Target file's ID
     required: true
-    type: "string"
+    type: string
   useTree:
-    name: "useTree"
-    in: "query"
+    name: useTree
+    in: query
     required: false
-    type: "boolean"
+    type: boolean
     default: false
   file:
-    in: "body"
-    name: "file"
-    description: "File"
+    in: body
+    name: file
+    description: File
     required: false
     schema:
-      $ref: "#/definitions/ESFile"
+      $ref: '#/definitions/ESFile'
   repositoryId:
-    name: "id"
-    in: "path"
-    description: "Repository Id"
+    name: id
+    in: path
+    description: Repository Id
     required: true
-    type: "string"
+    type: string
   maxResultFile:
-    name: "maxResult"
-    in: "query"
-    description: "Maximum number of files to return. Acceptable values are 0 to 1000.\
-      \ Use -1 for no limit"
+    name: maxResult
+    in: query
+    description: Maximum number of files to return. Acceptable values are 0 to 1000. Use -1 for no limit
     required: false
-    type: "integer"
+    type: integer
     default: 100
   pageTokenFile:
-    name: "pageToken"
-    in: "query"
-    description: "Page token for files"
+    name: pageToken
+    in: query
+    description: Page token for files
     required: false
-    type: "string"
+    type: string
   fromDate:
-    name: "fromDate"
-    in: "query"
-    description: "Return only files modified after this date"
+    name: fromDate
+    in: query
+    description: Return only files modified after this date
     required: true
-    type: "string"
-    format: "date-time"
+    type: string
+    format: date-time
   getPermissions:
-    name: "getPermissions"
-    in: "query"
-    description: "set true if you want to get permissions at the same time you get\
-      \ files"
+    name: getPermissions
+    in: query
+    description: set true if you want to get permissions at the same time you get files
     required: false
-    type: "boolean"
+    type: boolean
     default: false
   getChecksum:
-    name: "getChecksum"
-    in: "query"
-    description: "set true if you want to get checksum at the same time you get files"
+    name: getChecksum
+    in: query
+    description: set true if you want to get checksum at the same time you get files
     required: false
-    type: "boolean"
+    type: boolean
     default: false
