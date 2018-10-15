@@ -983,9 +983,11 @@ definitions:
       id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
       fields:
       - name: "name"
-        value: "value"
+        action: "action"
+        value: "{}"
       - name: "name"
-        value: "value"
+        action: "action"
+        value: "{}"
       parents:
       - paths:
         - "rootFolder"
@@ -1002,11 +1004,16 @@ definitions:
         type: "string"
         description: "Field name"
       value:
-        type: "string"
+        type: "object"
         description: "Field value"
+        properties: {}
+      action:
+        type: "string"
+        description: "Action (set, add, add-distinct, remove, removeregex, inc)"
     example:
       name: "name"
-      value: "value"
+      action: "action"
+      value: "{}"
   ESFileList:
     type: "object"
     properties:
@@ -1055,9 +1062,11 @@ definitions:
         id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         fields:
         - name: "name"
-          value: "value"
+          action: "action"
+          value: "{}"
         - name: "name"
-          value: "value"
+          action: "action"
+          value: "{}"
         parents:
         - paths:
           - "rootFolder"
@@ -1105,9 +1114,11 @@ definitions:
         id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         fields:
         - name: "name"
-          value: "value"
+          action: "action"
+          value: "{}"
         - name: "name"
-          value: "value"
+          action: "action"
+          value: "{}"
         parents:
         - paths:
           - "rootFolder"
